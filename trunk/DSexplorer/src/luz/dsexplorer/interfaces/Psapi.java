@@ -1,4 +1,4 @@
-package luz.memoryTool.interfaces;
+package luz.dsexplorer.interfaces;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;

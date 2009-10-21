@@ -1,4 +1,4 @@
-package luz.memoryTool.interfaces;
+package luz.dsexplorer.interfaces;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -10,7 +10,7 @@ public interface Shell32 extends StdCallLibrary{
 	/*
 	 * http://msdn.microsoft.com/en-us/library/ms648069(VS.85).aspx
 	 */
-	public int ExtractIconEx(String lpszFile, int nIconIndex, Pointer phiconLarge, Pointer phiconSmall,int nIcons);
+	public int ExtractIconExA(String lpszFile, int nIconIndex, Pointer[] phiconLarge, Pointer[] phiconSmall, int nIcons);
 	
 	
 	/*

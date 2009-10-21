@@ -1,6 +1,6 @@
-package luz.memoryTool.tools;
+package luz.dsexplorer.tools;
 
-import luz.memoryTool.interfaces.Psapi.LPMODULEINFO;
+import luz.dsexplorer.interfaces.Psapi.LPMODULEINFO;
 
 import com.sun.jna.Pointer;
 

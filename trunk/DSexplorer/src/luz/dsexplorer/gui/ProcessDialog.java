@@ -1,4 +1,4 @@
-package luz.memoryTool.gui;
+package luz.dsexplorer.gui;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -13,8 +13,6 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo

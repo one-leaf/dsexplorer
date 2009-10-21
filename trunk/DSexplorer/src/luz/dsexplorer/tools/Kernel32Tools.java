@@ -1,10 +1,11 @@
-package luz.memoryTool.tools;
+package luz.dsexplorer.tools;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import luz.memoryTool.interfaces.Kernel32;
-import luz.memoryTool.interfaces.Kernel32.LPPROCESSENTRY32;
+import luz.dsexplorer.interfaces.Kernel32;
+import luz.dsexplorer.interfaces.Kernel32.ENUMRESNAMEPROC;
+import luz.dsexplorer.interfaces.Kernel32.LPPROCESSENTRY32;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
@@ -111,5 +112,23 @@ public class Kernel32Tools {
     public Pointer FindResource(Pointer hModule, String lpName, String lpType){
     	return k32.FindResourceA(hModule, lpName, lpType);
     }
+    
+    public Pointer LockResource(Pointer hResData){
+        return k32.LockResource(hResData);
+    }
 
+    public int SizeofResource(Pointer hModule,Pointer hResInfo) throws Exception{
+        int size = k32.SizeofResource(hModule,hResInfo);
+    	if (size==0){
+    		int err=k32.GetLastError();
+    		throw new Exception("SizeofResource failed. Error: "+err);
+    	}
+    	return size;
+    }
+    
+    public boolean EnumResourceNamesA(Pointer hModule,String lpszType, ENUMRESNAMEPROC lpEnumFunc, IntByReference lParam){
+        return k32.EnumResourceNamesA(hModule, lpszType, lpEnumFunc, lParam);
+    }
+    
+    
 }

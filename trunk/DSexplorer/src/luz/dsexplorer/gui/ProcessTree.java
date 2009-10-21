@@ -1,4 +1,4 @@
-package luz.memoryTool.gui;
+package luz.dsexplorer.gui;
 
 import javax.swing.JTree;
 

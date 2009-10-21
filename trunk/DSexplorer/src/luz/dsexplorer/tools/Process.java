@@ -1,4 +1,4 @@
-package luz.memoryTool.tools;
+package luz.dsexplorer.tools;
 
 import java.util.LinkedList;
 import java.util.List;
