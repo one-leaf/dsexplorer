@@ -1,11 +1,11 @@
-package luz.memoryTool.tools;
+package luz.dsexplorer.tools;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import luz.memoryTool.interfaces.Kernel32;
-import luz.memoryTool.interfaces.Psapi;
-import luz.memoryTool.interfaces.Psapi.LPMODULEINFO;
+import luz.dsexplorer.interfaces.Kernel32;
+import luz.dsexplorer.interfaces.Psapi;
+import luz.dsexplorer.interfaces.Psapi.LPMODULEINFO;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;

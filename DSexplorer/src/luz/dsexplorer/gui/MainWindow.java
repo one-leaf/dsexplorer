@@ -1,4 +1,4 @@
-package luz.memoryTool.gui;
+package luz.dsexplorer.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -72,7 +72,7 @@ public class MainWindow extends javax.swing.JFrame {
 			BorderLayout thisLayout = new BorderLayout();
 			getContentPane().setLayout(thisLayout);
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			this.setTitle("Memory Tool");
+			this.setTitle("DSExplorer v0.1");
 			{
 				jSplitPane1 = new JSplitPane();
 				getContentPane().add(jSplitPane1, BorderLayout.CENTER);

@@ -1,4 +1,4 @@
-package luz.memoryTool.gui;
+package luz.dsexplorer.gui;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -7,8 +7,8 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 
-import luz.memoryTool.tools.Kernel32Tools;
-import luz.memoryTool.tools.Process;
+import luz.dsexplorer.tools.Kernel32Tools;
+import luz.dsexplorer.tools.Process;
 
 
 public class ProcessTable extends JTable{

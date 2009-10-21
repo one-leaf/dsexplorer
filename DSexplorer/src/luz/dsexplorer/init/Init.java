@@ -1,4 +1,4 @@
-package luz.memoryTool.init;
+package luz.dsexplorer.init;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -7,7 +7,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import luz.memoryTool.gui.MainWindow;
+import luz.dsexplorer.gui.MainWindow;
 
 public class Init {
 	private static final Log log = LogFactory.getLog(Init.class);

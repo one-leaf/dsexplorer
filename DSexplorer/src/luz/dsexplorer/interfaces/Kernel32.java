@@ -1,12 +1,14 @@
-package luz.memoryTool.interfaces;
+package luz.dsexplorer.interfaces;
+
+import luz.dsexplorer.interfaces.User32.WNDENUMPROC;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.LongByReference;
 import com.sun.jna.win32.StdCallLibrary;
+import com.sun.jna.win32.StdCallLibrary.StdCallCallback;
 
 public interface Kernel32 extends StdCallLibrary {
     Kernel32 INSTANCE = (Kernel32) Native.loadLibrary("kernel32", Kernel32.class);
@@ -109,5 +111,30 @@ public interface Kernel32 extends StdCallLibrary {
      */    
     Pointer FindResourceA(Pointer hModule, String lpName, String lpType);
     
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms648047(VS.85).aspx
+     */
+    Pointer LockResource(Pointer hResData);
+    
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms648048(VS.85).aspx
+     */    
+    int SizeofResource(Pointer hModule,Pointer hResInfo);
 
+    
+    
+    
+    
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms648037%28VS.85%29.aspx
+     */
+    public static interface ENUMRESNAMEPROC extends StdCallCallback {
+    	public abstract boolean callback(Pointer hModule, String lpszType, String lpszName, IntByReference lParam);
+    }
+    boolean EnumResourceNamesA(Pointer hModule,String lpszType, ENUMRESNAMEPROC lpEnumFunc, IntByReference lParam);
+    
+    
+    
+
+    
 }
