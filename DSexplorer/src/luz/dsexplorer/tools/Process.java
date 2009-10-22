@@ -111,7 +111,12 @@ public class Process {
 			}
 	}
 	
+	private ImageIcon iconCache=null;
+	
 	public ImageIcon getIcon(){
+		if (iconCache!=null)
+			return iconCache;
+		
 		Pointer hIcon = null;
 		
         Pointer[] hIcons=new Pointer[1];
@@ -128,10 +133,11 @@ public class Process {
 			hIcon = u32.getHIcon(hWnd);
         }
         
-        if (hIcon==null)
-        	return null;
+        if (hIcon!=null)
+        	iconCache=new ImageIcon(u32.getIcon(hIcon));
         else
-        	return new ImageIcon(u32.getIcon(hIcon));    
+        	iconCache=new ImageIcon();
+        return iconCache;        
 	}
 	
 	//Setter
