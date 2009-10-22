@@ -41,5 +41,10 @@ public interface Psapi extends StdCallLibrary{
 	 */
 	boolean GetModuleInformation(Pointer hProcess, Pointer hModule, LPMODULEINFO lpmodinfo, int cb);
 
-	
+    
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms683217(VS.85).aspx
+     */
+    int GetProcessImageFileNameA(Pointer hProcess,byte[] lpImageFileName,int nSize);
+    
 }

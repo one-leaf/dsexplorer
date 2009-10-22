@@ -15,8 +15,6 @@ public interface User32 extends StdCallLibrary {
 	 * http://support.microsoft.com/kb/142815
 	 */
 	Pointer LoadIconA(Pointer hInstance, String lpIconName);
-	
-    boolean DestroyIcon(Pointer hicon);
     
     /*
      * http://msdn.microsoft.com/en-us/library/ms633522(VS.85).aspx
@@ -46,11 +44,11 @@ public interface User32 extends StdCallLibrary {
      * http://msdn.microsoft.com/en-us/library/ms648070%28VS.85%29.aspx
      */
     public static class ICONINFO extends Structure{
-        boolean fIcon;
-        int xHotspot;
-        int yHotspot;
-        Pointer hbmMask;
-        Pointer hbmColor;
+        public boolean fIcon;
+        public int xHotspot;
+        public int yHotspot;
+        public Pointer hbmMask;
+        public Pointer hbmColor;
     }
     
     boolean GetIconInfo(Pointer hIcon, ICONINFO piconinfo);
@@ -72,5 +70,41 @@ public interface User32 extends StdCallLibrary {
 	 * http://msdn.microsoft.com/en-us/library/ms633580(VS.85).aspx
      */
     int GetClassLongA(Pointer hWnd,int nIndex);
+    
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms648058(S.85).aspx
+     */
+    Pointer CopyIcon(Pointer hIcon);
+    
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms648063(VS.85).aspx
+     */
+    boolean DestroyIcon(Pointer hIcon);
+    
+    
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms648064(VS.85).aspx
+     */    
+    boolean DrawIcon( Pointer hDC, int X, int Y,Pointer hIcon);
+       
+    
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms648065(VS.85).aspx
+     */ 
+    public boolean DrawIconEx(Pointer hdc, int xLeft, int yTop, 
+    	Pointer hIcon, int cxWidth, int cyWidth, int istepIfAniCur,
+    	Pointer hbrFlickerFreeDraw, int diFlags);
+
+    
+    /*
+     * http://msdn.microsoft.com/en-us/library/dd144871(VS.85).aspx
+     */
+    Pointer GetDC(Pointer hWnd);
+    
+    /*
+     * http://msdn.microsoft.com/en-us/library/dd162920(VS.85).aspx
+     */
+	int ReleaseDC(Pointer hWnd, Pointer hDC);
+
 
 }

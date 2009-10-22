@@ -1,14 +1,11 @@
 package luz.dsexplorer.interfaces;
 
-import luz.dsexplorer.interfaces.User32.WNDENUMPROC;
-
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.StdCallLibrary;
-import com.sun.jna.win32.StdCallLibrary.StdCallCallback;
 
 public interface Kernel32 extends StdCallLibrary {
     Kernel32 INSTANCE = (Kernel32) Native.loadLibrary("kernel32", Kernel32.class);
@@ -105,6 +102,7 @@ public interface Kernel32 extends StdCallLibrary {
      */
     boolean Process32Next(Pointer hSnapshot, LPPROCESSENTRY32 lppe);
  
+
     
     /*
      * http://msdn.microsoft.com/en-us/library/ms648042(VS.85).aspx
