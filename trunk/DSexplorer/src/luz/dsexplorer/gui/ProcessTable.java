@@ -24,8 +24,8 @@ public class ProcessTable extends JTable{
 		
 		this.getColumnModel().getColumn(0).setMinWidth(50);
 		this.getColumnModel().getColumn(0).setMaxWidth(50);
-		this.getColumnModel().getColumn(1).setMinWidth(40);
-		this.getColumnModel().getColumn(1).setMaxWidth(40);
+		this.getColumnModel().getColumn(1).setMinWidth(30);
+		this.getColumnModel().getColumn(1).setMaxWidth(30);
 	}
 	
 	public void refresh() {
