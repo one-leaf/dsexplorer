@@ -1,14 +1,12 @@
 package luz.dsexplorer.gui;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 
-import luz.dsexplorer.tools.Kernel32Tools;
 import luz.dsexplorer.tools.Process;
+import luz.dsexplorer.tools.ProcessList;
 
 
 public class ProcessTable extends JTable{
@@ -26,6 +24,8 @@ public class ProcessTable extends JTable{
 		
 		this.getColumnModel().getColumn(0).setMinWidth(50);
 		this.getColumnModel().getColumn(0).setMaxWidth(50);
+		this.getColumnModel().getColumn(1).setMinWidth(40);
+		this.getColumnModel().getColumn(1).setMaxWidth(40);
 	}
 	
 	public void refresh() {
@@ -42,21 +42,18 @@ public class ProcessTable extends JTable{
 
 	private static class MyTableModel extends AbstractTableModel {
 		private static final long serialVersionUID = 7780019195084742274L;
-		private String[] columnNames = {"Pid", "Name", "Path"};
-		private Kernel32Tools k32 = Kernel32Tools.getInstance(); 
-		private List<Process> list = new LinkedList<Process>();
+		private String[] columnNames = {"Pid", "Icon", "Name", "Path"};
+		@SuppressWarnings("unchecked")
+		private Class[] classes = {Integer.class, ImageIcon.class, String.class, String.class};
+		private ProcessList list = new ProcessList();
 		
 	    public MyTableModel(){
 
 	    }
 	    
 	    public void refresh() {
-	    	try {
-				list=k32.getProcessList();
-				fireTableDataChanged();
-			} catch (Exception e) { e.printStackTrace();
-			}
-			
+			list.refresh();
+			fireTableDataChanged();	
 		}
 
 		@Override
@@ -80,9 +77,11 @@ public class ProcessTable extends JTable{
 	    		case 0:
 	    			return list.get(row).getPid();
 	    		case 1: 
-	    			return list.get(row).getSzExeFile();
+	    			return list.get(row).getIcon();
 	    		case 2: 
-	    			return list.get(row).getProcessImageFileName();
+	    			return list.get(row).getSzExeFile();
+	    		case 3: 
+	    			return list.get(row).getModuleFileNameExA();
 	    		default: return null;
 	    	}
 	    }
@@ -94,8 +93,7 @@ public class ProcessTable extends JTable{
 		@Override
 	    @SuppressWarnings("unchecked")
 	    public Class getColumnClass(int c) {
-	    	Object r = getValueAt(0, c);
-	        return r!=null?r.getClass():Object.class;
+			return classes[c];
 	    }
 	}
 }

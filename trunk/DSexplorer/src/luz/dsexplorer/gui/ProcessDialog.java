@@ -57,6 +57,7 @@ public class ProcessDialog extends javax.swing.JDialog {
 			GroupLayout thisLayout = new GroupLayout((JComponent)getContentPane());
 			getContentPane().setLayout(thisLayout);
 			this.setTitle("Open Process");
+			this.setModal(true);
 			this.setMinimumSize(new Dimension(250, 300));
 			{
 				btnOpen = new JButton();

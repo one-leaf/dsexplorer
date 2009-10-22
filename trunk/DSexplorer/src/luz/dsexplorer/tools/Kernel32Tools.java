@@ -1,8 +1,5 @@
 package luz.dsexplorer.tools;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import luz.dsexplorer.interfaces.Kernel32;
 import luz.dsexplorer.interfaces.Kernel32.ENUMRESNAMEPROC;
 import luz.dsexplorer.interfaces.Kernel32.LPPROCESSENTRY32;
@@ -87,8 +84,8 @@ public class Kernel32Tools {
 	
 	
 	
-	public List<Process> getProcessList() throws Exception{
-		List<Process> list = new LinkedList<Process>();
+	public ProcessList getProcessList() throws Exception{
+		ProcessList list = new ProcessList();
 		
         Pointer hProcessSnap = k32.CreateToolhelp32Snapshot(Kernel32Tools.TH32CS_SNAPPROCESS, 0);
         
@@ -109,6 +106,11 @@ public class Kernel32Tools {
 		return list;		
 	}
 
+
+    
+    
+    
+    
     public Pointer FindResource(Pointer hModule, String lpName, String lpType){
     	return k32.FindResourceA(hModule, lpName, lpType);
     }

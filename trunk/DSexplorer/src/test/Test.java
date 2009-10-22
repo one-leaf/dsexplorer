@@ -1,19 +1,21 @@
 package test;
 
+import java.awt.FlowLayout;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
-import javax.jws.WebMethod;
-
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.IntByReference;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import luz.dsexplorer.interfaces.Shell32;
-import luz.dsexplorer.interfaces.User32;
-import luz.dsexplorer.interfaces.Kernel32.ENUMRESNAMEPROC;
 import luz.dsexplorer.tools.Kernel32Tools;
-import luz.dsexplorer.tools.PsapiTools;
 import luz.dsexplorer.tools.Process;
+import luz.dsexplorer.tools.ProcessList;
+import luz.dsexplorer.tools.PsapiTools;
 import luz.dsexplorer.tools.User32Tools;
+
+import com.sun.jna.Pointer;
 
 
 
@@ -27,15 +29,23 @@ public class Test {
         final Shell32 s32 = Shell32.INSTANCE;
         
         
-        int pid=6004;
+        int pid=4216;
         Process p=null;
-        List<Process> list = k32.getProcessList();
+        ProcessList list = k32.getProcessList();
+        list.refreshWindows();
         for (Process pr : list) {
 			if (pr.getPid()==pid){
 				p=pr;
 				break;
 			}
         }
+        
+        int c=0;
+        for (Process pr : list) {
+        	c++;
+			System.out.println(c+" "+pr.getPid());
+        }
+        
 //		String filename=p.getProcessImageFileName();
 //		System.out.println(filename);
 //		Pointer[] icons = new Pointer[1];
@@ -58,18 +68,61 @@ public class Test {
 //		System.out.println(data.getByte(0));
 
         
+        //List<Pointer> hWnds = u32.EnumWindows();
+        List<Pointer> hWnds = p.getHwnds();
+        
+//        JFrame frame = new JFrame();
+//        frame.setLayout(new FlowLayout());
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        for (Pointer hWnd :  hWnds) {	
+//			Pointer hIcon = u32.getHIcon(hWnd);
+//	        if(hIcon!=null){
+//
+//	            BufferedImage image=u32.getIcon(hIcon);        
+//	            JLabel icon = new JLabel();
+//	            icon.setIcon(new ImageIcon(image));
+//	            frame.add(icon);
+//
+//
+//	        }
+//
+//		}
+//        System.out.println(hWnds.size());
+//        frame.pack();
+//        frame.setVisible(true);
+        
+    
+
+        
+//        
+        
+//        JLabel icon = new JLabel();
+//        icon.setIcon(new ImageIcon(p.getIcon()));
+//
+//        JFrame frame = new JFrame();
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setContentPane(icon);
+//        frame.pack();
+//        frame.setVisible(true);
+
+        
         
         
 
-        Pointer hWnd = u32.getHwnd(p);
-        System.out.println(hWnd);
-        Pointer x = u32.SendMessageA(hWnd, u32.WM_GETICON, u32.ICON_SMALL, 0);
-        System.out.println(x);
+
         
-        int y = u32.GetClassLong(hWnd, u32.GCL_HICONSM);
-        System.out.println(y);
         
-        //u32.SendMessage(hWnd, Msg, wParam, lParam)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         

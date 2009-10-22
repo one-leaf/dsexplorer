@@ -67,6 +67,12 @@ public class PsapiTools {
 		return Native.toString(lpImageFileName);
 	}
 	
+    public String GetProcessImageFileNameA(Pointer hProcess){
+		byte[] lpImageFileName= new byte[256];
+		psapi.GetProcessImageFileNameA(hProcess, lpImageFileName, 256);
+        return Native.toString(lpImageFileName);
+    }
+	
 	public LPMODULEINFO GetModuleInformation(Pointer hProcess, Pointer hModule) throws Exception{
 		LPMODULEINFO lpmodinfo = new LPMODULEINFO();
 		
