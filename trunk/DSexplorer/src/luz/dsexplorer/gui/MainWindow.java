@@ -44,6 +44,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private JSplitPane jSplitPane1;
 	private ProcessTree tree;
 	private JPanel jPanel1;
+	private ProcessDialog pd;
 	
 	/**
 	* Auto-generated main method to display this JFrame
@@ -61,6 +62,21 @@ public class MainWindow extends javax.swing.JFrame {
 	public MainWindow() {
 		super();
 		initGUI();
+		
+		pd = new ProcessDialog(this);
+		pd.setLocationRelativeTo(this);
+		pd.addListener(new ProcessDialogListener(){
+			@Override
+			public void okPerformed(Process p) {
+				System.out.println(p.getModuleFileNameExA());
+				tree.setProcess(p);
+			}
+			
+			@Override
+			public void cancelPerformed() {
+				// TODO Auto-generated method stub
+			}
+		});
 	}
 	
 	private void initGUI() {
@@ -196,21 +212,7 @@ public class MainWindow extends javax.swing.JFrame {
 	}
 	
 	private void miOpenProcessActionPerformed() {
-		ProcessDialog pd = new ProcessDialog(this);
-		pd.setLocationRelativeTo(this);
 		pd.refresh();
-		pd.addListener(new ProcessDialogListener(){
-			@Override
-			public void okPerformed(Process p) {
-				System.out.println(p.getModuleFileNameExA());
-				tree.setProcess(p);
-			}
-			
-			@Override
-			public void cancelPerformed() {
-				// TODO Auto-generated method stub
-			}
-		});
 		pd.setVisible(true);
 	}
 	
