@@ -1,4 +1,6 @@
 package luz.dsexplorer.gui;
+
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -7,25 +9,19 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+
+import luz.dsexplorer.gui.listener.ProcessDialogListener;
+import luz.dsexplorer.tools.Process;
 
 
-/**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
 public class MainWindow extends javax.swing.JFrame {
 	private static final long serialVersionUID = 8472126583792212590L;
 	private JMenuBar jMenuBar;
@@ -46,7 +42,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private JMenuItem miHelp;
 	private JMenuItem miAbout;
 	private JSplitPane jSplitPane1;
-	private ProcessTree jTree1;
+	private ProcessTree tree;
 	private JPanel jPanel1;
 	
 	/**
@@ -77,9 +73,16 @@ public class MainWindow extends javax.swing.JFrame {
 				jSplitPane1 = new JSplitPane();
 				getContentPane().add(jSplitPane1, BorderLayout.CENTER);
 				{
-					jTree1 = new ProcessTree();
-					jSplitPane1.add(jTree1, JSplitPane.LEFT);
-					jTree1.setPreferredSize(new Dimension(179, 381));
+					tree = new ProcessTree();
+					jSplitPane1.add(tree, JSplitPane.LEFT);
+					tree.setPreferredSize(new Dimension(179, 381));
+					tree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
+						@Override
+						public void valueChanged(TreeSelectionEvent evt) {
+							// TODO Auto-generated method stub
+							System.out.println("Tree selection: "+evt.getPath().getLastPathComponent());
+						}
+					});
 				}
 				{
 					jPanel1 = new JPanel();
@@ -119,7 +122,7 @@ public class MainWindow extends javax.swing.JFrame {
 						miExit.setText("Exit");
 						miExit.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent evt) {
-								miExitActionPerformed(evt);
+								miExitActionPerformed();
 							}
 						});
 					}
@@ -159,7 +162,7 @@ public class MainWindow extends javax.swing.JFrame {
 						miOpenProcess.setBounds(-60, 19, 78, 19);
 						miOpenProcess.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent evt) {
-								miOpenProcessActionPerformed(evt);
+								miOpenProcessActionPerformed();
 							}
 						});
 					}
@@ -177,6 +180,12 @@ public class MainWindow extends javax.swing.JFrame {
 						miAbout = new JMenuItem();
 						mHelp.add(miAbout);
 						miAbout.setText("About");
+						miAbout.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								JOptionPane.showMessageDialog(MainWindow.this, "DSExplorer v0.1", "About", JOptionPane.PLAIN_MESSAGE);
+							}
+						});
+						
 					}
 				}
 			}
@@ -186,14 +195,26 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 	}
 	
-	private void miOpenProcessActionPerformed(ActionEvent evt) {
+	private void miOpenProcessActionPerformed() {
 		ProcessDialog pd = new ProcessDialog(this);
 		pd.setLocationRelativeTo(this);
 		pd.refresh();
+		pd.addListener(new ProcessDialogListener(){
+			@Override
+			public void okPerformed(Process p) {
+				System.out.println(p.getModuleFileNameExA());
+				tree.setProcess(p);
+			}
+			
+			@Override
+			public void cancelPerformed() {
+				// TODO Auto-generated method stub
+			}
+		});
 		pd.setVisible(true);
 	}
 	
-	private void miExitActionPerformed(ActionEvent evt) {
+	private void miExitActionPerformed() {
 		this.dispose();
 	}
 

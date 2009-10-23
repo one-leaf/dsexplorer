@@ -97,11 +97,13 @@ public class Kernel32Tools {
     	}
        
         do{
-        	Process process = new Process(pe32.th32ProcessID, pe32.getSzExeFile());
-        	process.setCntThreads(pe32.cntThreads);
-        	process.setPcPriClassBase(pe32.pcPriClassBase.intValue());
-        	process.setTh32ParentProcessID(pe32.th32ParentProcessID);
-        	list.add(process);
+        	if (pe32.th32ProcessID!=0){
+	        	Process process = new Process(pe32.th32ProcessID, pe32.getSzExeFile());
+	        	process.setCntThreads(pe32.cntThreads);
+	        	process.setPcPriClassBase(pe32.pcPriClassBase.intValue());
+	        	process.setTh32ParentProcessID(pe32.th32ParentProcessID);
+	        	list.add(process);
+        	}
         }while(k32.Process32Next(hProcessSnap, pe32));
 		return list;		
 	}

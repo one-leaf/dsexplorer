@@ -60,6 +60,15 @@ public interface User32 extends StdCallLibrary {
     Pointer FindWindowA(String lpClassName,String lpWindowName);
     
     
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms633510(VS.85).aspx
+     */
+    Pointer GetParent(Pointer hWnd);
+    
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms633502(VS.85).aspx
+     */
+    Pointer GetAncestor(Pointer hwnd, int gaFlags);
     
     /*
      * http://msdn.microsoft.com/en-us/library/ms644950(VS.85).aspx

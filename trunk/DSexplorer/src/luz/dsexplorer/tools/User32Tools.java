@@ -41,6 +41,31 @@ public class User32Tools {
 		}		
 	}
 	
+	public List<Pointer> EnumWindows(){
+		final List<Pointer> mutex=Collections.synchronizedList(new LinkedList<Pointer>());
+		
+		new Thread(new Runnable(){
+			@Override
+			public void run() {
+				u32.EnumWindows(new WNDENUMPROC() {  
+					public boolean callback(Pointer hWnd, Pointer userData) {  
+						mutex.add(hWnd);
+						return true;					
+					} 
+				}, null);				
+			}
+		}).start();
+		
+		try {
+			synchronized (mutex) {
+				mutex.wait(20);	//FIXME Find better method. Dont go below 10!
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}		
+		return mutex;
+	}
+	
 	public Pointer getHwnd(Process process){
 		final int pidx=process.getPid();
 		final Container<Pointer> mutex=new Container<Pointer>();
@@ -76,33 +101,20 @@ public class User32Tools {
 		return mutex.getFirst();
 	}
 	
+    public Pointer GetParent(Pointer hWnd){
+        return u32.GetParent(hWnd);
+    }
+    
+    
+	public static final int GA_PARENT=1;
+	public static final int GA_ROOT=2;
+	public static final int GA_ROOTOWNER=3;
+    Pointer GetAncestor(Pointer hwnd, int gaFlags){
+        return u32.GetAncestor(hwnd, gaFlags);
+    }
+    
 	public void GetWindowThreadProcessId(Pointer hWnd, IntByReference lpdwProcessId){
 		u32.GetWindowThreadProcessId(hWnd,lpdwProcessId);
-	}
-	
-	public List<Pointer> EnumWindows(){
-		final List<Pointer> mutex=Collections.synchronizedList(new LinkedList<Pointer>());
-		
-		new Thread(new Runnable(){
-			@Override
-			public void run() {
-				u32.EnumWindows(new WNDENUMPROC() {  
-					public boolean callback(Pointer hWnd, Pointer userData) {  
-						mutex.add(hWnd);
-						return true;					
-					} 
-				}, null);				
-			}
-		}).start();
-		
-		try {
-			synchronized (mutex) {
-				mutex.wait(20);	//FIXME Find better method. Dont go below 10!
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}		
-		return mutex;
 	}
 	
 	
@@ -189,16 +201,9 @@ public class User32Tools {
         	a = 0xFF-lpBitsMask [i  ] & 0xFF;
         	//System.out.println(lpBitsMask[i]+" "+lpBitsMask[i+1]+" "+lpBitsMask[i+2]);
         	argb= (a<<24) | (r<<16) | (g<<8) | b;      	
-        	if (x<width-1){
-        		if (y>=0)
-        			image.setRGB(x, y, argb);
-        		x++;
-        	}else{
-        		x=0;
-        		y--;
-        		if (y>=0)
-        			image.setRGB(x, y, argb);
-        	}      	
+        	image.setRGB(x, y, argb);
+        	x=(x+1)%width;
+        	if (x==0) y--;
 		}
 
         u32.ReleaseDC(null, hDC);
