@@ -8,14 +8,24 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import luz.dsexplorer.interfaces.Advapi32;
+import luz.dsexplorer.interfaces.Ntdll;
 import luz.dsexplorer.interfaces.Shell32;
+import luz.dsexplorer.interfaces.Advapi32.TOKEN_PRIVILEGES;
+import luz.dsexplorer.interfaces.Ntdll.PEB;
+import luz.dsexplorer.interfaces.Ntdll.PROCESS_BASIC_INFORMATION;
+import luz.dsexplorer.interfaces.Ntdll.RTL_USER_PROCESS_PARAMETERS;
+import luz.dsexplorer.tools.Advapi32Tools;
 import luz.dsexplorer.tools.Kernel32Tools;
 import luz.dsexplorer.tools.Process;
 import luz.dsexplorer.tools.ProcessList;
 import luz.dsexplorer.tools.PsapiTools;
 import luz.dsexplorer.tools.User32Tools;
 
+import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.ptr.LongByReference;
 
 
 
@@ -27,9 +37,11 @@ public class Test {
         final PsapiTools psapi = PsapiTools.getInstance();
         final User32Tools u32 =User32Tools.getInstance();
         final Shell32 s32 = Shell32.INSTANCE;
+        final Ntdll nt = Ntdll.INSTANCE;
+        final Advapi32Tools a32 = Advapi32Tools.getInstance();
         
         
-        int pid=4216;
+        int pid=2108;
         Process p=null;
         ProcessList list = k32.getProcessList();
         list.refreshWindows();
@@ -40,11 +52,44 @@ public class Test {
 			}
         }
         
-        int c=0;
-        for (Process pr : list) {
-        	c++;
-			System.out.println(c+" "+pr.getPid());
-        }
+
+        a32.enableDebugPrivilege(k32.GetCurrentProcess());
+        
+        
+        
+        PROCESS_BASIC_INFORMATION info = new PROCESS_BASIC_INFORMATION();
+        IntByReference ret = new IntByReference();
+        nt.NtQueryInformationProcess(p.getPointer(), Ntdll.ProcessBasicInformation, info, info.size(), ret);
+        System.out.println("ExitStatus\t"+info.ExitStatus);
+        System.out.println("PebBaseAddress\t"+Integer.toHexString(info.PebBaseAddress));
+        System.out.println("AffinityMask\t"+info.AffinityMask);
+        System.out.println("BasePriority\t"+info.BasePriority);
+        System.out.println("UniqueProcessId\t"+info.UniqueProcessId);
+        System.out.println("ParentProcessId\t"+info.ParentProcessId);
+        System.out.println("------------------------------");
+        
+        PEB peb = new PEB();
+        k32.ReadProcessMemory(p.getPointer(), info.PebBaseAddress, peb.getPointer(), peb.size(), ret);
+		System.out.println("InheritedAddressSpace\t"+peb.InheritedAddressSpace);
+		System.out.println("ReadImageFileExecOptions\t"+peb.ReadImageFileExecOptions);
+        System.out.println("BeingDebugged\t"+peb.BeingDebugged);
+        System.out.println("Spare\t"+peb.Spare);
+        System.out.println("ImageBaseAddress\t"+peb.ImageBaseAddress);
+        System.out.println("ProcessParameters\t"+peb.ProcessParameters);
+        System.out.println("PostProcessInitRoutine\t"+peb.PostProcessInitRoutine);
+        System.out.println("SessionId\t"+peb.SessionId);
+        System.out.println("------------------------------");
+        System.out.println("ProcessParameters\t"+peb.ProcessParameters.CommandLine);
+
+        byte[] buffer1 = new byte[peb.size()];
+        peb.getPointer().read(0, buffer1, 0, buffer1.length);
+        System.out.println(new String(buffer1));
+
+        
+        
+        
+
+
         
 //		String filename=p.getProcessImageFileName();
 //		System.out.println(filename);
@@ -69,7 +114,7 @@ public class Test {
 
         
         //List<Pointer> hWnds = u32.EnumWindows();
-        List<Pointer> hWnds = p.getHwnds();
+//        List<Pointer> hWnds = p.getHwnds();
         
 //        JFrame frame = new JFrame();
 //        frame.setLayout(new FlowLayout());

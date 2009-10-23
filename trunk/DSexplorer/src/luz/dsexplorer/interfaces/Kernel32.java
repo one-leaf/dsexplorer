@@ -40,14 +40,11 @@ public interface Kernel32 extends StdCallLibrary {
    
     
     boolean CloseHandle(Pointer hObject);
-
     
-    /*
-     * http://msdn.microsoft.com/en-us/library/ms686701(VS.85).aspx
-     */
     
     /*
      * http://msdn.microsoft.com/en-us/library/ms682489(VS.85).aspx
+     * http://msdn.microsoft.com/en-us/library/ms686701(VS.85).aspx
      */
 	Pointer CreateToolhelp32Snapshot(int dwFlags,int th32ProcessID);
         
@@ -118,10 +115,7 @@ public interface Kernel32 extends StdCallLibrary {
      * http://msdn.microsoft.com/en-us/library/ms648048(VS.85).aspx
      */    
     int SizeofResource(Pointer hModule,Pointer hResInfo);
-
-    
-    
-    
+   
     
     /*
      * http://msdn.microsoft.com/en-us/library/ms648037%28VS.85%29.aspx
