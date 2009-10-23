@@ -128,9 +128,15 @@ public class Process {
             hIcon = hIcons[0];
         }
         
-        if (hIcon==null && hWnds.size()>0){
-	        Pointer hWnd=hWnds.get(0);
-			hIcon = u32.getHIcon(hWnd);
+        if (hIcon==null){      	
+        	if(hWnds.size()>0){
+        		hIcon = u32.getHIcon(u32.GetAncestor(hWnds.get(0), User32Tools.GA_ROOTOWNER));
+        	}
+//        	for (Pointer hWnd : hWnds) {
+//        		hIcon = u32.getHIcon(hWnd);
+//        		if (hIcon!=null)
+//        			break;
+//			}
         }
         
         if (hIcon!=null)

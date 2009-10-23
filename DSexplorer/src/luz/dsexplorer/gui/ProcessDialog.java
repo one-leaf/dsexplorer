@@ -13,6 +13,12 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
+import javax.swing.event.EventListenerList;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import luz.dsexplorer.gui.listener.ProcessDialogListener;
+import luz.dsexplorer.tools.Process;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -33,6 +39,8 @@ public class ProcessDialog extends javax.swing.JDialog {
 	private JScrollPane jScrollPane1;
 	private JButton btnRefresh;
 	private ProcessTable tblProcess;
+	protected EventListenerList listenerList = new EventListenerList();
+	private enum Action{OK, CANCEL}
 
 	/**
 	* Auto-generated main method to display this JDialog
@@ -62,9 +70,10 @@ public class ProcessDialog extends javax.swing.JDialog {
 			{
 				btnOpen = new JButton();
 				btnOpen.setText("Open");
+				btnOpen.setEnabled(false);
 				btnOpen.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
-						openSelectedProcess();
+						openSelectedProcess(evt);
 					}
 				});
 			}
@@ -85,6 +94,12 @@ public class ProcessDialog extends javax.swing.JDialog {
 					tblProcess.addMouseListener(new MouseAdapter() {
 						public void mouseClicked(MouseEvent evt) {
 							tblProcessMouseClicked(evt);
+						}
+					});
+					tblProcess.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+						@Override
+						public void valueChanged(ListSelectionEvent e) {
+							btnOpen.setEnabled(true);
 						}
 					});
 				}
@@ -125,19 +140,50 @@ public class ProcessDialog extends javax.swing.JDialog {
 		}
 	}
 	
-	private void openSelectedProcess() {
-		System.out.println("Open Process "+tblProcess.getSelectedProcess());
-		//TODO send Event to main window		
+	private void openSelectedProcess(ActionEvent evt) {
+		fireActionPerformed(Action.OK, tblProcess.getSelectedProcess());	
 		this.dispose();
 	}
 
 	public void refresh() {
 		tblProcess.refresh();
+		btnOpen.setEnabled(false);
 	}
 	
 	private void tblProcessMouseClicked(MouseEvent evt) {
 		if (evt.getClickCount()>=2)
-			openSelectedProcess();
+			btnOpen.doClick();
 	}
+	
+	///////////////////////////////////////////////////////////
+	
+	public void addListener(ProcessDialogListener l) {
+        listenerList.add(ProcessDialogListener.class, l);
+    }
+    
+    public void removeListener(ProcessDialogListener l) {
+	    listenerList.remove(ProcessDialogListener.class, l);
+    }
+    
+    public ProcessDialogListener[] getListeners() {
+        return (ProcessDialogListener[])(listenerList.getListeners(ProcessDialogListener.class));
+    }
+    
+    protected void fireActionPerformed(Action action, Object o) {
+        Object[] listeners = listenerList.getListenerList(); // Guaranteed to return a non-null array
+        // Process the listeners last to first, notifying those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==ProcessDialogListener.class) {
+            	switch (action){
+	            	case OK:
+	            		((ProcessDialogListener)listeners[i+1]).okPerformed((Process)o);
+	            		break;
+	            	case CANCEL:
+	            		((ProcessDialogListener)listeners[i+1]).cancelPerformed();
+	            		break;
+            	}
+            }          
+        }
+    }
 
 }
