@@ -32,10 +32,10 @@ public class ProcessTree extends JTree {
 		@SuppressWarnings("unchecked")
 		private Class clazz;
 		
-		public OutlineNode(Object objects) {
-			this.node = objects;
+		public OutlineNode(Object object) {
+			this.node = object;
 			this.name = "";
-			this.clazz = objects==null?Object.class:objects.getClass();
+			this.clazz = object==null?Object.class:object.getClass();
 		}
 
 		@SuppressWarnings("unchecked")
