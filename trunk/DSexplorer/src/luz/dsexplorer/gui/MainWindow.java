@@ -11,6 +11,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
@@ -22,11 +23,25 @@ import luz.dsexplorer.gui.listener.ProcessDialogListener;
 import luz.dsexplorer.tools.Process;
 
 
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 public class MainWindow extends javax.swing.JFrame {
 	private static final long serialVersionUID = 8472126583792212590L;
 	private JMenuBar jMenuBar;
 	private JMenu mFile;
 	private JMenuItem miNew;
+	private JScrollPane jScrollPane1;
 	private JSeparator jSeparator2;
 	private JSeparator jSeparator1;
 	private JMenuItem miSettings;
@@ -89,16 +104,20 @@ public class MainWindow extends javax.swing.JFrame {
 				jSplitPane1 = new JSplitPane();
 				getContentPane().add(jSplitPane1, BorderLayout.CENTER);
 				{
-					tree = new ProcessTree();
-					jSplitPane1.add(tree, JSplitPane.LEFT);
-					tree.setPreferredSize(new Dimension(179, 381));
-					tree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
-						@Override
-						public void valueChanged(TreeSelectionEvent evt) {
-							// TODO Auto-generated method stub
-							System.out.println("Tree selection: "+evt.getPath().getLastPathComponent());
-						}
-					});
+					jScrollPane1 = new JScrollPane();
+					jSplitPane1.add(jScrollPane1, JSplitPane.LEFT);
+					jScrollPane1.setPreferredSize(new java.awt.Dimension(179, 381));
+					{
+						tree = new ProcessTree();
+						jScrollPane1.setViewportView(tree);
+						tree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
+							@Override
+							public void valueChanged(TreeSelectionEvent evt) {
+								// TODO Auto-generated method stub
+								System.out.println("Tree selection: "+evt.getPath().getLastPathComponent());
+							}
+						});
+					}
 				}
 				{
 					jPanel1 = new JPanel();
