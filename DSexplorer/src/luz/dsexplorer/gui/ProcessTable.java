@@ -73,17 +73,21 @@ public class ProcessTable extends JTable{
 	    
 	    @Override
 	    public Object getValueAt(int row, int col) {
-	    	switch (col){
-	    		case 0:
-	    			return list.get(row).getPid();
-	    		case 1: 
-	    			return list.get(row).getIcon();
-	    		case 2: 
-	    			return list.get(row).getSzExeFile();
-	    		case 3: 
-	    			return list.get(row).getModuleFileNameExA();
-	    		default: return null;
-	    	}
+			try {
+		    	switch (col){
+		    		case 0:
+		    			return list.get(row).getPid();
+		    		case 1: 
+		    			return list.get(row).getIcon();
+		    		case 2: 
+		    			return list.get(row).getSzExeFile();
+		    		case 3: 
+		    			return list.get(row).getModuleFileNameExA();
+		    	}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
 	    }
 	    	    
 	    public Process getProcessAt(int row) {
