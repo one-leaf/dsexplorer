@@ -58,84 +58,38 @@ public class Test {
         
 
         
-        
-        
-        
         PROCESS_BASIC_INFORMATION info = new PROCESS_BASIC_INFORMATION();
-        IntByReference ret = new IntByReference();
-        nt.NtQueryInformationProcess(p.getPointer(), Ntdll.ProcessBasicInformation, info, info.size(), ret);
-        System.out.println("ExitStatus\t"+info.ExitStatus);
-        System.out.println("PebBaseAddress\t"+info.PebBaseAddress);
-        System.out.println("AffinityMask\t"+info.AffinityMask);
-        System.out.println("BasePriority\t"+info.BasePriority);
-        System.out.println("UniqueProcessId\t"+info.UniqueProcessId);
-        System.out.println("ParentProcessId\t"+info.ParentProcessId);
+        nt.NtQueryInformationProcess(p.getPointer(), Ntdll.ProcessBasicInformation, info, info.size(), null);
+        System.out.println("ExitStatus\t"				+info.ExitStatus);
+        System.out.println("PebBaseAddress\t"			+info.PebBaseAddress);
+        System.out.println("AffinityMask\t"				+info.AffinityMask);
+        System.out.println("BasePriority\t"				+info.BasePriority);
+        System.out.println("UniqueProcessId\t"			+info.UniqueProcessId);
+        System.out.println("ParentProcessId\t"			+info.ParentProcessId);
         System.out.println("==============================");
         
-        PEB peb = new PEB();
-        k32.ReadProcessMemory(p.getPointer(), info.PebBaseAddress, peb.getPointer(), peb.size(), ret);
-        peb.read();
-		System.out.println("InheritedAddressSpace\t"+peb.InheritedAddressSpace);
-		System.out.println("ReadImageFileExecOptions\t"+peb.ReadImageFileExecOptions);
-        System.out.println("BeingDebugged\t"+peb.BeingDebugged);
-        System.out.println("Spare\t"+peb.Spare);
-        System.out.println("Mutant\t"+peb.Mutant);
-        System.out.println("ImageBaseAddress\t"+peb.ImageBaseAddress);
-        System.out.println("Ldr\t"+peb.Ldr);
-        System.out.println("ProcessParameters\t"+peb.ProcessParameters);
-        System.out.println("PostProcessInitRoutine\t"+peb.PostProcessInitRoutine);
-        System.out.println("SessionId\t"+peb.SessionId);
-        System.out.println("------------------------------");
-        byte[] buffer1 = new byte[peb.size()];
-        peb.getPointer().read(0, buffer1, 0, buffer1.length);
-        System.out.println(new String(buffer1));
+        PEB peb = info.getPEB(p.getPointer());
+		System.out.println("InheritedAddressSpace\t\t"	+peb.InheritedAddressSpace);
+		System.out.println("ReadImageFileExecOptions\t"	+peb.ReadImageFileExecOptions);
+        System.out.println("BeingDebugged\t\t\t"		+peb.BeingDebugged);
+        System.out.println("Spare\t\t\t\t"				+peb.Spare);
+        System.out.println("Mutant\t\t\t\t"				+peb.Mutant);
+        System.out.println("ImageBaseAddress\t\t"		+peb.ImageBaseAddress);
+        System.out.println("Ldr\t\t\t\t"				+peb.Ldr);
+        System.out.println("ProcessParameters\t\t"		+peb.ProcessParameters);
+        System.out.println("PostProcessInitRoutine\t\t"	+peb.PostProcessInitRoutine);
+        System.out.println("SessionId\t\t\t"			+peb.SessionId);
         System.out.println("==============================");
         
-        RTL_USER_PROCESS_PARAMETERS pp = new RTL_USER_PROCESS_PARAMETERS();
-        k32.ReadProcessMemory(p.getPointer(), peb.ProcessParameters, pp.getPointer(), pp.size(), ret);
-        pp.read();
-        System.out.println("ImagePathName\t"+pp.ImagePathName);
-        System.out.println("CommandLine\t"+pp.CommandLine);        
-        System.out.println("------------------------------");
-        byte[] buffer2 = new byte[pp.size()];
-        pp.getPointer().read(0, buffer2, 0, buffer2.length);
-        System.out.println(new String(buffer2));
-        System.out.println("==============================");
-        
-        UNICODE_STRING img=new UNICODE_STRING();
-        k32.ReadProcessMemory(p.getPointer(), pp.ImagePathName, img.getPointer(), img.size(), ret);
-        img.read();
-        System.out.println("ImagePathName\t"+img.Length);
-        System.out.println("ImagePathName\t"+img.MaximumLength);
-        System.out.println("ImagePathName\t"+img.Buffer);
-        System.out.println("------------------------------");
-        byte[] buffer3 = new byte[img.size()];
-        img.getPointer().read(0, buffer3, 0, buffer3.length);
-        System.out.println(new String(buffer3));
-        System.out.println("==============================");
-        
-        UNICODE_STRING cmd=new UNICODE_STRING();
-        k32.ReadProcessMemory(p.getPointer(), pp.CommandLine, cmd.getPointer(), cmd.size(), ret);
-        cmd.read();
-        System.out.println("CommandLine\t"+cmd.Length);
-        System.out.println("CommandLine\t"+cmd.MaximumLength);
-        System.out.println("CommandLine\t"+cmd);
-        System.out.println("------------------------------");
-        byte[] buffer4 = new byte[cmd.size()];
-        cmd.getPointer().read(0, buffer4, 0, buffer4.length);
-        System.out.println(new String(buffer4));
-        System.out.println("==============================");
-
-//        
-//
-//        int[] p1 = new int[1];
-//        peb.getPointer().read(4, p1, 0, 1);
-//        System.out.println(p1[0]);
-        
-
-        
-        
-
+        RTL_USER_PROCESS_PARAMETERS pp = peb.getProcessParameters();       
+        System.out.println("CurrentDirectoryPath\t"		+pp.getCurrentDirectoryPath());
+        System.out.println("DllPath\t\t\t"				+pp.getDllPath());
+        System.out.println("ImagePathName\t\t"			+pp.getImagePathName());
+        System.out.println("getCommandLine\t\t"			+pp.getCommandLine());
+        System.out.println("WindowTitle\t\t"			+pp.getWindowTitle());
+        System.out.println("DesktopName\t\t"			+pp.getDesktopName());
+        System.out.println("ShellInfo\t\t"				+pp.getShellInfo());
+        System.out.println("RuntimeData\t\t"			+pp.getRuntimeData());
 
         
 //		String filename=p.getProcessImageFileName();

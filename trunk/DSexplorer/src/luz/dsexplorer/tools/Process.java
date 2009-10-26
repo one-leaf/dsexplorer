@@ -5,7 +5,10 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import luz.dsexplorer.interfaces.Ntdll;
 import luz.dsexplorer.interfaces.Shell32;
+import luz.dsexplorer.interfaces.Ntdll.PEB;
+import luz.dsexplorer.interfaces.Ntdll.PROCESS_BASIC_INFORMATION;
 
 import com.sun.jna.Pointer;
 
@@ -20,6 +23,7 @@ public class Process {
 	private Kernel32Tools k32 = Kernel32Tools.getInstance();
 	private PsapiTools psapi = PsapiTools.getInstance();
 	private Shell32 s32 = Shell32.INSTANCE;
+	final Ntdll nt = Ntdll.INSTANCE;
 	private User32Tools u32 =User32Tools.getInstance();
 	private List<Pointer> hWnds = new LinkedList<Pointer>();
 	
@@ -112,7 +116,6 @@ public class Process {
 	}
 	
 	private ImageIcon iconCache=null;
-	
 	public ImageIcon getIcon(){
 		if (iconCache!=null)
 			return iconCache;
@@ -144,6 +147,23 @@ public class Process {
         else
         	iconCache=new ImageIcon();
         return iconCache;        
+	}
+	
+	private PROCESS_BASIC_INFORMATION infoCache=null;
+	public PROCESS_BASIC_INFORMATION getPROCESS_BASIC_INFORMATION(){
+		if (infoCache!=null)
+			return infoCache;
+		infoCache = new PROCESS_BASIC_INFORMATION();
+		nt.NtQueryInformationProcess(getPointer(), Ntdll.ProcessBasicInformation, infoCache, infoCache.size(), null);
+		return infoCache;
+	}
+	
+	private PEB pebCache=null;
+	public PEB getPEB() throws Exception{
+		if (pebCache!=null)
+			return pebCache;
+		pebCache=getPROCESS_BASIC_INFORMATION().getPEB(getPointer());
+		return pebCache;
 	}
 	
 	//Setter
