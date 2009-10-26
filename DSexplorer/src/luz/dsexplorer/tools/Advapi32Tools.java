@@ -1,12 +1,12 @@
 package luz.dsexplorer.tools;
 
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.LongByReference;
-
 import luz.dsexplorer.interfaces.Advapi32;
 import luz.dsexplorer.interfaces.Kernel32;
+import luz.dsexplorer.interfaces.Advapi32.LUID;
 import luz.dsexplorer.interfaces.Advapi32.TOKEN_PRIVILEGES;
+
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.PointerByReference;
 
 public class Advapi32Tools {
 	private static Advapi32Tools INSTANCE=null;
@@ -50,29 +50,31 @@ public class Advapi32Tools {
 	}
 	
 	public void enableDebugPrivilege(Pointer hProcess) throws Exception{
-        IntByReference token = new IntByReference();
-        boolean success = a32.OpenProcessToken(hProcess, TOKEN_QUERY|TOKEN_ADJUST_PRIVILEGES, token);
+        PointerByReference hToken = new PointerByReference();
+        boolean success = a32.OpenProcessToken(hProcess, TOKEN_QUERY|TOKEN_ADJUST_PRIVILEGES, hToken);
     	if (!success){
     		int err=k32.GetLastError();
             throw new Exception("OpenProcessToken failed. Error: "+err);
     	}
         
-        LongByReference luid = new LongByReference();
+        LUID luid = new LUID();
         success = a32.LookupPrivilegeValueA(null, SE_DEBUG_NAME, luid);
     	if (!success){
     		int err=k32.GetLastError();
             throw new Exception("LookupPrivilegeValueA failed. Error: "+err);
+    	
     	}
         
         TOKEN_PRIVILEGES tkp = new TOKEN_PRIVILEGES(1);
-        tkp.Privileges[0].Luid=luid.getValue();
+        tkp.Privileges[0].Luid=luid;
         tkp.Privileges[0].Attributes=SE_PRIVILEGE_ENABLED;
-        Pointer hToken=Pointer.createConstant(token.getValue());
-        success = a32.AdjustTokenPrivileges(hToken, false, tkp, 0, null, null);
+        success = a32.AdjustTokenPrivileges(hToken.getValue(), false, tkp, 0, null, null);
     	if (!success){
     		int err=k32.GetLastError();
             throw new Exception("AdjustTokenPrivileges failed. Error: "+err);
     	}
+    	
+    	k32.CloseHandle(hToken.getValue());
 	}
     
 }

@@ -74,8 +74,8 @@ public class Kernel32Tools {
         return process;
     }
 	
-	public void ReadProcessMemory(Pointer hProcess, int inBaseAddress, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Exception{
-        boolean success = k32.ReadProcessMemory(hProcess, inBaseAddress, outputBuffer, nSize, outNumberOfBytesRead);
+	public void ReadProcessMemory(Pointer hProcess, Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Exception{
+        boolean success = k32.ReadProcessMemory(hProcess, pointer, outputBuffer, nSize, outNumberOfBytesRead);
     	if (!success){
     		int err=k32.GetLastError();
     		throw new Exception("readProcessMemory failed. Error: "+err);
