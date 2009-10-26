@@ -1,6 +1,7 @@
 package luz.dsexplorer.interfaces;
 
 import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
@@ -11,7 +12,7 @@ public interface Ntdll extends StdCallLibrary{
 
 	public static class PROCESS_BASIC_INFORMATION extends Structure {
 		public int ExitStatus;
-		public int PebBaseAddress;
+		public Pointer PebBaseAddress;
 		public int AffinityMask;
 		public int BasePriority;
 		public int UniqueProcessId;
@@ -30,13 +31,13 @@ public interface Ntdll extends StdCallLibrary{
 		public Pointer Mutant;
 		public Pointer ImageBaseAddress;
 		public Pointer Ldr;
-		public RTL_USER_PROCESS_PARAMETERS ProcessParameters=new RTL_USER_PROCESS_PARAMETERS();
+		public Pointer ProcessParameters;		//RTL_USER_PROCESS_PARAMETERS
 		public byte[] Reserved4=new byte[104];
-		public byte[] Reserved5=new byte[52];
+		public int[]  Reserved5=new int[52];
 		public Pointer PostProcessInitRoutine;
 		public byte[] Reserved6=new byte[128];
-		public byte[] Reserved7=new byte[1];
-		public int SessionId;
+		public int[]  Reserved7=new int[1];
+		public NativeLong SessionId;
 	}
 	
 	/*
@@ -45,15 +46,22 @@ public interface Ntdll extends StdCallLibrary{
 	 */
 	public static class RTL_USER_PROCESS_PARAMETERS extends Structure {
 		public byte[] Reserved1=new byte[16];
-		public byte[] Reserved2=new byte[10];
-		public UNICODE_STRING ImagePathName=new UNICODE_STRING();
-		public UNICODE_STRING CommandLine=new UNICODE_STRING();
+		public int[] Reserved2=new int[10];
+		public Pointer ImagePathName;
+		public Pointer CommandLine;
 	}
 	
+	/*
+	 * http://msdn.microsoft.com/en-us/library/aa380518(VS.85).aspx
+	 */
 	public static class UNICODE_STRING extends Structure {
 		public short Length;
 		public short MaximumLength;
-		public byte[] Buffer=new byte[256];
+		public char[] Buffer=new char[256];
+		
+		public String toString(){
+			return new String(Buffer);
+		}
 	}
 	
 	

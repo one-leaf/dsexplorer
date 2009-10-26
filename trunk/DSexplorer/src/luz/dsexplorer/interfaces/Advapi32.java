@@ -1,10 +1,11 @@
 package luz.dsexplorer.interfaces;
 
 import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.LongByReference;
+import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.win32.StdCallLibrary;
 
 public interface Advapi32 extends StdCallLibrary{
@@ -13,12 +14,12 @@ public interface Advapi32 extends StdCallLibrary{
 	/*
 	 * http://msdn.microsoft.com/en-us/library/aa379295(VS.85).aspx
 	 */
-	boolean OpenProcessToken(Pointer ProcessHandle,int DesiredAccess, IntByReference TokenHandle);
+	boolean OpenProcessToken(Pointer ProcessHandle,int DesiredAccess, PointerByReference TokenHandle);
 
 	/*
 	 * http://msdn.microsoft.com/en-us/library/aa379180(VS.85).aspx
 	 */
-	boolean LookupPrivilegeValueA(byte[] lpSystemName, String lpName, LongByReference lpLuid);
+	boolean LookupPrivilegeValueA(byte[] lpSystemName, String lpName, LUID lpLuid);
 
 	public static class TOKEN_PRIVILEGES extends Structure {
 		public int PrivilegeCount;
@@ -29,13 +30,17 @@ public interface Advapi32 extends StdCallLibrary{
 			Privileges=new LUID_AND_ATTRIBUTES[c];
 			for (int i = 0; i < Privileges.length; i++)
 				Privileges[i]=new LUID_AND_ATTRIBUTES();
-		}
-		
+		}		
 	}
 	
 	public static class LUID_AND_ATTRIBUTES extends Structure {
-		public long Luid;
+		public LUID Luid;
 		public int Attributes;
+	}
+	
+	public static class LUID extends Structure {
+		public int LowPart; 
+		public NativeLong HighPart; 
 	}
 	
 	/*
