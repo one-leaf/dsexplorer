@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.naming.spi.DirStateFactory.Result;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -21,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import luz.dsexplorer.gui.listener.MemorySearchListener;
+import luz.dsexplorer.objects.Result.Type;
 
 public class MemorySearch extends javax.swing.JPanel {
 	private static final long serialVersionUID = 2361607017186276542L;
@@ -110,9 +112,9 @@ public class MemorySearch extends javax.swing.JPanel {
 				jLabel1.setText("Scan Tye");
 			}
 			{
+				
 				ComboBoxModel cbValueModel = 
-					new DefaultComboBoxModel(
-							new String[] { "2 Bytes", "4 Bytes" });
+					new DefaultComboBoxModel(Type.values());
 				cbValue = new JComboBox();
 				cbValue.setModel(cbValueModel);
 			}
@@ -125,7 +127,7 @@ public class MemorySearch extends javax.swing.JPanel {
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				    .addComponent(btnNext, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(btnFirst, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				    .addComponent(txtSearch, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblValue, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -137,11 +139,10 @@ public class MemorySearch extends javax.swing.JPanel {
 				.addGroup(thisLayout.createParallelGroup()
 				    .addComponent(cbValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				        .addGap(8)
 				        .addComponent(jLabel2, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addComponent(jScrollPane1, 0, 121, Short.MAX_VALUE)
-				.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addComponent(btnAdd, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addContainerGap());
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
@@ -154,18 +155,18 @@ public class MemorySearch extends javax.swing.JPanel {
 				            .addComponent(lblValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
 				            .addComponent(btnFirst, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
 				            .addComponent(btnAdd, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
-				        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				        .addGroup(thisLayout.createParallelGroup()
 				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				                .addComponent(cbValue, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                .addGap(0, 37, Short.MAX_VALUE))
+				                .addGap(0, 0, Short.MAX_VALUE))
 				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				                .addComponent(cbType, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                .addGap(0, 37, Short.MAX_VALUE))
+				                .addGap(0, 0, Short.MAX_VALUE))
 				            .addComponent(txtSearch, GroupLayout.Alignment.LEADING, 0, 138, Short.MAX_VALUE)
 				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				                .addComponent(btnNext, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				                .addGap(0, 63, Short.MAX_VALUE))))
+				                .addGap(0, 0, Short.MAX_VALUE))))
 				    .addComponent(jScrollPane1, GroupLayout.Alignment.LEADING, 0, 223, Short.MAX_VALUE))
 				.addContainerGap());
 		} catch (Exception e) {
