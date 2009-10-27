@@ -1,35 +1,16 @@
 package test;
 
-import java.awt.FlowLayout;
-import java.awt.image.BufferedImage;
-import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-
 import luz.dsexplorer.objects.Process;
 import luz.dsexplorer.objects.ProcessList;
-import luz.dsexplorer.winapi.interfaces.Advapi32;
-import luz.dsexplorer.winapi.interfaces.Ntdll;
 import luz.dsexplorer.winapi.interfaces.Shell32;
-import luz.dsexplorer.winapi.interfaces.Advapi32.TOKEN_PRIVILEGES;
 import luz.dsexplorer.winapi.interfaces.Ntdll.PEB;
 import luz.dsexplorer.winapi.interfaces.Ntdll.PROCESS_BASIC_INFORMATION;
 import luz.dsexplorer.winapi.interfaces.Ntdll.RTL_USER_PROCESS_PARAMETERS;
-import luz.dsexplorer.winapi.interfaces.Ntdll.UNICODE_STRING;
 import luz.dsexplorer.winapi.tools.Advapi32Tools;
 import luz.dsexplorer.winapi.tools.Kernel32Tools;
 import luz.dsexplorer.winapi.tools.NtdllTools;
 import luz.dsexplorer.winapi.tools.PsapiTools;
 import luz.dsexplorer.winapi.tools.User32Tools;
-
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-import com.sun.jna.Structure;
-import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.LongByReference;
 
 
 

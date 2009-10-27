@@ -2,32 +2,21 @@ package luz.dsexplorer.objects;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-
-import com.sun.jna.Pointer;
-
 public class Result extends DefaultMutableTreeNode{
 	private static final long serialVersionUID = 4163723615095260358L;
-	private Pointer pointer;
+	private Long pointer;
 	private boolean areChildrenDefined=false;
 	
-	public Result(Pointer pointer){
+	public Result(Long pointer){
 		this.pointer=pointer;
 	}
 	
-	public Result(long pointer){
-		this.pointer=Pointer.createConstant(pointer);
-	}
-	
-	public Pointer getPointer(){
+	public long getPointer(){
 		return pointer;
 	}
 	
-	public void setPointer(Pointer pointer){
+	public void setPointer(Long pointer){
 		this.pointer=pointer;
-	}
-	
-	public void setPointer(long pointer){
-		this.pointer=Pointer.createConstant(pointer);
 	}
 	
 	////////////////////////////////////////
