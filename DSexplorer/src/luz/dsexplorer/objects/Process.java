@@ -23,11 +23,11 @@ public class Process {
 	private int th32ParentProcessID;
 	private int pcPriClassBase;
 	private Pointer handle =null;
-	private Kernel32Tools k32 = Kernel32Tools.getInstance();
-	private PsapiTools psapi = PsapiTools.getInstance();
-	private Shell32Tools s32 = Shell32Tools.getInstance();
-	final NtdllTools nt = NtdllTools.getInstance();
-	private User32Tools u32 =User32Tools.getInstance();
+	private Kernel32Tools k32   = Kernel32Tools.getInstance();
+	private PsapiTools    psapi = PsapiTools   .getInstance();
+	private Shell32Tools  s32   = Shell32Tools .getInstance();
+	private NtdllTools    nt    = NtdllTools   .getInstance();
+	private User32Tools   u32   = User32Tools  .getInstance();
 	private List<Pointer> hWnds = new LinkedList<Pointer>();
 	
 	public Process(int pid, String szExeFile){

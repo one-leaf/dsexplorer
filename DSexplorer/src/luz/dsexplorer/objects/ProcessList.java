@@ -19,7 +19,7 @@ public class ProcessList implements Iterable<Process> {
 	private List        <Process> list= new LinkedList      <Process>();
 	
 	private Kernel32Tools k32 = Kernel32Tools.getInstance(); 
-	private User32Tools u32 =User32Tools.getInstance();
+	private User32Tools   u32 = User32Tools  .getInstance();
 	
 	
 	public void add(Process p){

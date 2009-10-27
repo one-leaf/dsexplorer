@@ -21,6 +21,7 @@ import javax.swing.event.TreeSelectionListener;
 
 import luz.dsexplorer.gui.listener.ProcessDialogListener;
 import luz.dsexplorer.objects.Process;
+import luz.dsexplorer.objects.ResultList;
 
 
 
@@ -83,7 +84,6 @@ public class MainWindow extends javax.swing.JFrame {
 		pd.addListener(new ProcessDialogListener(){
 			@Override
 			public void okPerformed(Process p) {
-				System.out.println(p.getModuleFileNameExA());
 				tree.setProcess(p);
 			}
 			
@@ -106,15 +106,14 @@ public class MainWindow extends javax.swing.JFrame {
 				{
 					jScrollPane1 = new JScrollPane();
 					jSplitPane1.add(jScrollPane1, JSplitPane.LEFT);
-					jScrollPane1.setPreferredSize(new java.awt.Dimension(179, 381));
+					jScrollPane1.setPreferredSize(new Dimension(100, 350));
+					jScrollPane1.setMinimumSize(new Dimension(100, 350));
 					{
 						tree = new ProcessTree();
 						jScrollPane1.setViewportView(tree);
 						tree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
-							@Override
 							public void valueChanged(TreeSelectionEvent evt) {
-								// TODO Auto-generated method stub
-								System.out.println("Tree selection: "+evt.getPath().getLastPathComponent());
+								treeSelectionEvent(evt);							
 							}
 						});
 					}
@@ -122,7 +121,10 @@ public class MainWindow extends javax.swing.JFrame {
 				{
 					jPanel1 = new JPanel();
 					jSplitPane1.add(jPanel1, JSplitPane.RIGHT);
-					jPanel1.setPreferredSize(new Dimension(236, 381));
+					BorderLayout jPanel1Layout = new BorderLayout();
+					jPanel1.setLayout(jPanel1Layout);
+					jPanel1.setPreferredSize(new Dimension(250, 350));
+					jPanel1.setMinimumSize(new Dimension(250, 350));
 				}
 			}
 			{
@@ -194,7 +196,6 @@ public class MainWindow extends javax.swing.JFrame {
 						miOpenProcess = new JMenuItem();
 						mProcess.add(miOpenProcess);
 						miOpenProcess.setText("Open Process...");
-						miOpenProcess.setBounds(-60, 19, 78, 19);
 						miOpenProcess.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent evt) {
 								miOpenProcessActionPerformed();
@@ -230,6 +231,17 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 	}
 	
+	private MemorySearch ms=new MemorySearch();
+	private void treeSelectionEvent(TreeSelectionEvent evt) {
+		Object node=evt.getPath().getLastPathComponent();
+		System.out.println("Tree selection: "+node);
+		if (node instanceof ResultList){
+			jPanel1.removeAll();
+			jPanel1.add(ms, BorderLayout.CENTER);
+			jPanel1.validate();			
+		}		
+	}
+
 	private void miOpenProcessActionPerformed() {
 		pd.refresh();
 		pd.setVisible(true);
