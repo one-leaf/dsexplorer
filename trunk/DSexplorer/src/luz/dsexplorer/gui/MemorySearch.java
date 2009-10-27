@@ -1,24 +1,29 @@
 package luz.dsexplorer.gui;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-
-import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
+import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
+import luz.dsexplorer.gui.listener.MemorySearchListener;
 
 public class MemorySearch extends javax.swing.JPanel {
+	private static final long serialVersionUID = 2361607017186276542L;
 	private JTextField txtSearch;
 	private JComboBox cbType;
 	private JLabel jLabel2;
@@ -30,6 +35,7 @@ public class MemorySearch extends javax.swing.JPanel {
 	private JTable tblResults;
 	private JButton btnNext;
 	private JButton btnFirst;
+	private enum Action{FirstSeach, NextSearch, Add}
 
 	/**
 	* Auto-generated main method to display this 
@@ -88,6 +94,12 @@ public class MemorySearch extends javax.swing.JPanel {
 			{
 				btnAdd = new JButton();
 				btnAdd.setText("<- Add");
+				btnAdd.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						//TODO add value
+						fireActionPerformed(Action.Add, null);
+					}
+				});
 			}
 			{
 				lblValue = new JLabel();
@@ -160,5 +172,40 @@ public class MemorySearch extends javax.swing.JPanel {
 			e.printStackTrace();
 		}
 	}
+	
+	///////////////////////////////////////////////////////////
+	
+	public void addListener(MemorySearchListener l) {
+        listenerList.add(MemorySearchListener.class, l);
+    }
+    
+    public void removeListener(MemorySearchListener l) {
+	    listenerList.remove(MemorySearchListener.class, l);
+    }
+    
+    public MemorySearchListener[] getListeners() {
+        return (MemorySearchListener[])(listenerList.getListeners(MemorySearchListener.class));
+    }
+    
+    protected void fireActionPerformed(Action action, Object o) {
+        Object[] listeners = listenerList.getListenerList(); // Guaranteed to return a non-null array
+        // Process the listeners last to first, notifying those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==MemorySearchListener.class) {
+            	switch (action){
+	            	case FirstSeach:
+	            		((MemorySearchListener)listeners[i+1]).FirstSearchPerformed();
+	            		break;
+	            	case NextSearch:
+	            		((MemorySearchListener)listeners[i+1]).NextSearchPerformed();
+	            		break;
+	            	case Add:
+	            		//TODO table getSelected
+	            		((MemorySearchListener)listeners[i+1]).AddPerformed(0L);
+	            		break;
+            	}
+            }          
+        }
+    }
 
 }

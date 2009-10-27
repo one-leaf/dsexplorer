@@ -19,8 +19,10 @@ import javax.swing.WindowConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
+import luz.dsexplorer.gui.listener.MemorySearchListener;
 import luz.dsexplorer.gui.listener.ProcessDialogListener;
 import luz.dsexplorer.objects.Process;
+import luz.dsexplorer.objects.Result;
 import luz.dsexplorer.objects.ResultList;
 
 
@@ -61,6 +63,8 @@ public class MainWindow extends javax.swing.JFrame {
 	private ProcessTree tree;
 	private JPanel jPanel1;
 	private ProcessDialog pd;
+	private MemorySearch ms;
+	private DSEditor dse;
 	
 	/**
 	* Auto-generated main method to display this JFrame
@@ -92,6 +96,28 @@ public class MainWindow extends javax.swing.JFrame {
 				// TODO Auto-generated method stub
 			}
 		});
+		
+		ms=new MemorySearch();
+		ms.addListener(new MemorySearchListener() {
+			@Override
+			public void NextSearchPerformed() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void FirstSearchPerformed() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void AddPerformed(Long pointer) {
+				tree.addPointer(pointer);				
+			}
+		});
+		
+		dse=new DSEditor();
 	}
 	
 	private void initGUI() {
@@ -106,7 +132,7 @@ public class MainWindow extends javax.swing.JFrame {
 				{
 					jScrollPane1 = new JScrollPane();
 					jSplitPane1.add(jScrollPane1, JSplitPane.LEFT);
-					jScrollPane1.setPreferredSize(new Dimension(100, 350));
+					jScrollPane1.setPreferredSize(new Dimension(150, 350));
 					jScrollPane1.setMinimumSize(new Dimension(100, 350));
 					{
 						tree = new ProcessTree();
@@ -123,7 +149,7 @@ public class MainWindow extends javax.swing.JFrame {
 					jSplitPane1.add(jPanel1, JSplitPane.RIGHT);
 					BorderLayout jPanel1Layout = new BorderLayout();
 					jPanel1.setLayout(jPanel1Layout);
-					jPanel1.setPreferredSize(new Dimension(250, 350));
+					jPanel1.setPreferredSize(new Dimension(300, 450));
 					jPanel1.setMinimumSize(new Dimension(250, 350));
 				}
 			}
@@ -231,15 +257,21 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 	}
 	
-	private MemorySearch ms=new MemorySearch();
+	
 	private void treeSelectionEvent(TreeSelectionEvent evt) {
 		Object node=evt.getPath().getLastPathComponent();
-		System.out.println("Tree selection: "+node);
 		if (node instanceof ResultList){
 			jPanel1.removeAll();
 			jPanel1.add(ms, BorderLayout.CENTER);
+			jPanel1.repaint();
 			jPanel1.validate();			
-		}		
+		}
+		if (node instanceof Result){
+			jPanel1.removeAll();
+			jPanel1.add(dse, BorderLayout.CENTER);
+			jPanel1.repaint();
+			jPanel1.validate();			
+		}	
 	}
 
 	private void miOpenProcessActionPerformed() {
