@@ -8,20 +8,21 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import luz.dsexplorer.interfaces.Advapi32;
-import luz.dsexplorer.interfaces.Ntdll;
-import luz.dsexplorer.interfaces.Shell32;
-import luz.dsexplorer.interfaces.Advapi32.TOKEN_PRIVILEGES;
-import luz.dsexplorer.interfaces.Ntdll.PEB;
-import luz.dsexplorer.interfaces.Ntdll.PROCESS_BASIC_INFORMATION;
-import luz.dsexplorer.interfaces.Ntdll.RTL_USER_PROCESS_PARAMETERS;
-import luz.dsexplorer.interfaces.Ntdll.UNICODE_STRING;
-import luz.dsexplorer.tools.Advapi32Tools;
-import luz.dsexplorer.tools.Kernel32Tools;
-import luz.dsexplorer.tools.Process;
-import luz.dsexplorer.tools.ProcessList;
-import luz.dsexplorer.tools.PsapiTools;
-import luz.dsexplorer.tools.User32Tools;
+import luz.dsexplorer.objects.Process;
+import luz.dsexplorer.objects.ProcessList;
+import luz.dsexplorer.winapi.interfaces.Advapi32;
+import luz.dsexplorer.winapi.interfaces.Ntdll;
+import luz.dsexplorer.winapi.interfaces.Shell32;
+import luz.dsexplorer.winapi.interfaces.Advapi32.TOKEN_PRIVILEGES;
+import luz.dsexplorer.winapi.interfaces.Ntdll.PEB;
+import luz.dsexplorer.winapi.interfaces.Ntdll.PROCESS_BASIC_INFORMATION;
+import luz.dsexplorer.winapi.interfaces.Ntdll.RTL_USER_PROCESS_PARAMETERS;
+import luz.dsexplorer.winapi.interfaces.Ntdll.UNICODE_STRING;
+import luz.dsexplorer.winapi.tools.Advapi32Tools;
+import luz.dsexplorer.winapi.tools.Kernel32Tools;
+import luz.dsexplorer.winapi.tools.NtdllTools;
+import luz.dsexplorer.winapi.tools.PsapiTools;
+import luz.dsexplorer.winapi.tools.User32Tools;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
@@ -40,12 +41,12 @@ public class Test {
         final PsapiTools psapi = PsapiTools.getInstance();
         final User32Tools u32 =User32Tools.getInstance();
         final Shell32 s32 = Shell32.INSTANCE;
-        final Ntdll nt = Ntdll.INSTANCE;
+        final NtdllTools nt = NtdllTools.getInstance();
         final Advapi32Tools a32 = Advapi32Tools.getInstance();
         
         a32.enableDebugPrivilege(k32.GetCurrentProcess());
         
-        int pid=5384;
+        int pid=864;
         Process p=null;
         ProcessList list = k32.getProcessList();
         list.refreshWindows();
@@ -58,8 +59,7 @@ public class Test {
         
 
         
-        PROCESS_BASIC_INFORMATION info = new PROCESS_BASIC_INFORMATION();
-        nt.NtQueryInformationProcess(p.getPointer(), Ntdll.ProcessBasicInformation, info, info.size(), null);
+        PROCESS_BASIC_INFORMATION info = nt.NtQueryInformationProcess(p.getPointer(), NtdllTools.ProcessBasicInformation);
         System.out.println("ExitStatus\t"				+info.ExitStatus);
         System.out.println("PebBaseAddress\t"			+info.PebBaseAddress);
         System.out.println("AffinityMask\t"				+info.AffinityMask);
@@ -68,7 +68,7 @@ public class Test {
         System.out.println("ParentProcessId\t"			+info.ParentProcessId);
         System.out.println("==============================");
         
-        PEB peb = info.getPEB(p.getPointer());
+        PEB peb = info.getPEB();
 		System.out.println("InheritedAddressSpace\t\t"	+peb.InheritedAddressSpace);
 		System.out.println("ReadImageFileExecOptions\t"	+peb.ReadImageFileExecOptions);
         System.out.println("BeingDebugged\t\t\t"		+peb.BeingDebugged);

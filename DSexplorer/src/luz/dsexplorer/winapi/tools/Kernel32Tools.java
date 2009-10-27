@@ -1,8 +1,10 @@
-package luz.dsexplorer.tools;
+package luz.dsexplorer.winapi.tools;
 
-import luz.dsexplorer.interfaces.Kernel32;
-import luz.dsexplorer.interfaces.Kernel32.ENUMRESNAMEPROC;
-import luz.dsexplorer.interfaces.Kernel32.LPPROCESSENTRY32;
+import luz.dsexplorer.objects.Process;
+import luz.dsexplorer.objects.ProcessList;
+import luz.dsexplorer.winapi.interfaces.Kernel32;
+import luz.dsexplorer.winapi.interfaces.Kernel32.ENUMRESNAMEPROC;
+import luz.dsexplorer.winapi.interfaces.Kernel32.LPPROCESSENTRY32;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
@@ -11,6 +13,15 @@ public class Kernel32Tools {
 	private static Kernel32Tools INSTANCE=null;
 	private static Kernel32 k32 = Kernel32.INSTANCE;
 	
+	private Kernel32Tools(){}
+	
+	public static Kernel32Tools getInstance(){
+		if (INSTANCE==null)
+			INSTANCE=new Kernel32Tools();
+		return INSTANCE;
+	}
+	
+	////////////////////////////////////////////////////////////////////////
 	public static final int PROCESS_TERMINATE					=0x00000001;
 	public static final int PROCESS_CREATE_THREAD				=0x00000002;
 	public static final int PROCESS_VM_OPERATION				=0x00000008;
@@ -44,13 +55,7 @@ public class Kernel32Tools {
 	
 	////////////////////////////////////////////////////////////////////////
 	
-	private Kernel32Tools(){}
-	
-	public static Kernel32Tools getInstance(){
-		if (INSTANCE==null)
-			INSTANCE=new Kernel32Tools();
-		return INSTANCE;
-	}
+
 	
 	public int GetCurrentProcessId(){
 		return k32.GetCurrentProcessId();
@@ -107,9 +112,6 @@ public class Kernel32Tools {
         }while(k32.Process32Next(hProcessSnap, pe32));
 		return list;		
 	}
-
-
-    
     
     
     

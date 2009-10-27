@@ -1,14 +1,17 @@
-package luz.dsexplorer.tools;
+package luz.dsexplorer.objects;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import luz.dsexplorer.interfaces.Ntdll;
-import luz.dsexplorer.interfaces.Shell32;
-import luz.dsexplorer.interfaces.Ntdll.PEB;
-import luz.dsexplorer.interfaces.Ntdll.PROCESS_BASIC_INFORMATION;
+import luz.dsexplorer.winapi.interfaces.Ntdll.PEB;
+import luz.dsexplorer.winapi.interfaces.Ntdll.PROCESS_BASIC_INFORMATION;
+import luz.dsexplorer.winapi.tools.Kernel32Tools;
+import luz.dsexplorer.winapi.tools.NtdllTools;
+import luz.dsexplorer.winapi.tools.PsapiTools;
+import luz.dsexplorer.winapi.tools.Shell32Tools;
+import luz.dsexplorer.winapi.tools.User32Tools;
 
 import com.sun.jna.Pointer;
 
@@ -22,8 +25,8 @@ public class Process {
 	private Pointer handle =null;
 	private Kernel32Tools k32 = Kernel32Tools.getInstance();
 	private PsapiTools psapi = PsapiTools.getInstance();
-	private Shell32 s32 = Shell32.INSTANCE;
-	final Ntdll nt = Ntdll.INSTANCE;
+	private Shell32Tools s32 = Shell32Tools.getInstance();
+	final NtdllTools nt = NtdllTools.getInstance();
 	private User32Tools u32 =User32Tools.getInstance();
 	private List<Pointer> hWnds = new LinkedList<Pointer>();
 	
@@ -122,13 +125,9 @@ public class Process {
 		
 		Pointer hIcon = null;
 		
-        Pointer[] hIcons=new Pointer[1];
-        s32.ExtractIconExA(this.getModuleFileNameExA(), 0, null, hIcons, 1);
-        hIcon = hIcons[0];
-        
+        hIcon=s32.ExtractSmallIcon(this.getModuleFileNameExA(), 1);        
         if (hIcon==null){
-            s32.ExtractIconExA(this.getSzExeFile(), 0, null, hIcons, 1);
-            hIcon = hIcons[0];
+        	hIcon=s32.ExtractSmallIcon(this.getSzExeFile(), 1);
         }
         
         if (hIcon==null){      	
@@ -153,8 +152,7 @@ public class Process {
 	public PROCESS_BASIC_INFORMATION getPROCESS_BASIC_INFORMATION(){
 		if (infoCache!=null)
 			return infoCache;
-		infoCache = new PROCESS_BASIC_INFORMATION();
-		nt.NtQueryInformationProcess(getPointer(), Ntdll.ProcessBasicInformation, infoCache, infoCache.size(), null);
+		infoCache = nt.NtQueryInformationProcess(getPointer(), NtdllTools.ProcessBasicInformation);
 		return infoCache;
 	}
 	
@@ -162,7 +160,7 @@ public class Process {
 	public PEB getPEB() throws Exception{
 		if (pebCache!=null)
 			return pebCache;
-		pebCache=getPROCESS_BASIC_INFORMATION().getPEB(getPointer());
+		pebCache=getPROCESS_BASIC_INFORMATION().getPEB();
 		return pebCache;
 	}
 	

@@ -1,4 +1,4 @@
-package luz.dsexplorer.tools;
+package luz.dsexplorer.objects;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import luz.dsexplorer.winapi.tools.Kernel32Tools;
+import luz.dsexplorer.winapi.tools.User32Tools;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;

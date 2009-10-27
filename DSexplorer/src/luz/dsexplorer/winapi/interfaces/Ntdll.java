@@ -1,6 +1,6 @@
-package luz.dsexplorer.interfaces;
+package luz.dsexplorer.winapi.interfaces;
 
-import luz.dsexplorer.tools.Kernel32Tools;
+import luz.dsexplorer.winapi.tools.Kernel32Tools;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
@@ -21,8 +21,13 @@ public interface Ntdll extends StdCallLibrary{
 		public int BasePriority;
 		public int UniqueProcessId;
 		public int ParentProcessId;
+		
+		private Pointer process;
+		public PROCESS_BASIC_INFORMATION(Pointer process) {
+			this.process=process;
+		}
 
-		public PEB getPEB(Pointer process) throws Exception{
+		public PEB getPEB() throws Exception{
 			if (PebBaseAddress==null)
 				return null;
 	        PEB peb = new PEB(process);
@@ -180,10 +185,7 @@ public interface Ntdll extends StdCallLibrary{
 
 	
 	
-	public static final int ProcessBasicInformation=0;
-	public static final int ProcessDebugPort=7;
-	public static final int ProcessWow64Information=26;
-	public static final int ProcessImageFileName=27;
+
 	
 	
 	/*

@@ -1,4 +1,4 @@
-package luz.dsexplorer.interfaces;
+package luz.dsexplorer.winapi.interfaces;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;

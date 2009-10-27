@@ -1,6 +1,7 @@
-package luz.dsexplorer.tools;
+package luz.dsexplorer.objects;
 
-import luz.dsexplorer.interfaces.Psapi.LPMODULEINFO;
+import luz.dsexplorer.winapi.interfaces.Psapi.LPMODULEINFO;
+import luz.dsexplorer.winapi.tools.PsapiTools;
 
 import com.sun.jna.Pointer;
 
