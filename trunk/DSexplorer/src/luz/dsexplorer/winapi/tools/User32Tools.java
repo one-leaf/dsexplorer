@@ -1,27 +1,26 @@
-package luz.dsexplorer.tools;
+package luz.dsexplorer.winapi.tools;
 
 import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import luz.dsexplorer.interfaces.Gdi32;
-import luz.dsexplorer.interfaces.User32;
-import luz.dsexplorer.interfaces.Gdi32.BITMAPINFO;
-import luz.dsexplorer.interfaces.Gdi32.BITMAPINFOHEADER;
-import luz.dsexplorer.interfaces.User32.ICONINFO;
-import luz.dsexplorer.interfaces.User32.WNDENUMPROC;
+import luz.dsexplorer.objects.Process;
+import luz.dsexplorer.winapi.interfaces.Gdi32;
+import luz.dsexplorer.winapi.interfaces.User32;
+import luz.dsexplorer.winapi.interfaces.Gdi32.BITMAPINFO;
+import luz.dsexplorer.winapi.interfaces.Gdi32.BITMAPINFOHEADER;
+import luz.dsexplorer.winapi.interfaces.User32.ICONINFO;
+import luz.dsexplorer.winapi.interfaces.User32.WNDENUMPROC;
 
+import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 
 public class User32Tools {
 	private static User32Tools INSTANCE=null;
 	private static User32 u32 = User32.INSTANCE;
-	private static Kernel32Tools k32 = Kernel32Tools.getInstance();
 	private Gdi32 gdi32 = Gdi32.INSTANCE;
-	
-	////////////////////////////////////////////////////////////////////////
 	
 	private User32Tools(){}
 	
@@ -30,6 +29,8 @@ public class User32Tools {
 			INSTANCE=new User32Tools();
 		return INSTANCE;
 	}
+	
+	////////////////////////////////////////////////////////////////////////
 	
 	private class Container<A>{
 		A object=null;
@@ -106,10 +107,10 @@ public class User32Tools {
     }
     
     
-	public static final int GA_PARENT=1;
-	public static final int GA_ROOT=2;
-	public static final int GA_ROOTOWNER=3;
-    Pointer GetAncestor(Pointer hwnd, int gaFlags){
+	public static final int GA_PARENT		=1;
+	public static final int GA_ROOT		=2;
+	public static final int GA_ROOTOWNER	=3;
+    public Pointer GetAncestor(Pointer hwnd, int gaFlags){
         return u32.GetAncestor(hwnd, gaFlags);
     }
     
@@ -118,22 +119,22 @@ public class User32Tools {
 	}
 	
 	
-	public static final int WM_GETICON=0x7f;
+	public static final int WM_GETICON	=0x7f;
 	
-	public static final int ICON_SMALL=0;		//wParam
-	public static final int ICON_BIG=1;		//wParam
+	public static final int ICON_SMALL	=0;		//wParam
+	public static final int ICON_BIG		=1;		//wParam
     
 	public Pointer SendMessageA(Pointer hWnd,int Msg,int wParam,int lParam){
         return u32.SendMessageA(hWnd, Msg, wParam, lParam);
     }
     
-	public static final int GCL_HICON=-14;
-	public static final int GCL_HICONSM=-34;
+	public static final int GCL_HICON		=-14;
+	public static final int GCL_HICONSM	=-34;
 	
     public int GetClassLong(Pointer hWnd,int nIndex) throws Exception{
         int ret = u32.GetClassLongA(hWnd, nIndex);
     	if (ret==0){
-    		int err=k32.GetLastError();
+    		int err=Native.getLastError();
     		throw new Exception("GetClassLong failed. Error: "+err);
     	}
     	return ret;
@@ -162,12 +163,16 @@ public class User32Tools {
     }  
 
     
-    public static final int DI_MASK = 1;
-    public static final int DI_IMAGE = 2;
-    public static final int DI_NORMAL = 3;
-    public static final int DIB_RGB_COLORS=0;
-    public static final int BI_RGB = 0;
-    public static final int BI_BITFIELDS=3;
+    public static final int DI_MASK			= 1;
+    public static final int DI_IMAGE			= 2;
+    public static final int DI_NORMAL			= 3;
+    
+    public static final int DIB_RGB_COLORS	= 0;
+    
+    public static final int BI_RGB			= 0;
+    public static final int BI_RLE8			= 1;
+    public static final int BI_RLE4			= 2;    
+    public static final int BI_BITFIELDS		= 3;
 
     public BufferedImage getIcon(Pointer hIcon) {
     	int   width =16;

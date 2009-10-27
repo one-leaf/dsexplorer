@@ -5,8 +5,8 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 
-import luz.dsexplorer.tools.Process;
-import luz.dsexplorer.tools.ProcessList;
+import luz.dsexplorer.objects.Process;
+import luz.dsexplorer.objects.ProcessList;
 
 
 public class ProcessTable extends JTable{

@@ -20,7 +20,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import luz.dsexplorer.gui.listener.ProcessDialogListener;
-import luz.dsexplorer.tools.Process;
+import luz.dsexplorer.objects.Process;
 
 
 

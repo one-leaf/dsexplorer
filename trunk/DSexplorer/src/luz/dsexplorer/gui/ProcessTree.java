@@ -10,7 +10,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-import luz.dsexplorer.tools.Process;
+import luz.dsexplorer.objects.Process;
 
 public class ProcessTree extends JTree {
 	private static final long serialVersionUID = 8889377903469038055L;

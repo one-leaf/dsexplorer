@@ -1,11 +1,11 @@
-package luz.dsexplorer.tools;
+package luz.dsexplorer.winapi.tools;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import luz.dsexplorer.interfaces.Kernel32;
-import luz.dsexplorer.interfaces.Psapi;
-import luz.dsexplorer.interfaces.Psapi.LPMODULEINFO;
+import luz.dsexplorer.objects.Module;
+import luz.dsexplorer.winapi.interfaces.Psapi;
+import luz.dsexplorer.winapi.interfaces.Psapi.LPMODULEINFO;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -15,7 +15,6 @@ import com.sun.jna.ptr.IntByReference;
 public class PsapiTools {
 	private static PsapiTools  INSTANCE=null;
 	private static Psapi psapi = Psapi.INSTANCE;
-	private static Kernel32 k32 = Kernel32.INSTANCE;
 
 	private PsapiTools(){}
 	
@@ -33,7 +32,7 @@ public class PsapiTools {
 		IntByReference pBytesReturned = new IntByReference(); 
 		boolean success = psapi.EnumProcesses(pProcessIds, pProcessIds.length*Integer.SIZE/8, pBytesReturned); 
 		if (!success){
-    		int err=k32.GetLastError();
+			int err=Native.getLastError();
             throw new Exception("EnumProcesses failed. Error: "+err);
     	}
     	
@@ -51,7 +50,7 @@ public class PsapiTools {
 		IntByReference lpcbNeededs= new IntByReference();
 		boolean success = psapi.EnumProcessModules(hProcess, lphModule,lphModule.length, lpcbNeededs);
 		if (!success){
-    		int err=k32.GetLastError();
+			int err=Native.getLastError();
             throw new Exception("EnumProcessModules failed. Error: "+err);
     	}
 		for (int i = 0; i < lpcbNeededs.getValue()/4; i++) {
@@ -78,7 +77,7 @@ public class PsapiTools {
 		
 		boolean success = psapi.GetModuleInformation(hProcess, hModule, lpmodinfo, lpmodinfo.size());
 		if (!success){
-    		int err=k32.GetLastError();
+			int err=Native.getLastError();
             throw new Exception("GetModuleInformation failed. Error: "+err);
     	}
 		return lpmodinfo;

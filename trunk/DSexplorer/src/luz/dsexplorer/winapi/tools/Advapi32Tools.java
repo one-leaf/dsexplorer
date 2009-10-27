@@ -1,10 +1,11 @@
-package luz.dsexplorer.tools;
+package luz.dsexplorer.winapi.tools;
 
-import luz.dsexplorer.interfaces.Advapi32;
-import luz.dsexplorer.interfaces.Kernel32;
-import luz.dsexplorer.interfaces.Advapi32.LUID;
-import luz.dsexplorer.interfaces.Advapi32.TOKEN_PRIVILEGES;
+import luz.dsexplorer.winapi.interfaces.Advapi32;
+import luz.dsexplorer.winapi.interfaces.Kernel32;
+import luz.dsexplorer.winapi.interfaces.Advapi32.LUID;
+import luz.dsexplorer.winapi.interfaces.Advapi32.TOKEN_PRIVILEGES;
 
+import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
 
@@ -12,6 +13,14 @@ public class Advapi32Tools {
 	private static Advapi32Tools INSTANCE=null;
 	private static Advapi32 a32 = Advapi32.INSTANCE;
 	private static Kernel32 k32 = Kernel32.INSTANCE;
+	
+	private Advapi32Tools(){}
+	
+	public static Advapi32Tools getInstance(){
+		if (INSTANCE==null)
+			INSTANCE=new Advapi32Tools();
+		return INSTANCE;
+	}
 	
 	////////////////////////////////////////////////////////////////////////
 	
@@ -41,26 +50,20 @@ public class Advapi32Tools {
 
 	////////////////////////////////////////////////////////////////////////
 	
-	private Advapi32Tools(){}
-	
-	public static Advapi32Tools getInstance(){
-		if (INSTANCE==null)
-			INSTANCE=new Advapi32Tools();
-		return INSTANCE;
-	}
+
 	
 	public void enableDebugPrivilege(Pointer hProcess) throws Exception{
         PointerByReference hToken = new PointerByReference();
         boolean success = a32.OpenProcessToken(hProcess, TOKEN_QUERY|TOKEN_ADJUST_PRIVILEGES, hToken);
     	if (!success){
-    		int err=k32.GetLastError();
+    		int err=Native.getLastError();
             throw new Exception("OpenProcessToken failed. Error: "+err);
     	}
         
         LUID luid = new LUID();
         success = a32.LookupPrivilegeValueA(null, SE_DEBUG_NAME, luid);
     	if (!success){
-    		int err=k32.GetLastError();
+    		int err=Native.getLastError();
             throw new Exception("LookupPrivilegeValueA failed. Error: "+err);
     	
     	}
@@ -70,7 +73,7 @@ public class Advapi32Tools {
         tkp.Privileges[0].Attributes=SE_PRIVILEGE_ENABLED;
         success = a32.AdjustTokenPrivileges(hToken.getValue(), false, tkp, 0, null, null);
     	if (!success){
-    		int err=k32.GetLastError();
+    		int err=Native.getLastError();
             throw new Exception("AdjustTokenPrivileges failed. Error: "+err);
     	}
     	

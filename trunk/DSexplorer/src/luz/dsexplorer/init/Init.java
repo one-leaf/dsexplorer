@@ -8,8 +8,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import luz.dsexplorer.gui.MainWindow;
-import luz.dsexplorer.tools.Advapi32Tools;
-import luz.dsexplorer.tools.Kernel32Tools;
+import luz.dsexplorer.winapi.tools.Advapi32Tools;
+import luz.dsexplorer.winapi.tools.Kernel32Tools;
 
 public class Init {
 	private static final Log log = LogFactory.getLog(Init.class);
