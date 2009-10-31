@@ -47,4 +47,26 @@ public interface Psapi extends StdCallLibrary{
      */
     int GetProcessImageFileNameA(Pointer hProcess,byte[] lpImageFileName,int nSize);
     
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms684877(VS.85).aspx
+     */
+    public static class PPROCESS_MEMORY_COUNTERS extends Structure {
+    	public int cb;
+    	public int PageFaultCount;
+    	public int PeakWorkingSetSize;
+    	public int WorkingSetSize;
+    	public int QuotaPeakPagedPoolUsage;
+    	public int QuotaPagedPoolUsage;
+    	public int QuotaPeakNonPagedPoolUsage;
+    	public int QuotaNonPagedPoolUsage;
+    	public int PagefileUsage;
+    	public int PeakPagefileUsage;
+    }    
+    
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms683219(VS.85).aspx
+     */
+    boolean GetProcessMemoryInfo(Pointer Process, PPROCESS_MEMORY_COUNTERS ppsmemCounters,int cb);
+
+    
 }
