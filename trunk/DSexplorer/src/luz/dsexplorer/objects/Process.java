@@ -86,8 +86,7 @@ public class Process {
 	
 	public String getProcessImageFileName(){
 		 try {
-			 Pointer handle=getHandle();
-			return psapi.GetProcessImageFileNameA(handle);
+			return psapi.GetProcessImageFileNameA(getHandle());
 		} catch (Exception e) {
 			return "";
 		}
@@ -95,8 +94,7 @@ public class Process {
 
 	public String getModuleFileNameExA(){
 		 try {
-			 Pointer handle=getHandle();
-			return psapi.GetModuleFileNameExA(handle, null);
+			return psapi.GetModuleFileNameExA(getHandle(), null);
 		} catch (Exception e) {
 			return "";
 		}
@@ -104,8 +102,7 @@ public class Process {
 
 	public List<Module> getModules(){
 		try {
-			Pointer handle=getHandle();
-			return psapi.EnumProcessModules(handle);
+			return psapi.EnumProcessModules(getHandle());
 		} catch (Exception e) {
 			return new LinkedList<Module>();
 		}
@@ -137,6 +134,14 @@ public class Process {
 			return module.getSizeOfImage();
 		else
 			return 0;
+	}
+	
+	public int getMemUsage() {
+		try {
+			return psapi.GetProcessMemoryInfo(getHandle()).WorkingSetSize;
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 	
 	private ImageIcon iconCache=null;
@@ -174,8 +179,7 @@ public class Process {
 		if (infoCache!=null)
 			return infoCache;
 		try {
-			Pointer handle=getHandle();
-			infoCache = nt.NtQueryInformationProcess(handle, NtdllTools.ProcessBasicInformation);
+			infoCache = nt.NtQueryInformationProcess(getHandle(), NtdllTools.ProcessBasicInformation);
 		} catch (Exception e) {}
 		
 		return infoCache;
@@ -188,5 +192,6 @@ public class Process {
 		pebCache=getPROCESS_BASIC_INFORMATION().getPEB();
 		return pebCache;
 	}
+	
 	
 }

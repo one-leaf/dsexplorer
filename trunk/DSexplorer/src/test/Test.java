@@ -6,6 +6,7 @@ import luz.dsexplorer.winapi.interfaces.Shell32;
 import luz.dsexplorer.winapi.interfaces.Ntdll.PEB;
 import luz.dsexplorer.winapi.interfaces.Ntdll.PROCESS_BASIC_INFORMATION;
 import luz.dsexplorer.winapi.interfaces.Ntdll.RTL_USER_PROCESS_PARAMETERS;
+import luz.dsexplorer.winapi.interfaces.Psapi.PPROCESS_MEMORY_COUNTERS;
 import luz.dsexplorer.winapi.tools.Advapi32Tools;
 import luz.dsexplorer.winapi.tools.Kernel32Tools;
 import luz.dsexplorer.winapi.tools.NtdllTools;
@@ -27,7 +28,7 @@ public class Test {
         
         a32.enableDebugPrivilege(k32.GetCurrentProcess());
         
-        int pid=864;
+        int pid=3380;
         Process p=null;
         ProcessList list = k32.getProcessList();
         list.refreshWindows();
@@ -38,39 +39,43 @@ public class Test {
 			}
         }
         
+        
+        PPROCESS_MEMORY_COUNTERS px = psapi.GetProcessMemoryInfo(p.getHandle());
+        System.out.println(px.cb);
+        System.out.println(px.WorkingSetSize);
 
         
-        PROCESS_BASIC_INFORMATION info = nt.NtQueryInformationProcess(p.getHandle(), NtdllTools.ProcessBasicInformation);
-        System.out.println("ExitStatus\t"				+info.ExitStatus);
-        System.out.println("PebBaseAddress\t"			+info.PebBaseAddress);
-        System.out.println("AffinityMask\t"				+info.AffinityMask);
-        System.out.println("BasePriority\t"				+info.BasePriority);
-        System.out.println("UniqueProcessId\t"			+info.UniqueProcessId);
-        System.out.println("ParentProcessId\t"			+info.ParentProcessId);
-        System.out.println("==============================");
-        
-        PEB peb = info.getPEB();
-		System.out.println("InheritedAddressSpace\t\t"	+peb.InheritedAddressSpace);
-		System.out.println("ReadImageFileExecOptions\t"	+peb.ReadImageFileExecOptions);
-        System.out.println("BeingDebugged\t\t\t"		+peb.BeingDebugged);
-        System.out.println("Spare\t\t\t\t"				+peb.Spare);
-        System.out.println("Mutant\t\t\t\t"				+peb.Mutant);
-        System.out.println("ImageBaseAddress\t\t"		+peb.ImageBaseAddress);
-        System.out.println("Ldr\t\t\t\t"				+peb.Ldr);
-        System.out.println("ProcessParameters\t\t"		+peb.ProcessParameters);
-        System.out.println("PostProcessInitRoutine\t\t"	+peb.PostProcessInitRoutine);
-        System.out.println("SessionId\t\t\t"			+peb.SessionId);
-        System.out.println("==============================");
-        
-        RTL_USER_PROCESS_PARAMETERS pp = peb.getProcessParameters();       
-        System.out.println("CurrentDirectoryPath\t"		+pp.getCurrentDirectoryPath());
-        System.out.println("DllPath\t\t\t"				+pp.getDllPath());
-        System.out.println("ImagePathName\t\t"			+pp.getImagePathName());
-        System.out.println("getCommandLine\t\t"			+pp.getCommandLine());
-        System.out.println("WindowTitle\t\t"			+pp.getWindowTitle());
-        System.out.println("DesktopName\t\t"			+pp.getDesktopName());
-        System.out.println("ShellInfo\t\t"				+pp.getShellInfo());
-        System.out.println("RuntimeData\t\t"			+pp.getRuntimeData());
+//        PROCESS_BASIC_INFORMATION info = nt.NtQueryInformationProcess(p.getHandle(), NtdllTools.ProcessBasicInformation);
+//        System.out.println("ExitStatus\t"				+info.ExitStatus);
+//        System.out.println("PebBaseAddress\t"			+info.PebBaseAddress);
+//        System.out.println("AffinityMask\t"				+info.AffinityMask);
+//        System.out.println("BasePriority\t"				+info.BasePriority);
+//        System.out.println("UniqueProcessId\t"			+info.UniqueProcessId);
+//        System.out.println("ParentProcessId\t"			+info.ParentProcessId);
+//        System.out.println("==============================");
+//        
+//        PEB peb = info.getPEB();
+//		System.out.println("InheritedAddressSpace\t\t"	+peb.InheritedAddressSpace);
+//		System.out.println("ReadImageFileExecOptions\t"	+peb.ReadImageFileExecOptions);
+//        System.out.println("BeingDebugged\t\t\t"		+peb.BeingDebugged);
+//        System.out.println("Spare\t\t\t\t"				+peb.Spare);
+//        System.out.println("Mutant\t\t\t\t"				+peb.Mutant);
+//        System.out.println("ImageBaseAddress\t\t"		+peb.ImageBaseAddress);
+//        System.out.println("Ldr\t\t\t\t"				+peb.Ldr);
+//        System.out.println("ProcessParameters\t\t"		+peb.ProcessParameters);
+//        System.out.println("PostProcessInitRoutine\t\t"	+peb.PostProcessInitRoutine);
+//        System.out.println("SessionId\t\t\t"			+peb.SessionId);
+//        System.out.println("==============================");
+//        
+//        RTL_USER_PROCESS_PARAMETERS pp = peb.getProcessParameters();       
+//        System.out.println("CurrentDirectoryPath\t"		+pp.getCurrentDirectoryPath());
+//        System.out.println("DllPath\t\t\t"				+pp.getDllPath());
+//        System.out.println("ImagePathName\t\t"			+pp.getImagePathName());
+//        System.out.println("getCommandLine\t\t"			+pp.getCommandLine());
+//        System.out.println("WindowTitle\t\t"			+pp.getWindowTitle());
+//        System.out.println("DesktopName\t\t"			+pp.getDesktopName());
+//        System.out.println("ShellInfo\t\t"				+pp.getShellInfo());
+//        System.out.println("RuntimeData\t\t"			+pp.getRuntimeData());
 
         
 //		String filename=p.getProcessImageFileName();

@@ -6,6 +6,7 @@ import java.util.List;
 import luz.dsexplorer.objects.Module;
 import luz.dsexplorer.winapi.interfaces.Psapi;
 import luz.dsexplorer.winapi.interfaces.Psapi.LPMODULEINFO;
+import luz.dsexplorer.winapi.interfaces.Psapi.PPROCESS_MEMORY_COUNTERS;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -83,4 +84,13 @@ public class PsapiTools {
 		return lpmodinfo;
 	}
 
+	public PPROCESS_MEMORY_COUNTERS GetProcessMemoryInfo(Pointer Process) throws Exception{
+    	PPROCESS_MEMORY_COUNTERS ppsmemCounters = new PPROCESS_MEMORY_COUNTERS();
+    	boolean success = psapi.GetProcessMemoryInfo(Process, ppsmemCounters, ppsmemCounters.size());
+		if (!success){
+			int err=Native.getLastError();
+            throw new Exception("GetProcessMemoryInfo failed. Error: "+err);
+    	}
+		return ppsmemCounters;
+    }
 }
