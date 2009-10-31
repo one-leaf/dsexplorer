@@ -40,7 +40,7 @@ public class Test {
         
 
         
-        PROCESS_BASIC_INFORMATION info = nt.NtQueryInformationProcess(p.getPointer(), NtdllTools.ProcessBasicInformation);
+        PROCESS_BASIC_INFORMATION info = nt.NtQueryInformationProcess(p.getHandle(), NtdllTools.ProcessBasicInformation);
         System.out.println("ExitStatus\t"				+info.ExitStatus);
         System.out.println("PebBaseAddress\t"			+info.PebBaseAddress);
         System.out.println("AffinityMask\t"				+info.AffinityMask);
