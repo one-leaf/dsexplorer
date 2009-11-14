@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
 
 import luz.dsexplorer.objects.Result.Type;
 import luz.dsexplorer.winapi.interfaces.Kernel32.LPPROCESSENTRY32;
-import luz.dsexplorer.winapi.interfaces.Kernel32.LPSYSTEM_INFO;
+import luz.dsexplorer.winapi.interfaces.Kernel32.MEMORY_BASIC_INFORMATION;
 import luz.dsexplorer.winapi.interfaces.Ntdll.PEB;
 import luz.dsexplorer.winapi.interfaces.Ntdll.PROCESS_BASIC_INFORMATION;
 import luz.dsexplorer.winapi.tools.Kernel32Tools;
@@ -18,7 +18,6 @@ import luz.dsexplorer.winapi.tools.User32Tools;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
-import com.sun.jna.ptr.IntByReference;
 
 
 public class Process {
@@ -197,20 +196,15 @@ public class Process {
 		return pebCache;
 	}
 	
+	public MEMORY_BASIC_INFORMATION VirtualQueryEx(Pointer lpAddress) throws Exception{
+		return k32.VirtualQueryEx(getHandle(), lpAddress);
+	}
 	
-	
-	public List<Result> search(int from, int to, String value, Type type) throws Exception {
-		System.out.println("search from "+from+" to "+to+" value "+value+" type "+type);
+	public List<Result> search(long from, long to, String value, Type type) throws Exception {
+		System.out.println("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" type "+type);
 		List<Result> results = new LinkedList<Result>();
-		int pageSize=k32.GetSystemInfo().dwPageSize;
-        
-		
+		long timer=System.currentTimeMillis();
 
-		
-
-		
-
-		
 		switch (type){
 		case Byte1:
 			break;
@@ -219,23 +213,46 @@ public class Process {
 		case Byte4:
 			int target=Integer.parseInt(value);
 			int current;
+			int bufferSize=512*1024;
+			int readSize;
+			long regionEnd;
+			MEMORY_BASIC_INFORMATION info;
+			Memory outputBuffer = new Memory(bufferSize);
 			
+			for (long regionBegin = from; regionBegin < to; ) {
+				info=VirtualQueryEx(Pointer.createConstant(regionBegin));
+				regionEnd=regionBegin+info.RegionSize;
 			
-			
-			Pointer offset;
-			Memory outputBuffer = new Memory(pageSize);
-			for (long page = from; page < to; page+=pageSize) {
-				offset = Pointer.createConstant(page);
-				try{
-					k32.ReadProcessMemory(getHandle(), offset, outputBuffer, pageSize, null);
-					for (long pos = 0; pos < pageSize; pos=pos+4) {
-						current=outputBuffer.getInt(pos);
-						if (current==target)
-							results.add(new Result(page+pos, current));
+				if (info.State==Kernel32Tools.MEM_COMMIT 
+					&& (info.Protect&Kernel32Tools.PAGE_NOACCESS    )==0
+					&& (info.Protect&Kernel32Tools.PAGE_GUARD       )==0
+					&& (info.Protect&Kernel32Tools.PAGE_EXECUTE_READ)==0
+					&& (info.Protect&Kernel32Tools.PAGE_READONLY    )==0
+				){
+					//System.out.println("Region:\t"+Long.toHexString(regionBegin)+" - "+Long.toHexString(regionBegin+regionSize)+"\t"+info.BaseAddress);
+					
+					for (long regionPart = regionBegin; regionPart < regionEnd; regionPart+=bufferSize) {
+						if ((regionPart+bufferSize)<regionEnd)
+							readSize=bufferSize;
+						else
+							readSize=(int)(regionEnd-regionPart);
+						
+						System.out.println("Read:\t"+Long.toHexString(regionPart)+" - "+Long.toHexString(regionPart+readSize)+"\t"+Integer.toHexString(info.Type));
+						try{
+							k32.ReadProcessMemory(getHandle(), Pointer.createConstant(regionPart), outputBuffer, readSize, null);
+							for (long pos = 0; pos < readSize; pos=pos+4) {
+								current=outputBuffer.getInt(pos);
+								if (current==target){
+									results.add(new Result(regionPart+pos, current));
+									System.out.println("Found:\t"+Long.toHexString(regionPart+pos)+"\t"+Integer.toHexString(info.Type)+"\t"+Integer.toHexString(info.AllocationProtect)+"\t"+Integer.toHexString(info.Protect));
+								}
+							}
+						}catch(Exception e){
+							System.out.println(e.getMessage()+"\t"+Long.toHexString(regionPart)+"\t"+Integer.toHexString(info.Type));
+						}
 					}
-				}catch(Exception e){
-					//System.out.println(page);
 				}
+				regionBegin+=info.RegionSize;
 			}
 			
 			
@@ -246,9 +263,7 @@ public class Process {
 			break;		
 		}
 		
-		
-
-		
+		System.out.println("timer "+(System.currentTimeMillis()-timer));
 		return results;
 	}
 

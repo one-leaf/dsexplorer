@@ -151,4 +151,24 @@ public interface Kernel32 extends StdCallLibrary {
      */
     void GetSystemInfo(LPSYSTEM_INFO lpSystemInfo);
     
+
+    /*
+     * http://msdn.microsoft.com/en-us/library/aa366775(VS.85).aspx
+     */
+    public static class MEMORY_BASIC_INFORMATION extends Structure {
+    	public Pointer	BaseAddress;
+    	public Pointer	AllocationBase;
+    	public int		AllocationProtect;
+    	public int		RegionSize;
+    	public int		State;
+    	public int		Protect;
+    	public int		Type;
+    }
+    
+    /*
+     * http://msdn.microsoft.com/en-us/library/aa366907(VS.85).aspx
+     */
+    public int VirtualQueryEx(Pointer hProcess,Pointer lpAddress, MEMORY_BASIC_INFORMATION lpBuffer, int dwLength);
+
+    
 }
