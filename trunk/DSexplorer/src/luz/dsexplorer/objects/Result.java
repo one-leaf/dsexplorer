@@ -8,13 +8,19 @@ public class Result extends DefaultMutableTreeNode{
 	private boolean areChildrenDefined=false;
 	public enum Type{Byte1, Byte2, Byte4, Byte8, Float, Double, Ascii, Unicode, ByteArray, Custom}
 	private Type type=Type.Byte4;
+	private Object value=null;
 	
-	public Result(Long pointer){
+	public Result(Long pointer, Object value){
 		this.pointer=pointer;
+		this.value=value;
 	}
 	
 	public long getPointer(){
 		return pointer;
+	}
+	
+	public String getPointerString(){
+		return pointer==null?null:String.format("%1$08X", pointer);
 	}
 	
 	public void setPointer(Long pointer){
@@ -27,6 +33,14 @@ public class Result extends DefaultMutableTreeNode{
 
 	public Type getType() {
 		return type;
+	}
+	
+	public Object getValue() {
+		return value;
+	}
+	
+	public void setValue(Object value) {
+		this.value=value;
 	}
 	
 	////////////////////////////////////////
@@ -46,14 +60,13 @@ public class Result extends DefaultMutableTreeNode{
 	
 	private void defineChildNodes() {
 		areChildrenDefined = true;
-		add(new Result(null));
+		add(new Result(null, null));
 	}
 	
 	@Override
 	public String toString() {
-		if (pointer==null)
-			return null;
-		else 
-			return pointer.toString();
+		return getPointerString()+" - "+getValue();
 	}
+
+
 }

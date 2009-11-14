@@ -1,8 +1,16 @@
 package test;
 
+import java.util.Enumeration;
+
+import javax.swing.UIManager;
+
+import com.sun.jna.Memory;
+import com.sun.jna.Pointer;
+
 import luz.dsexplorer.objects.Process;
 import luz.dsexplorer.objects.ProcessList;
 import luz.dsexplorer.winapi.interfaces.Shell32;
+import luz.dsexplorer.winapi.interfaces.Kernel32.LPSYSTEM_INFO;
 import luz.dsexplorer.winapi.interfaces.Ntdll.PEB;
 import luz.dsexplorer.winapi.interfaces.Ntdll.PROCESS_BASIC_INFORMATION;
 import luz.dsexplorer.winapi.interfaces.Ntdll.RTL_USER_PROCESS_PARAMETERS;
@@ -28,7 +36,7 @@ public class Test {
         
         a32.enableDebugPrivilege(k32.GetCurrentProcess());
         
-        int pid=3380;
+        int pid=13880;
         Process p=null;
         ProcessList list = k32.getProcessList();
         list.refreshWindows();
@@ -39,10 +47,16 @@ public class Test {
 			}
         }
         
+        Enumeration<Object> keys = UIManager.getDefaults().keys();
+        while(keys.hasMoreElements())
+        	System.out.println(keys.nextElement());
+		
+
+
         
-        PPROCESS_MEMORY_COUNTERS px = psapi.GetProcessMemoryInfo(p.getHandle());
-        System.out.println(px.cb);
-        System.out.println(px.WorkingSetSize);
+//        PPROCESS_MEMORY_COUNTERS px = psapi.GetProcessMemoryInfo(p.getHandle());
+//        System.out.println(px.cb);
+//        System.out.println(px.WorkingSetSize);
 
         
 //        PROCESS_BASIC_INFORMATION info = nt.NtQueryInformationProcess(p.getHandle(), NtdllTools.ProcessBasicInformation);
@@ -239,17 +253,16 @@ public class Test {
 
         
         
-        
+//        LPSYSTEM_INFO lpSystemInfo=k32.GetSystemInfo();
+//        System.out.println(lpSystemInfo.dwPageSize);
+
+
 
         
-//        int pid = 4672;
-//        Pointer process = k32.openProcess(Kernel32Tools.PROCESS_ALL_ACCESS, false, pid);
-        
-        
-//        int offset = 0x1000000;
+//        Pointer offset = Pointer.createConstant(0x1000000);
 //        int bufferSize = 128;
 //        Memory outputBuffer = new Memory(bufferSize);
-//        k32.readProcessMemory(process, offset, outputBuffer, bufferSize, null);
+//        k32.ReadProcessMemory(p.getHandle(), offset, outputBuffer, bufferSize, null);
 // 
 //        byte[] bufferBytes = outputBuffer.getByteArray(0, bufferSize);
 //        System.out.println(new String(bufferBytes));

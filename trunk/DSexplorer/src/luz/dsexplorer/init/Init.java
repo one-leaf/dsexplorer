@@ -1,5 +1,7 @@
 package luz.dsexplorer.init;
 
+import java.awt.Font;
+
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -19,6 +21,7 @@ public class Init {
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			//UIManager.put("Table.font", new Font("Lucida Console", Font.PLAIN, 11));
 		} catch (ClassNotFoundException e)          { log.warn("getSystemLookAndFeelClassName", e);
 		} catch (InstantiationException e)          { log.warn("getSystemLookAndFeelClassName", e);
 		} catch (IllegalAccessException e)          { log.warn("getSystemLookAndFeelClassName", e);

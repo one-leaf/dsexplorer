@@ -118,7 +118,7 @@ public interface Kernel32 extends StdCallLibrary {
    
     
     /*
-     * http://msdn.microsoft.com/en-us/library/ms648037%28VS.85%29.aspx
+     * http://msdn.microsoft.com/en-us/library/ms648037(VS.85).aspx
      */
     public static interface ENUMRESNAMEPROC extends StdCallCallback {
     	public abstract boolean callback(Pointer hModule, String lpszType, String lpszName, IntByReference lParam);
@@ -127,6 +127,28 @@ public interface Kernel32 extends StdCallLibrary {
     
     
     
-
+    
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms724958(VS.85).aspx
+     * http://www.pinvoke.net/default.aspx/Structures.SYSTEM_INFO
+     */
+    public static class LPSYSTEM_INFO extends Structure {
+		public short	wProcessorArchitecture;
+		public short	wReserved;		
+		public int		dwPageSize;
+		public Pointer	lpMinimumApplicationAddress;
+		public Pointer	lpMaximumApplicationAddress;
+		public Pointer	dwActiveProcessorMask;
+		public int		dwNumberOfProcessors;
+		public int		dwProcessorType;
+		public int		dwAllocationGranularity;
+		public short	wProcessorLevel;
+		public short	wProcessorRevision;
+    }    	
+    	
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms724381(VS.85).aspx
+     */
+    void GetSystemInfo(LPSYSTEM_INFO lpSystemInfo);
     
 }

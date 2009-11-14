@@ -89,6 +89,7 @@ public class MainWindow extends javax.swing.JFrame {
 			@Override
 			public void okPerformed(Process p) {
 				tree.setProcess(p);
+				ms.setProcess(p);
 			}
 			
 			@Override
@@ -100,20 +101,20 @@ public class MainWindow extends javax.swing.JFrame {
 		ms=new MemorySearch();
 		ms.addListener(new MemorySearchListener() {
 			@Override
+			public void FirstSearchPerformed(int from, int to) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
 			public void NextSearchPerformed() {
 				// TODO Auto-generated method stub
 				
 			}
 			
 			@Override
-			public void FirstSearchPerformed() {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void AddPerformed(Long pointer) {
-				tree.addPointer(pointer);				
+			public void AddPerformed(Result result) {
+				tree.addResult(result);				
 			}
 		});
 		
@@ -149,7 +150,7 @@ public class MainWindow extends javax.swing.JFrame {
 					jSplitPane1.add(jPanel1, JSplitPane.RIGHT);
 					BorderLayout jPanel1Layout = new BorderLayout();
 					jPanel1.setLayout(jPanel1Layout);
-					jPanel1.setPreferredSize(new Dimension(300, 450));
+					jPanel1.setPreferredSize(new Dimension(330, 450));
 					jPanel1.setMinimumSize(new Dimension(250, 350));
 				}
 			}
@@ -268,6 +269,7 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 		if (node instanceof Result){
 			jPanel1.removeAll();
+			dse.setValue(((Result)node).getValue());
 			jPanel1.add(dse, BorderLayout.CENTER);
 			jPanel1.repaint();
 			jPanel1.validate();			

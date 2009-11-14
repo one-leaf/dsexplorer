@@ -5,7 +5,9 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import luz.dsexplorer.objects.Result.Type;
 import luz.dsexplorer.winapi.interfaces.Kernel32.LPPROCESSENTRY32;
+import luz.dsexplorer.winapi.interfaces.Kernel32.LPSYSTEM_INFO;
 import luz.dsexplorer.winapi.interfaces.Ntdll.PEB;
 import luz.dsexplorer.winapi.interfaces.Ntdll.PROCESS_BASIC_INFORMATION;
 import luz.dsexplorer.winapi.tools.Kernel32Tools;
@@ -14,7 +16,9 @@ import luz.dsexplorer.winapi.tools.PsapiTools;
 import luz.dsexplorer.winapi.tools.Shell32Tools;
 import luz.dsexplorer.winapi.tools.User32Tools;
 
+import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
 
 
 public class Process {
@@ -193,5 +197,60 @@ public class Process {
 		return pebCache;
 	}
 	
+	
+	
+	public List<Result> search(int from, int to, String value, Type type) throws Exception {
+		System.out.println("search from "+from+" to "+to+" value "+value+" type "+type);
+		List<Result> results = new LinkedList<Result>();
+		int pageSize=k32.GetSystemInfo().dwPageSize;
+        
+		
+
+		
+
+		
+
+		
+		switch (type){
+		case Byte1:
+			break;
+		case Byte2:
+			break;
+		case Byte4:
+			int target=Integer.parseInt(value);
+			int current;
+			
+			
+			
+			Pointer offset;
+			Memory outputBuffer = new Memory(pageSize);
+			for (long page = from; page < to; page+=pageSize) {
+				offset = Pointer.createConstant(page);
+				try{
+					k32.ReadProcessMemory(getHandle(), offset, outputBuffer, pageSize, null);
+					for (long pos = 0; pos < pageSize; pos=pos+4) {
+						current=outputBuffer.getInt(pos);
+						if (current==target)
+							results.add(new Result(page+pos, current));
+					}
+				}catch(Exception e){
+					//System.out.println(page);
+				}
+			}
+			
+			
+			break;
+		case Float:
+			break;
+		case Double:
+			break;		
+		}
+		
+		
+
+		
+		return results;
+	}
+
 	
 }

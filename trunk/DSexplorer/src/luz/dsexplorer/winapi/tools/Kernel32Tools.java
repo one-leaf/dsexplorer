@@ -5,6 +5,7 @@ import luz.dsexplorer.objects.ProcessList;
 import luz.dsexplorer.winapi.interfaces.Kernel32;
 import luz.dsexplorer.winapi.interfaces.Kernel32.ENUMRESNAMEPROC;
 import luz.dsexplorer.winapi.interfaces.Kernel32.LPPROCESSENTRY32;
+import luz.dsexplorer.winapi.interfaces.Kernel32.LPSYSTEM_INFO;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
@@ -133,5 +134,12 @@ public class Kernel32Tools {
         return k32.EnumResourceNamesA(hModule, lpszType, lpEnumFunc, lParam);
     }
     
-    
+    private LPSYSTEM_INFO lpSystemInfoCache=null;
+    public LPSYSTEM_INFO GetSystemInfo(){
+    	if (lpSystemInfoCache!=null)
+    		return lpSystemInfoCache;
+    	lpSystemInfoCache=new LPSYSTEM_INFO();
+    	k32.GetSystemInfo(lpSystemInfoCache);
+    	return lpSystemInfoCache;
+    }
 }

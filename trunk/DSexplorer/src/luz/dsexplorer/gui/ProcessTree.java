@@ -27,7 +27,11 @@ public class ProcessTree extends JTree {
 	}
 	
 	public void addPointer(Long pointer){
-		rl.add(new Result(pointer));
+		addResult(new Result(pointer, null));
+	}
+
+	public void addResult(Result result) {
+		rl.add(result);
 		TreePath selection = sm.getSelectionPath();
 		model.reload();		//FIXME selection disapears
 		sm.setSelectionPath(selection);
