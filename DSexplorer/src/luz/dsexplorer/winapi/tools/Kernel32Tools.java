@@ -6,6 +6,7 @@ import luz.dsexplorer.winapi.interfaces.Kernel32;
 import luz.dsexplorer.winapi.interfaces.Kernel32.ENUMRESNAMEPROC;
 import luz.dsexplorer.winapi.interfaces.Kernel32.LPPROCESSENTRY32;
 import luz.dsexplorer.winapi.interfaces.Kernel32.LPSYSTEM_INFO;
+import luz.dsexplorer.winapi.interfaces.Kernel32.MEMORY_BASIC_INFORMATION;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
@@ -141,5 +142,31 @@ public class Kernel32Tools {
     	lpSystemInfoCache=new LPSYSTEM_INFO();
     	k32.GetSystemInfo(lpSystemInfoCache);
     	return lpSystemInfoCache;
+    }
+    
+    
+    public static int MEM_COMMIT =0x01000;
+    public static int MEM_RESERVE=0x02000;
+    public static int MEM_FREE   =0x10000;
+    
+    
+    
+    public static int PAGE_NOACCESS         =0x0001;	//000 0000 0001
+    public static int PAGE_READONLY         =0x0002;	//000 0000 0010
+    public static int PAGE_READWRITE        =0x0004;	//000 0000 0100
+    public static int PAGE_WRITECOPY        =0x0008;	//000 0000 1000   
+    public static int PAGE_EXECUTE          =0x0010;	//000 0001 0000
+    public static int PAGE_EXECUTE_READ     =0x0020;	//000 0010 0000
+    public static int PAGE_EXECUTE_READWRITE=0x0040;	//000 0100 0000
+    public static int PAGE_EXECUTE_WRITECOPY=0x0080;	//000 1000 0000
+    public static int PAGE_GUARD            =0x0100;	//001 0000 0000
+    public static int PAGE_NOCACHE          =0x0200;	//010 0000 0000
+    public static int PAGE_WRITECOMBINE     =0x0400;	//100 0000 0000
+
+    
+    public MEMORY_BASIC_INFORMATION VirtualQueryEx(Pointer hProcess,Pointer lpAddress){
+    	MEMORY_BASIC_INFORMATION lpBuffer = new MEMORY_BASIC_INFORMATION();
+        k32.VirtualQueryEx(hProcess, lpAddress, lpBuffer, lpBuffer.size());
+        return lpBuffer;
     }
 }

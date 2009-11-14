@@ -149,7 +149,7 @@ public class MemorySearch extends javax.swing.JPanel {
 			}
 			{
 				txtTo = new JTextField();
-				txtTo.setText("00700000");	//7FFFFFFF
+				txtTo.setText("7FFF0000");	//7FFFFFFF
 			}
 			{
 				lblValue = new JLabel();
