@@ -3,8 +3,10 @@ package luz.dsexplorer.gui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
 
-import javax.naming.spi.DirStateFactory.Result;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -22,21 +24,41 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import luz.dsexplorer.gui.listener.MemorySearchListener;
+import luz.dsexplorer.objects.Process;
+import luz.dsexplorer.objects.Result;
 import luz.dsexplorer.objects.Result.Type;
 
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 public class MemorySearch extends javax.swing.JPanel {
 	private static final long serialVersionUID = 2361607017186276542L;
 	private JTextField txtSearch;
 	private JComboBox cbType;
 	private JLabel jLabel2;
 	private JButton btnAdd;
+	private JTextField txtTo;
+	private JLabel lblTo;
+	private JTextField txtFrom;
+	private JLabel lblFrom;
 	private JComboBox cbValue;
 	private JLabel jLabel1;
 	private JLabel lblValue;
 	private JScrollPane jScrollPane1;
-	private JTable tblResults;
+	private ResultTable tblResults;
 	private JButton btnNext;
 	private JButton btnFirst;
+	private Process process;
 	private enum Action{FirstSeach, NextSearch, Add}
 
 	/**
@@ -68,6 +90,11 @@ public class MemorySearch extends javax.swing.JPanel {
 				btnFirst = new JButton();
 				btnFirst.setText("First Scan");
 				btnFirst.setMargin(new java.awt.Insets(2, 2, 2, 2));
+				btnFirst.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnFirstActionPerformed();
+					}
+				});
 			}
 			{
 				ComboBoxModel cbTypeModel = 
@@ -80,17 +107,23 @@ public class MemorySearch extends javax.swing.JPanel {
 				btnNext = new JButton();
 				btnNext.setText("Next Scan");
 				btnNext.setMargin(new java.awt.Insets(2, 2, 2, 2));
+				btnNext.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnNextActionPerformed();
+					}
+				});
 			}
 			{
 				jScrollPane1 = new JScrollPane();
 				{
-					TableModel tblResultsModel = 
-						new DefaultTableModel(
-								new String[][] { { "0x0001", "1" }, { "0x0002", "2" } },
-								new String[] { "Address", "Value" });
-					tblResults = new JTable();
+					tblResults = new ResultTable();
 					jScrollPane1.setViewportView(tblResults);
-					tblResults.setModel(tblResultsModel);
+					tblResults.addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent evt) {
+							if (evt.getClickCount()>1)
+								fireActionPerformed(Action.Add, null);
+						}
+					});
 				}
 			}
 			{
@@ -98,10 +131,25 @@ public class MemorySearch extends javax.swing.JPanel {
 				btnAdd.setText("<- Add");
 				btnAdd.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
-						//TODO add value
 						fireActionPerformed(Action.Add, null);
 					}
 				});
+			}
+			{
+				lblFrom = new JLabel();
+				lblFrom.setText("From");
+			}
+			{
+				txtFrom = new JTextField();
+				txtFrom.setText("00400000");
+			}
+			{
+				lblTo = new JLabel();
+				lblTo.setText("To");
+			}
+			{
+				txtTo = new JTextField();
+				txtTo.setText("00700000");	//7FFFFFFF
 			}
 			{
 				lblValue = new JLabel();
@@ -113,10 +161,10 @@ public class MemorySearch extends javax.swing.JPanel {
 			}
 			{
 				
-				ComboBoxModel cbValueModel = 
-					new DefaultComboBoxModel(Type.values());
+				ComboBoxModel cbValueModel = new DefaultComboBoxModel(Type.values());
 				cbValue = new JComboBox();
 				cbValue.setModel(cbValueModel);
+				cbValue.setSelectedIndex(2);
 			}
 			{
 				jLabel2 = new JLabel();
@@ -129,49 +177,78 @@ public class MemorySearch extends javax.swing.JPanel {
 				    .addComponent(btnFirst, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				    .addComponent(txtSearch, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(txtSearch, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblValue, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				    .addComponent(cbType, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(jLabel1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addGroup(thisLayout.createParallelGroup()
-				    .addComponent(cbValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				        .addComponent(jLabel2, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)))
+				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+				    .addComponent(cbValue, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(jLabel2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(jScrollPane1, 0, 121, Short.MAX_VALUE)
+				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+				    .addComponent(txtFrom, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblFrom, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblTo, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(txtTo, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				.addComponent(jScrollPane1, 0, 112, Short.MAX_VALUE)
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addComponent(btnAdd, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addContainerGap());
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
 				.addGroup(thisLayout.createParallelGroup()
+				    .addComponent(jScrollPane1, GroupLayout.Alignment.LEADING, 0, 294, Short.MAX_VALUE)
+				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				        .addComponent(btnAdd, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+				        .addGap(0, 219, Short.MAX_VALUE))
 				    .addGroup(thisLayout.createSequentialGroup()
 				        .addGroup(thisLayout.createParallelGroup()
-				            .addComponent(jLabel2, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(jLabel1, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(lblValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(btnFirst, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(btnAdd, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
+				            .addComponent(lblFrom, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(jLabel2, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(jLabel1, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(btnFirst, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE))
 				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				        .addGroup(thisLayout.createParallelGroup()
+				            .addComponent(txtSearch, GroupLayout.Alignment.LEADING, 0, 225, Short.MAX_VALUE)
 				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				                .addComponent(cbValue, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                .addGap(0, 0, Short.MAX_VALUE))
-				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				                .addComponent(cbType, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                .addGap(0, 0, Short.MAX_VALUE))
-				            .addComponent(txtSearch, GroupLayout.Alignment.LEADING, 0, 138, Short.MAX_VALUE)
-				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				                .addComponent(btnNext, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				                .addGap(0, 0, Short.MAX_VALUE))))
-				    .addComponent(jScrollPane1, GroupLayout.Alignment.LEADING, 0, 223, Short.MAX_VALUE))
+				                .addGroup(thisLayout.createParallelGroup()
+				                    .addComponent(txtFrom, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 103, GroupLayout.PREFERRED_SIZE)
+				                    .addComponent(cbValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				                    .addComponent(cbType, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				                    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                        .addComponent(btnNext, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE)
+				                        .addGap(40)))
+				                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				                .addComponent(lblTo, GroupLayout.PREFERRED_SIZE, 13, GroupLayout.PREFERRED_SIZE)
+				                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				                .addComponent(txtTo, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				                .addGap(0, 0, Short.MAX_VALUE)))))
 				.addContainerGap());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void btnFirstActionPerformed(){
+		try{
+			int from=Integer.parseInt(txtFrom.getText(),16);
+			int to  =Integer.parseInt(txtTo  .getText(),16);
+			List<Result> results=process.search(from, to, txtSearch.getText(), (Type)cbValue.getSelectedItem());
+			tblResults.setResults(results);
+		}catch(NumberFormatException e){
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void btnNextActionPerformed(){
+		
 	}
 	
 	///////////////////////////////////////////////////////////
@@ -195,18 +272,25 @@ public class MemorySearch extends javax.swing.JPanel {
             if (listeners[i]==MemorySearchListener.class) {
             	switch (action){
 	            	case FirstSeach:
-	            		((MemorySearchListener)listeners[i+1]).FirstSearchPerformed();
+	            		try{
+	            			((MemorySearchListener)listeners[i+1]).FirstSearchPerformed(Integer.parseInt(txtFrom.getText()), Integer.parseInt(txtTo.getText()));
+	            		}catch(NumberFormatException e){}
 	            		break;
 	            	case NextSearch:
 	            		((MemorySearchListener)listeners[i+1]).NextSearchPerformed();
 	            		break;
 	            	case Add:
 	            		//TODO table getSelected
-	            		((MemorySearchListener)listeners[i+1]).AddPerformed(0L);
+	            		((MemorySearchListener)listeners[i+1]).AddPerformed(tblResults.getSelectedResult());
 	            		break;
             	}
             }          
         }
     }
+
+	public void setProcess(Process process) {
+		this.process=process;
+	}
+
 
 }

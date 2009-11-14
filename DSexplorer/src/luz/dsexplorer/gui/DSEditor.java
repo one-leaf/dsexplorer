@@ -13,6 +13,8 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 
+import luz.dsexplorer.objects.Result;
+
 public class DSEditor extends javax.swing.JPanel {
 	private static final long serialVersionUID = -6928391243482994782L;
 	private JTextField txtValue;
@@ -85,6 +87,11 @@ public class DSEditor extends javax.swing.JPanel {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void setValue(Object value) {
+		txtValue.setText(value.toString());
+		
 	}
 
 }
