@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -113,8 +114,8 @@ public class MainWindow extends javax.swing.JFrame {
 			}
 			
 			@Override
-			public void AddPerformed(Result result) {
-				tree.addResult(result);				
+			public void AddPerformed(List<Result> results) {
+				tree.addResults(results);				
 			}
 		});
 		
@@ -269,7 +270,7 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 		if (node instanceof Result){
 			jPanel1.removeAll();
-			dse.setValue(((Result)node).getValue());
+			dse.setResult((Result)node);
 			jPanel1.add(dse, BorderLayout.CENTER);
 			jPanel1.repaint();
 			jPanel1.validate();			
