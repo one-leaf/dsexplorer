@@ -18,6 +18,7 @@ import luz.dsexplorer.winapi.tools.User32Tools;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
 
 
 public class Process {
@@ -200,68 +201,122 @@ public class Process {
 		return k32.VirtualQueryEx(getHandle(), lpAddress);
 	}
 	
-	public List<Result> search(long from, long to, String value, Type type) throws Exception {
+	public void ReadProcessMemory(Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Exception{
+		k32.ReadProcessMemory(getHandle(), pointer, outputBuffer, nSize, outNumberOfBytesRead);
+	}
+
+	public List<Result> search(long from, long to, final String value, Type type) throws Exception {
 		System.out.println("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" type "+type);
-		List<Result> results = new LinkedList<Result>();
+		final List<Result> results = new LinkedList<Result>();
 		long timer=System.currentTimeMillis();
 
 		switch (type){
 		case Byte1:
-			break;
-		case Byte2:
-			break;
-		case Byte4:
-			int target=Integer.parseInt(value);
-			int current;
-			int bufferSize=512*1024;
-			int readSize;
-			long regionEnd;
-			MEMORY_BASIC_INFORMATION info;
-			Memory outputBuffer = new Memory(bufferSize);
-			
-			for (long regionBegin = from; regionBegin < to; ) {
-				info=VirtualQueryEx(Pointer.createConstant(regionBegin));
-				regionEnd=regionBegin+info.RegionSize;
-			
-				if (info.State==Kernel32Tools.MEM_COMMIT 
-					&& (info.Protect&Kernel32Tools.PAGE_NOACCESS    )==0
-					&& (info.Protect&Kernel32Tools.PAGE_GUARD       )==0
-					&& (info.Protect&Kernel32Tools.PAGE_EXECUTE_READ)==0
-					&& (info.Protect&Kernel32Tools.PAGE_READONLY    )==0
-				){
-					//System.out.println("Region:\t"+Long.toHexString(regionBegin)+" - "+Long.toHexString(regionBegin+regionSize)+"\t"+info.BaseAddress);
-					
-					for (long regionPart = regionBegin; regionPart < regionEnd; regionPart+=bufferSize) {
-						if ((regionPart+bufferSize)<regionEnd)
-							readSize=bufferSize;
-						else
-							readSize=(int)(regionEnd-regionPart);
-						
-						System.out.println("Read:\t"+Long.toHexString(regionPart)+" - "+Long.toHexString(regionPart+readSize)+"\t"+Integer.toHexString(info.Type));
-						try{
-							k32.ReadProcessMemory(getHandle(), Pointer.createConstant(regionPart), outputBuffer, readSize, null);
-							for (long pos = 0; pos < readSize; pos=pos+4) {
-								current=outputBuffer.getInt(pos);
-								if (current==target){
-									results.add(new Result(regionPart+pos, current));
-									System.out.println("Found:\t"+Long.toHexString(regionPart+pos)+"\t"+Integer.toHexString(info.Type)+"\t"+Integer.toHexString(info.AllocationProtect)+"\t"+Integer.toHexString(info.Protect));
-								}
+				new MemoryReader(this) {
+					@Override
+					public void mem(Memory outputBuffer, long address, long size) {
+						byte current;
+						byte target=Byte.parseByte(value);
+						for (long pos = 0; pos < size; pos=pos+1) {
+							current=outputBuffer.getByte(pos);
+							if (current==target){
+								results.add(new Result(address+pos, current));
+								System.out.println("Found:\t"+Long.toHexString(address+pos));
 							}
-						}catch(Exception e){
-							System.out.println(e.getMessage()+"\t"+Long.toHexString(regionPart)+"\t"+Integer.toHexString(info.Type));
 						}
 					}
-				}
-				regionBegin+=info.RegionSize;
-			}
-			
-			
+				}.read(from, to);
 			break;
+			
+		case Byte2:
+				new MemoryReader(this) {
+					@Override
+					public void mem(Memory outputBuffer, long address, long size) {
+						short current;
+						short target=Short.parseShort(value);
+						for (long pos = 0; pos < size; pos=pos+2) {
+							current=outputBuffer.getShort(pos);
+							if (current==target){
+								results.add(new Result(address+pos, current));
+								System.out.println("Found:\t"+Long.toHexString(address+pos));
+							}
+						}
+					}
+				}.read(from, to);
+			break;
+			
+		case Byte4:
+				new MemoryReader(this) {
+					@Override
+					public void mem(Memory outputBuffer, long address, long size) {
+						int current;
+						int target=Integer.parseInt(value);
+						for (long pos = 0; pos < size; pos=pos+4) {
+							current=outputBuffer.getInt(pos);
+							if (current==target){
+								results.add(new Result(address+pos, current));
+								System.out.println("Found:\t"+Long.toHexString(address+pos));
+							}
+						}
+					}
+				}.read(from, to);
+			break;
+			
+		case Byte8:
+				new MemoryReader(this) {
+					@Override
+					public void mem(Memory outputBuffer, long address, long size) {
+						long current;
+						long target=Long.parseLong(value);
+						for (long pos = 0; pos < size; pos=pos+8) {
+							current=outputBuffer.getLong(pos);
+							if (current==target){
+								results.add(new Result(address+pos, current));
+								System.out.println("Found:\t"+Long.toHexString(address+pos));
+							}
+						}
+					}
+				}.read(from, to);
+			break;
+			
 		case Float:
+				new MemoryReader(this) {
+					@Override
+					public void mem(Memory outputBuffer, long address, long size) {
+						float current;
+						float target=Float.parseFloat(value);
+						for (long pos = 0; pos < size; pos=pos+4) {
+							current=outputBuffer.getFloat(pos);
+							if (Math.round(current)==target){
+								results.add(new Result(address+pos, current));
+								System.out.println("Found:\t"+Long.toHexString(address+pos));
+							}
+						}
+					}
+				}.read(from, to);
 			break;
+			
 		case Double:
-			break;		
+				new MemoryReader(this) {
+					@Override
+					public void mem(Memory outputBuffer, long address, long size) {
+						double current;
+						double target=Double.parseDouble(value);
+						for (long pos = 0; pos < size; pos=pos+8) {
+							current=outputBuffer.getDouble(pos);
+							if (Math.round(current)==target){
+								results.add(new Result(address+pos, current));
+								System.out.println("Found:\t"+Long.toHexString(address+pos));
+							}
+						}
+					}
+				}.read(from, to);
+			break;	
+			
+
 		}
+		
+		
 		
 		System.out.println("timer "+(System.currentTimeMillis()-timer));
 		return results;

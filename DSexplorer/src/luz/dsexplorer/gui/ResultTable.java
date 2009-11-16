@@ -23,7 +23,7 @@ public class ResultTable extends JTable{
 		model=new MyTableModel();
 		this.setModel(model);
 		this.setAutoCreateRowSorter(true);
-		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		this.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		this.getColumnModel().getColumn(0).setCellRenderer(new MyCellRenderer());	//TODO suboptimal font change
 	}
@@ -32,13 +32,21 @@ public class ResultTable extends JTable{
 		model.refresh();		
 	}
 	
-	public Result getSelectedResult(){
-		int row = this.getSelectedRow();
-		if (row!=-1)
-			return model.getResultAt(row);
-		else
+
+	public List<Result> getSelectedResults() {
+		int[] rows = this.getSelectedRows();
+		if (rows.length==0)
 			return null;
+		
+		List<Result> list = new LinkedList<Result>();
+		for (int row : rows)
+			list.add(model.getResultAt(row));
+		
+		return list;
 	}
+	
+	
+	
 	
 	private static class MyCellRenderer extends DefaultTableCellRenderer{
 		private static final long serialVersionUID = -7760559280746695139L;
@@ -112,4 +120,6 @@ public class ResultTable extends JTable{
 	public void setResults(List<Result> search) {
 		model.setResults(search);		
 	}
+
+
 }

@@ -1,6 +1,7 @@
 package luz.dsexplorer.gui.listener;
 
 import java.util.EventListener;
+import java.util.List;
 
 import luz.dsexplorer.objects.Result;
 
@@ -10,7 +11,7 @@ public interface MemorySearchListener extends EventListener  {
 	
 	public void NextSearchPerformed();
 	
-	public void AddPerformed(Result result);
+	public void AddPerformed(List<Result> results);
 
 
 }

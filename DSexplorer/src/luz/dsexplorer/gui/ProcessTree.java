@@ -1,5 +1,8 @@
 package luz.dsexplorer.gui;
 
+import java.awt.Font;
+import java.util.List;
+
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -17,6 +20,7 @@ public class ProcessTree extends JTree {
 	
 	public ProcessTree() {
 		this.setModel(null);
+		this.setFont(new Font("Lucida Console", Font.PLAIN, 11));
 	}
 	
 	public void setProcess(Process p){
@@ -32,6 +36,16 @@ public class ProcessTree extends JTree {
 
 	public void addResult(Result result) {
 		rl.add(result);
+		refresh();
+	}
+
+	public void addResults(List<Result> results) {
+		for (Result result : results)
+			rl.add(result);
+		refresh();		
+	}
+	
+	public void refresh(){
 		TreePath selection = sm.getSelectionPath();
 		model.reload();		//FIXME selection disapears
 		sm.setSelectionPath(selection);

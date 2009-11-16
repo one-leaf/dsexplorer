@@ -281,7 +281,7 @@ public class MemorySearch extends javax.swing.JPanel {
 	            		break;
 	            	case Add:
 	            		//TODO table getSelected
-	            		((MemorySearchListener)listeners[i+1]).AddPerformed(tblResults.getSelectedResult());
+	            		((MemorySearchListener)listeners[i+1]).AddPerformed(tblResults.getSelectedResults());
 	            		break;
             	}
             }          

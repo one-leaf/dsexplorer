@@ -15,12 +15,27 @@ import javax.swing.WindowConstants;
 
 import luz.dsexplorer.objects.Result;
 
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 public class DSEditor extends javax.swing.JPanel {
 	private static final long serialVersionUID = -6928391243482994782L;
 	private JTextField txtValue;
 	private JComboBox cbValue;
 	private JLabel lblType;
 	private JLabel lblValue;
+	private JTextField txtAddress;
+	private JLabel jLabel1;
 
 	/**
 	* Auto-generated main method to display this 
@@ -59,11 +74,22 @@ public class DSEditor extends javax.swing.JPanel {
 				lblValue.setText("Value");
 			}
 			{
+				jLabel1 = new JLabel();
+				jLabel1.setText("Address");
+			}
+			{
+				txtAddress = new JTextField();
+			}
+			{
 				lblType = new JLabel();
 				lblType.setText("Value Type");
 			}
 			thisLayout.setVerticalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
+				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+				    .addComponent(txtAddress, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(jLabel1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				    .addComponent(txtValue, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblValue, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -71,27 +97,29 @@ public class DSEditor extends javax.swing.JPanel {
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				    .addComponent(cbValue, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblType, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addContainerGap(241, 241));
+				.addContainerGap(215, 215));
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
 				.addGroup(thisLayout.createParallelGroup()
 				    .addComponent(lblType, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
+				    .addComponent(lblValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(jLabel1, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 				.addGroup(thisLayout.createParallelGroup()
 				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				        .addComponent(cbValue, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				        .addGap(0, 105, Short.MAX_VALUE))
-				    .addComponent(txtValue, GroupLayout.Alignment.LEADING, 0, 206, Short.MAX_VALUE))
+				        .addGap(0, 194, Short.MAX_VALUE))
+				    .addComponent(txtValue, GroupLayout.Alignment.LEADING, 0, 295, Short.MAX_VALUE)
+				    .addComponent(txtAddress, GroupLayout.Alignment.LEADING, 0, 295, Short.MAX_VALUE))
 				.addContainerGap());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void setValue(Object value) {
-		txtValue.setText(value.toString());
-		
+	public void setResult(Result result) {
+		txtValue.setText(result.getValue().toString());
+		txtAddress.setText(result.getPointerString());		
 	}
 
 }
