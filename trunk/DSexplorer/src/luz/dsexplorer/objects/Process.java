@@ -205,7 +205,7 @@ public class Process {
 		k32.ReadProcessMemory(getHandle(), pointer, outputBuffer, nSize, outNumberOfBytesRead);
 	}
 
-	public List<Result> search(long from, long to, final String value, Type type) throws Exception {
+	public List<Result> search(long from, long to, final String value, final Type type) throws Exception {
 		System.out.println("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" type "+type);
 		final List<Result> results = new LinkedList<Result>();
 		long timer=System.currentTimeMillis();
@@ -220,7 +220,7 @@ public class Process {
 						for (long pos = 0; pos < size; pos=pos+1) {
 							current=outputBuffer.getByte(pos);
 							if (current==target){
-								results.add(new Result(address+pos, current));
+								results.add(new Result(Process.this, address+pos, current, type));
 								System.out.println("Found:\t"+Long.toHexString(address+pos));
 							}
 						}
@@ -234,10 +234,10 @@ public class Process {
 					public void mem(Memory outputBuffer, long address, long size) {
 						short current;
 						short target=Short.parseShort(value);
-						for (long pos = 0; pos < size; pos=pos+2) {
+						for (long pos = 0; pos < size; pos=pos+1) {
 							current=outputBuffer.getShort(pos);
 							if (current==target){
-								results.add(new Result(address+pos, current));
+								results.add(new Result(Process.this, address+pos, current, type));
 								System.out.println("Found:\t"+Long.toHexString(address+pos));
 							}
 						}
@@ -251,10 +251,10 @@ public class Process {
 					public void mem(Memory outputBuffer, long address, long size) {
 						int current;
 						int target=Integer.parseInt(value);
-						for (long pos = 0; pos < size; pos=pos+4) {
+						for (long pos = 0; pos < size; pos=pos+1) {
 							current=outputBuffer.getInt(pos);
 							if (current==target){
-								results.add(new Result(address+pos, current));
+								results.add(new Result(Process.this, address+pos, current, type));
 								System.out.println("Found:\t"+Long.toHexString(address+pos));
 							}
 						}
@@ -268,10 +268,10 @@ public class Process {
 					public void mem(Memory outputBuffer, long address, long size) {
 						long current;
 						long target=Long.parseLong(value);
-						for (long pos = 0; pos < size; pos=pos+8) {
+						for (long pos = 0; pos < size; pos=pos+1) {
 							current=outputBuffer.getLong(pos);
 							if (current==target){
-								results.add(new Result(address+pos, current));
+								results.add(new Result(Process.this, address+pos, current, type));
 								System.out.println("Found:\t"+Long.toHexString(address+pos));
 							}
 						}
@@ -288,7 +288,7 @@ public class Process {
 						for (long pos = 0; pos < size; pos=pos+4) {
 							current=outputBuffer.getFloat(pos);
 							if (Math.round(current)==target){
-								results.add(new Result(address+pos, current));
+								results.add(new Result(Process.this, address+pos, current, type));
 								System.out.println("Found:\t"+Long.toHexString(address+pos));
 							}
 						}
@@ -302,10 +302,10 @@ public class Process {
 					public void mem(Memory outputBuffer, long address, long size) {
 						double current;
 						double target=Double.parseDouble(value);
-						for (long pos = 0; pos < size; pos=pos+8) {
+						for (long pos = 0; pos < size; pos=pos+1) {
 							current=outputBuffer.getDouble(pos);
 							if (Math.round(current)==target){
-								results.add(new Result(address+pos, current));
+								results.add(new Result(Process.this, address+pos, current, type));
 								System.out.println("Found:\t"+Long.toHexString(address+pos));
 							}
 						}

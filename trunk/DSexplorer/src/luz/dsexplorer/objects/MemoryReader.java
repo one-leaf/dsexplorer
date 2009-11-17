@@ -6,6 +6,10 @@ import luz.dsexplorer.winapi.tools.Kernel32Tools;
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 
+
+//TODO write a pluggable comparator which is used to find the results. Instead of creating a different memoryReader each time.
+
+
 public abstract class MemoryReader {
 	private Process process;
 
