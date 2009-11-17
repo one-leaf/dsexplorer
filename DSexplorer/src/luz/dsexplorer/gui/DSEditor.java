@@ -14,6 +14,7 @@ import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 
 import luz.dsexplorer.objects.Result;
+import luz.dsexplorer.objects.Result.Type;
 
 
 /**
@@ -63,9 +64,7 @@ public class DSEditor extends javax.swing.JPanel {
 				txtValue = new JTextField();
 			}
 			{
-				ComboBoxModel cbValueModel = 
-					new DefaultComboBoxModel(
-							new String[] { "Item One", "Item Two" });
+				ComboBoxModel cbValueModel = new DefaultComboBoxModel(Type.values());
 				cbValue = new JComboBox();
 				cbValue.setModel(cbValueModel);
 			}
@@ -119,7 +118,8 @@ public class DSEditor extends javax.swing.JPanel {
 
 	public void setResult(Result result) {
 		txtValue.setText(result.getValue().toString());
-		txtAddress.setText(result.getPointerString());		
+		txtAddress.setText(result.getPointerString());
+		cbValue.setSelectedItem(result.getType());
 	}
 
 }

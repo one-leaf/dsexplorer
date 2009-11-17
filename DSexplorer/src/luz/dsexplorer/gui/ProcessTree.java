@@ -30,10 +30,6 @@ public class ProcessTree extends JTree {
 		sm.setSelectionPath(new TreePath(model.getRoot()));
 	}
 	
-	public void addPointer(Long pointer){
-		addResult(new Result(pointer, null));
-	}
-
 	public void addResult(Result result) {
 		rl.add(result);
 		refresh();
