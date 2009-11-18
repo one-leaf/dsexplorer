@@ -1,6 +1,8 @@
 package luz.dsexplorer.gui;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -37,7 +39,7 @@ public class DSEditor extends javax.swing.JPanel {
 	private JLabel lblValue;
 	private JTextField txtAddress;
 	private JLabel jLabel1;
-
+	private Result result;
 	/**
 	* Auto-generated main method to display this 
 	* JPanel inside a new JFrame.
@@ -67,6 +69,11 @@ public class DSEditor extends javax.swing.JPanel {
 				ComboBoxModel cbValueModel = new DefaultComboBoxModel(Type.values());
 				cbValue = new JComboBox();
 				cbValue.setModel(cbValueModel);
+				cbValue.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						cbValueActionPerformed();
+					}
+				});
 			}
 			{
 				lblValue = new JLabel();
@@ -78,6 +85,11 @@ public class DSEditor extends javax.swing.JPanel {
 			}
 			{
 				txtAddress = new JTextField();
+				txtAddress.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						txtAddressActionPerformed();
+					}
+				});
 			}
 			{
 				lblType = new JLabel();
@@ -116,10 +128,25 @@ public class DSEditor extends javax.swing.JPanel {
 		}
 	}
 
+
 	public void setResult(Result result) {
+		this.result=result;
 		txtValue.setText(result.getValue().toString());
 		txtAddress.setText(result.getPointerString());
 		cbValue.setSelectedItem(result.getType());
 	}
+	
+	private void txtAddressActionPerformed() {
+		try{
+			result.setPointer(Long.parseLong(txtAddress.getText(),16));
+			txtValue.setText(result.getValue().toString());
+		}catch(NumberFormatException e){};		
+	}
+	
+	private void cbValueActionPerformed() {
+		result.setType((Type)cbValue.getSelectedItem());
+		txtValue.setText(result.getValue().toString());
+	}
+
 
 }

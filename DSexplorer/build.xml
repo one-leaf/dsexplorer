@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="dist" name="DSexplorer">
+    <!--ANT 1.7 is required-->
+	
+    <target name="dist">
+        <jar destfile="dist/dsExplorer.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="luz.dsexplorer.init.Init"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ commons-logging-1.1.1.jar jna3.2.3.jar jna3.2.3-examples.jar"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="bin"/>
+            <zipfileset dir="lib" includes="*.jar"/>
+        </jar>
+    </target>
+</project>
