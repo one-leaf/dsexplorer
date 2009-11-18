@@ -120,6 +120,7 @@ public class MainWindow extends javax.swing.JFrame {
 		});
 		
 		dse=new DSEditor();
+
 	}
 	
 	private void initGUI() {

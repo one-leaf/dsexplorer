@@ -80,16 +80,16 @@ public class Result extends DefaultMutableTreeNode{
 			return null;
 		}
 		switch (type) {
-		case Byte1:		value=buffer.getByte(0);								break;
-		case Byte2:		value=buffer.getShort(0);								break;
-		case Byte4:		value=buffer.getInt(0);									break;
-		case Byte8:		value=buffer.getLong(0);								break;
-		case Float:		value=buffer.getFloat(0);								break;
-		case Double:	value=buffer.getDouble(0);								break;
-		case Ascii:		value=buffer.getCharArray(0L, (int)buffer.getSize());	break;
-		case Unicode:	value=buffer.getString(0);								break;
-		case ByteArray:	value=buffer.getByteArray(0L, (int)buffer.getSize());	break;
-		case Custom:	value=buffer.getByteArray(0L, (int)buffer.getSize());	break;
+		case Byte1:		value=buffer.getByte     (0);							break;
+		case Byte2:		value=buffer.getShort    (0);							break;
+		case Byte4:		value=buffer.getInt      (0);							break;
+		case Byte8:		value=buffer.getLong     (0);							break;
+		case Float:		value=buffer.getFloat    (0);							break;
+		case Double:	value=buffer.getDouble   (0);							break;
+		case Ascii:		value=buffer.getByteArray(0, (int)buffer.getSize());	break;//Bounds exceeds available space
+		case Unicode:	value=buffer.getString   (0);							break;
+		case ByteArray:	value=buffer.getByteArray(0, (int)buffer.getSize());	break;
+		case Custom:	value=buffer.getByteArray(0, (int)buffer.getSize());	break;
 		}
 		return value;
 	}
