@@ -1,6 +1,7 @@
 package luz.dsexplorer.gui;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -40,6 +41,8 @@ public class DSEditor extends javax.swing.JPanel {
 	private JTextField txtAddress;
 	private JLabel jLabel1;
 	private Result result;
+	private JTextField txtSize;
+	private JLabel jLabel2;
 	/**
 	* Auto-generated main method to display this 
 	* JPanel inside a new JFrame.
@@ -64,6 +67,7 @@ public class DSEditor extends javax.swing.JPanel {
 			setPreferredSize(new Dimension(400, 300));
 			{
 				txtValue = new JTextField();
+				txtValue.setFont(new Font("Lucida Console", Font.PLAIN, 11));
 			}
 			{
 				ComboBoxModel cbValueModel = new DefaultComboBoxModel(Type.values());
@@ -84,7 +88,20 @@ public class DSEditor extends javax.swing.JPanel {
 				jLabel1.setText("Address");
 			}
 			{
+				jLabel2 = new JLabel();
+				jLabel2.setText("Size");
+			}
+			{
+				txtSize = new JTextField();
+				txtSize.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						txtSizeActionPerformed();
+					}
+				});
+			}
+			{
 				txtAddress = new JTextField();
+				txtAddress.setFont(new Font("Lucida Console", Font.PLAIN, 11));
 				txtAddress.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						txtAddressActionPerformed();
@@ -108,20 +125,30 @@ public class DSEditor extends javax.swing.JPanel {
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				    .addComponent(cbValue, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblType, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addContainerGap(215, 215));
+				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+				    .addComponent(txtSize, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(jLabel2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addContainerGap(189, 189));
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
 				.addGroup(thisLayout.createParallelGroup()
+				    .addComponent(jLabel2, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblType, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(jLabel1, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 				.addGroup(thisLayout.createParallelGroup()
 				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				        .addComponent(txtSize, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				        .addGap(0, 56, Short.MAX_VALUE))
+				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				        .addComponent(cbValue, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				        .addGap(0, 194, Short.MAX_VALUE))
-				    .addComponent(txtValue, GroupLayout.Alignment.LEADING, 0, 295, Short.MAX_VALUE)
-				    .addComponent(txtAddress, GroupLayout.Alignment.LEADING, 0, 295, Short.MAX_VALUE))
+				        .addGap(0, 56, Short.MAX_VALUE))
+				    .addComponent(txtValue, GroupLayout.Alignment.LEADING, 0, 157, Short.MAX_VALUE)
+				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				        .addComponent(txtAddress, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				        .addGap(0, 56, Short.MAX_VALUE)))
 				.addContainerGap());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -131,22 +158,33 @@ public class DSEditor extends javax.swing.JPanel {
 
 	public void setResult(Result result) {
 		this.result=result;
-		txtValue.setText(result.getValue().toString());
+		txtValue.setText(result.getValueString());
 		txtAddress.setText(result.getPointerString());
 		cbValue.setSelectedItem(result.getType());
+		txtSize.setText(""+result.getSize());
+		txtSize.setEnabled(!result.getType().isFixedSize());
+		
 	}
 	
 	private void txtAddressActionPerformed() {
 		try{
 			result.setPointer(Long.parseLong(txtAddress.getText(),16));
-			txtValue.setText(result.getValue().toString());
+			txtValue.setText(result.getValueString());
 		}catch(NumberFormatException e){};		
 	}
 	
 	private void cbValueActionPerformed() {
 		result.setType((Type)cbValue.getSelectedItem());
-		txtValue.setText(result.getValue().toString());
+		txtValue.setText(result.getValueString());
+		txtSize.setText(""+result.getSize());
+		txtSize.setEnabled(!result.getType().isFixedSize());
 	}
-
+	
+	private void txtSizeActionPerformed() {
+		try{
+			result.setSize(Integer.parseInt(txtSize.getText()));
+			txtValue.setText(result.getValueString());			
+		}catch(NumberFormatException e){};	
+	}
 
 }

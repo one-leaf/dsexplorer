@@ -6,6 +6,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import luz.dsexplorer.objects.Result.Type;
+import luz.dsexplorer.objects.listener.MemoryListener;
 import luz.dsexplorer.winapi.interfaces.Kernel32.LPPROCESSENTRY32;
 import luz.dsexplorer.winapi.interfaces.Kernel32.MEMORY_BASIC_INFORMATION;
 import luz.dsexplorer.winapi.interfaces.Ntdll.PEB;
@@ -27,7 +28,16 @@ public class Process {
 	private final int cntThreads;
 	private final int th32ParentProcessID;
 	private final int pcPriClassBase;
-
+	
+	private MemoryListener listener;
+	private MemoryListener Byte1listener;
+	private MemoryListener Byte2listener;
+	private MemoryListener Byte4listener;
+	private MemoryListener Byte8listener;
+	private MemoryListener Floatlistener;
+	private MemoryListener Doublelistener;
+	
+	
 	private Kernel32Tools k32   = Kernel32Tools.getInstance();
 	private PsapiTools    psapi = PsapiTools   .getInstance();
 	private Shell32Tools  s32   = Shell32Tools .getInstance();
@@ -41,6 +51,96 @@ public class Process {
 		this.cntThreads=pe32.cntThreads;
 		this.pcPriClassBase=pe32.pcPriClassBase.intValue();
 		this.th32ParentProcessID=pe32.th32ParentProcessID;
+		
+		Byte1listener=new MemoryListener() {
+			@Override
+			public void mem(Memory outputBuffer, long address, long size) {
+				byte current;
+				byte target=Byte.parseByte(getValue());
+				for (long pos = 0; pos < size; pos=pos+1) {
+					current=outputBuffer.getByte(pos);
+					if (current==target){
+						getResults().add(new Result(Process.this, address+pos, current, getType()));
+						System.out.println("Found:\t"+Long.toHexString(address+pos));
+					}
+				}
+			}
+		};
+		Byte2listener=new MemoryListener() {
+			@Override
+			public void mem(Memory outputBuffer, long address, long size) {
+				Short current;
+				Short target=Short.parseShort(getValue());
+				for (long pos = 0; pos < size; pos=pos+1) {
+					current=outputBuffer.getShort(pos);
+					if (current==target){
+						getResults().add(new Result(Process.this, address+pos, current, getType()));
+						System.out.println("Found:\t"+Long.toHexString(address+pos));
+					}
+				}
+			}
+		};
+		Byte4listener=new MemoryListener() {
+			@Override
+			public void mem(Memory outputBuffer, long address, long size) {
+				Integer current;
+				Integer target=Integer.parseInt(getValue());
+				for (long pos = 0; pos < size; pos=pos+1) {
+					current=outputBuffer.getInt(pos);
+					if (current==target){
+						getResults().add(new Result(Process.this, address+pos, current, getType()));
+						System.out.println("Found:\t"+Long.toHexString(address+pos));
+					}
+				}
+			}
+		};
+		Byte8listener=new MemoryListener() {
+			@Override
+			public void mem(Memory outputBuffer, long address, long size) {
+				Long current;
+				Long target=Long.parseLong(getValue());
+				for (long pos = 0; pos < size; pos=pos+1) {
+					current=outputBuffer.getLong(pos);
+					if (current==target){
+						getResults().add(new Result(Process.this, address+pos, current, getType()));
+						System.out.println("Found:\t"+Long.toHexString(address+pos));
+					}
+				}
+			}
+		};
+		Floatlistener=new MemoryListener() {
+			@Override
+			public void mem(Memory outputBuffer, long address, long size) {
+				Float current;
+				Float target=Float.parseFloat(getValue());
+				for (long pos = 0; pos < size; pos=pos+1) {
+					current=outputBuffer.getFloat(pos);
+					if (Math.round(current)==Math.round(target)){
+						getResults().add(new Result(Process.this, address+pos, current, getType()));
+						System.out.println("Found:\t"+Long.toHexString(address+pos));
+					}
+				}
+			}
+		};
+		Doublelistener=new MemoryListener() {
+			@Override
+			public void mem(Memory outputBuffer, long address, long size) {
+				Double current;
+				Double target=Double.parseDouble(getValue());
+				for (long pos = 0; pos < size; pos=pos+1) {
+					current=outputBuffer.getDouble(pos);
+					if (Math.round(current)==Math.round(target)){
+						getResults().add(new Result(Process.this, address+pos, current, getType()));
+						System.out.println("Found:\t"+Long.toHexString(address+pos));
+					}
+				}
+			}
+		};
+		
+		
+		
+		
+		
 	}
 
 	private Pointer handleCache =null;
@@ -204,6 +304,44 @@ public class Process {
 	public void ReadProcessMemory(Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Exception{
 		k32.ReadProcessMemory(getHandle(), pointer, outputBuffer, nSize, outNumberOfBytesRead);
 	}
+	
+	private void search(long from, long to) throws Exception{
+		int bufferSize=512*1024;
+		int readSize;
+		long regionEnd;
+		MEMORY_BASIC_INFORMATION info;
+		Memory outputBuffer = new Memory(bufferSize);
+		
+		for (long regionBegin = from; regionBegin < to; ) {
+			info=VirtualQueryEx(Pointer.createConstant(regionBegin));
+			regionEnd=regionBegin+info.RegionSize;
+		
+			if (info.State==Kernel32Tools.MEM_COMMIT 
+				&& (info.Protect&Kernel32Tools.PAGE_NOACCESS    )==0
+				&& (info.Protect&Kernel32Tools.PAGE_GUARD       )==0
+				&& (info.Protect&Kernel32Tools.PAGE_EXECUTE_READ)==0
+				&& (info.Protect&Kernel32Tools.PAGE_READONLY    )==0
+			){
+				//System.out.println("Region:\t"+Long.toHexString(regionBegin)+" - "+Long.toHexString(regionBegin+regionSize)+"\t"+info.BaseAddress);
+				
+				for (long regionPart = regionBegin; regionPart < regionEnd; regionPart+=bufferSize) {
+					if ((regionPart+bufferSize)<regionEnd)
+						readSize=bufferSize;
+					else
+						readSize=(int)(regionEnd-regionPart);
+					
+					System.out.println("Read:\t"+Long.toHexString(regionPart)+" - "+Long.toHexString(regionPart+readSize)+"\t"+Integer.toHexString(info.Type));
+					try{
+						ReadProcessMemory(Pointer.createConstant(regionPart), outputBuffer, readSize, null);
+						listener.mem(outputBuffer, regionPart, readSize);					
+					}catch(Exception e){
+						System.out.println(e.getMessage()+"\t"+Long.toHexString(regionPart)+"\t"+Integer.toHexString(info.Type));
+					}
+				}
+			}
+			regionBegin+=info.RegionSize;
+		}
+	}
 
 	public List<Result> search(long from, long to, final String value, final Type type) throws Exception {
 		System.out.println("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" type "+type);
@@ -211,111 +349,15 @@ public class Process {
 		long timer=System.currentTimeMillis();
 
 		switch (type){
-		case Byte1:
-				new MemoryReader(this) {
-					@Override
-					public void mem(Memory outputBuffer, long address, long size) {
-						byte current;
-						byte target=Byte.parseByte(value);
-						for (long pos = 0; pos < size; pos=pos+1) {
-							current=outputBuffer.getByte(pos);
-							if (current==target){
-								results.add(new Result(Process.this, address+pos, current, type));
-								System.out.println("Found:\t"+Long.toHexString(address+pos));
-							}
-						}
-					}
-				}.read(from, to);
-			break;
-			
-		case Byte2:
-				new MemoryReader(this) {
-					@Override
-					public void mem(Memory outputBuffer, long address, long size) {
-						short current;
-						short target=Short.parseShort(value);
-						for (long pos = 0; pos < size; pos=pos+1) {
-							current=outputBuffer.getShort(pos);
-							if (current==target){
-								results.add(new Result(Process.this, address+pos, current, type));
-								System.out.println("Found:\t"+Long.toHexString(address+pos));
-							}
-						}
-					}
-				}.read(from, to);
-			break;
-			
-		case Byte4:
-				new MemoryReader(this) {
-					@Override
-					public void mem(Memory outputBuffer, long address, long size) {
-						int current;
-						int target=Integer.parseInt(value);
-						for (long pos = 0; pos < size; pos=pos+1) {
-							current=outputBuffer.getInt(pos);
-							if (current==target){
-								results.add(new Result(Process.this, address+pos, current, type));
-								System.out.println("Found:\t"+Long.toHexString(address+pos));
-							}
-						}
-					}
-				}.read(from, to);
-			break;
-			
-		case Byte8:
-				new MemoryReader(this) {
-					@Override
-					public void mem(Memory outputBuffer, long address, long size) {
-						long current;
-						long target=Long.parseLong(value);
-						for (long pos = 0; pos < size; pos=pos+1) {
-							current=outputBuffer.getLong(pos);
-							if (current==target){
-								results.add(new Result(Process.this, address+pos, current, type));
-								System.out.println("Found:\t"+Long.toHexString(address+pos));
-							}
-						}
-					}
-				}.read(from, to);
-			break;
-			
-		case Float:
-				new MemoryReader(this) {
-					@Override
-					public void mem(Memory outputBuffer, long address, long size) {
-						float current;
-						float target=Float.parseFloat(value);
-						for (long pos = 0; pos < size; pos=pos+4) {
-							current=outputBuffer.getFloat(pos);
-							if (Math.round(current)==target){
-								results.add(new Result(Process.this, address+pos, current, type));
-								System.out.println("Found:\t"+Long.toHexString(address+pos));
-							}
-						}
-					}
-				}.read(from, to);
-			break;
-			
-		case Double:
-				new MemoryReader(this) {
-					@Override
-					public void mem(Memory outputBuffer, long address, long size) {
-						double current;
-						double target=Double.parseDouble(value);
-						for (long pos = 0; pos < size; pos=pos+1) {
-							current=outputBuffer.getDouble(pos);
-							if (Math.round(current)==target){
-								results.add(new Result(Process.this, address+pos, current, type));
-								System.out.println("Found:\t"+Long.toHexString(address+pos));
-							}
-						}
-					}
-				}.read(from, to);
-			break;	
-			
-
+			case Byte1:		listener=Byte1listener;		break;	
+			case Byte2:		listener=Byte2listener;		break;	
+			case Byte4:		listener=Byte4listener;		break;	
+			case Byte8:		listener=Byte8listener;		break;
+			case Float:		listener=Floatlistener;		break;	
+			case Double:	listener=Doublelistener;	break;	
 		}
-		
+		listener.init(results, value, type);
+		search(from, to);
 		
 		
 		System.out.println("timer "+(System.currentTimeMillis()-timer));
