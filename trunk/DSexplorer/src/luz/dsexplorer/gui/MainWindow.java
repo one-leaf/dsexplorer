@@ -46,13 +46,16 @@ public class MainWindow extends javax.swing.JFrame {
 	private JMenu mFile;
 	private JMenuItem miNew;
 	private JScrollPane jScrollPane1;
-	private JSeparator jSeparator2;
 	private JSeparator jSeparator1;
+	private JSeparator jSeparator2;
+	private JSeparator jSeparator3;
 	private JMenuItem miSettings;
 	private JMenuItem miOpen;	
 	private JMenuItem miSave;
 	private JMenuItem miExit;
 	private JMenu mEdit;
+	private JMenuItem miAdd;
+	private JMenuItem miDelete;
 	private JMenuItem miCopy;
 	private JMenuItem miPaste;	
 	private JMenu mProcess;
@@ -197,6 +200,20 @@ public class MainWindow extends javax.swing.JFrame {
 					mEdit = new JMenu();
 					jMenuBar.add(mEdit);
 					mEdit.setText("Edit");
+					{
+						miAdd = new JMenuItem();
+						mEdit.add(miAdd);
+						miAdd.setText("Add");
+					}
+					{
+						miDelete = new JMenuItem();
+						mEdit.add(miDelete);
+						miDelete.setText("Delete");
+					}
+					{
+						jSeparator3 = new JSeparator();
+						mEdit.add(jSeparator3);
+					}
 					{
 						miCopy = new JMenuItem();
 						mEdit.add(miCopy);
