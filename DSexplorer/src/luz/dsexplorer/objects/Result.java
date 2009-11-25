@@ -13,7 +13,9 @@ public class Result extends DefaultMutableTreeNode{
 	private static final long serialVersionUID = 4163723615095260358L;
 	private Long pointer;
 	private Type type;
-	private Object value=null;
+	private Object valueCache=null;
+	private boolean valueCacheOK=false;
+	
 	private int size;
 	private Process process;
 	private String customName="new custom";
@@ -47,7 +49,8 @@ public class Result extends DefaultMutableTreeNode{
 	public Result(Process process, Long pointer, Object value, Type type){
 		this.process=process;
 		this.pointer=pointer;
-		this.value=value;
+		this.valueCache=value;
+		this.valueCacheOK=(value!=null);
 		this.type=type;
 		this.size=type.getSize();
 	}
@@ -91,12 +94,7 @@ public class Result extends DefaultMutableTreeNode{
 				size+=((Result)getChildAt(i)).getSize();
 			}
 		}
-		log.warn("get size "+size);
 		return size;
-	}
-	
-	public Object getValue() {
-		return value;
 	}
 	
 	public String getValueString(){
@@ -104,7 +102,7 @@ public class Result extends DefaultMutableTreeNode{
 		switch (type) {
 		case ByteArray:
 			sb = new StringBuilder();
-			byte[] bytes=(byte[])value;
+			byte[] bytes=(byte[])getValue();
 			for (int i = 0; i < bytes.length; i++) {
 				sb.append(String.format("%1$02X", bytes[i]));
 			}
@@ -112,40 +110,45 @@ public class Result extends DefaultMutableTreeNode{
 			
 		case Ascii:
 			sb = new StringBuilder();
-			byte[] chars=(byte[])value;
+			byte[] chars=(byte[])getValue();
 			for (int i = 0; i < chars.length; i++) {
 				sb.append((char)chars[i]);
 			}
 			return sb.toString();			
 			
 		default:
-			return value==null?null:value.toString();
+			return getValue()==null?null:getValue().toString();
 		}
 	}
 	
-	public Object getValueRecent(){
+	public Object getValue(){
+		if(valueCacheOK)
+			return valueCache;
+		
 		if (size==0)
 			return null;
 		
 		Memory buffer=new Memory(size);
 		try {
+			//log.trace("Read: "+getPointerString());
 			process.ReadProcessMemory(Pointer.createConstant(getPointer()), buffer, (int)buffer.getSize(), null);
 		} catch (Exception e) {
 			return null;
 		}
 		switch (type) {
-			case Byte1:		value=buffer.getByte     (0);		break;
-			case Byte2:		value=buffer.getShort    (0);		break;
-			case Byte4:		value=buffer.getInt      (0);		break;
-			case Byte8:		value=buffer.getLong     (0);		break;
-			case Float:		value=buffer.getFloat    (0);		break;
-			case Double:	value=buffer.getDouble   (0);		break;
-			case Ascii:		value=buffer.getByteArray(0, size);	break;//Bounds exceeds available space
-			case Unicode:	value=buffer.getString   (0);		break;
-			case ByteArray:	value=buffer.getByteArray(0, size);	break;
-			case Custom:	value=null;							break;
+			case Byte1:		valueCache=buffer.getByte     (0);			break;
+			case Byte2:		valueCache=buffer.getShort    (0);			break;
+			case Byte4:		valueCache=buffer.getInt      (0);			break;
+			case Byte8:		valueCache=buffer.getLong     (0);			break;
+			case Float:		valueCache=buffer.getFloat    (0);			break;
+			case Double:	valueCache=buffer.getDouble   (0);			break;
+			case Ascii:		valueCache=buffer.getByteArray(0, size);	break;//Bounds exceeds available space
+			case Unicode:	valueCache=buffer.getString   (0);			break;
+			case ByteArray:	valueCache=buffer.getByteArray(0, size);	break;
+			case Custom:	valueCache=null;							break;
 		}
-		return value;
+		valueCacheOK=true;
+		return valueCache;
 	}
 	
 	public String setName(String name){
@@ -153,10 +156,12 @@ public class Result extends DefaultMutableTreeNode{
 	}
 	
 	public void setPointer(Long pointer){
+		valueCacheOK=false;
 		this.pointer=pointer;
 	}
 	
 	public void setType(Type type) {
+		valueCacheOK=false;
 		this.type = type;
 		this.size=type.getSize();
 		
@@ -168,14 +173,15 @@ public class Result extends DefaultMutableTreeNode{
 	}
 	
 	public void setSize(int size){
+		valueCacheOK=false;
 		if (size>0 && !type.isFixedSize()){
-			log.warn("set size "+size);
 			this.size=size;
 		}
 	}
 	
 	public void setValue(Object value) {
-		this.value=value;
+		valueCacheOK=true;
+		this.valueCache=value;
 		//TODO write mem
 	}
 	
@@ -215,7 +221,7 @@ public class Result extends DefaultMutableTreeNode{
 	
 	@Override
 	public String toString() {
-		return getPointerString()+"-"+getName()+"-"+getValueRecent();
+		return getPointerString()+"-"+getName()+"-"+getValueString();
 	}
 
 
