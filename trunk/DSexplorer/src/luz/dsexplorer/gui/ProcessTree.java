@@ -44,7 +44,9 @@ public class ProcessTree extends JTree {
 	public void refresh(){
 		TreePath selection = sm.getSelectionPath();
 		model.reload();		//FIXME selection disapears
+							//FIXME expansion disapears
 		sm.setSelectionPath(selection);
+		this.expandPath(selection);	
 	}
 
 

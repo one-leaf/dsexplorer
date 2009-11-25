@@ -16,12 +16,9 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 import luz.dsexplorer.gui.listener.MemorySearchListener;
 import luz.dsexplorer.objects.Process;

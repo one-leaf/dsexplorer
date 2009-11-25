@@ -355,6 +355,8 @@ public class Process {
 		log.debug("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" type "+type);
 		final List<Result> results = new LinkedList<Result>();
 		long timer=System.currentTimeMillis();
+		if (value==null || value.trim().equals(""))
+			return results;		
 
 		switch (type){
 			case Byte1:		listener=Byte1listener;		break;	

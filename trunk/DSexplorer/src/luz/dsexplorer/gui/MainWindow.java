@@ -20,6 +20,7 @@ import javax.swing.WindowConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
+import luz.dsexplorer.gui.listener.DSEditorListener;
 import luz.dsexplorer.gui.listener.MemorySearchListener;
 import luz.dsexplorer.gui.listener.ProcessDialogListener;
 import luz.dsexplorer.objects.Process;
@@ -123,6 +124,32 @@ public class MainWindow extends javax.swing.JFrame {
 		});
 		
 		dse=new DSEditor();
+		dse.addListener(new DSEditorListener() {
+			@Override
+			public void AddChildPerformed(Result Result) {
+				tree.refresh();	//TODO more precise refresh			
+			}
+
+			@Override
+			public void AddessChanged(Result result) {
+				tree.refresh();	//TODO more precise refresh			
+			}
+
+			@Override
+			public void SizeChanged(Result o) {
+				tree.refresh();	//TODO more precise refresh
+			}
+
+			@Override
+			public void TypeChanged(Result o) {
+				tree.refresh();	//TODO more precise refresh
+			}
+
+			@Override
+			public void NameChanged(Result o) {
+				tree.refresh();	//TODO more precise refresh
+			}
+		});
 
 	}
 	
@@ -138,7 +165,7 @@ public class MainWindow extends javax.swing.JFrame {
 				{
 					jScrollPane1 = new JScrollPane();
 					jSplitPane1.add(jScrollPane1, JSplitPane.LEFT);
-					jScrollPane1.setPreferredSize(new Dimension(150, 350));
+					jScrollPane1.setPreferredSize(new Dimension(250, 550));
 					jScrollPane1.setMinimumSize(new Dimension(100, 350));
 					{
 						tree = new ProcessTree();
@@ -155,7 +182,7 @@ public class MainWindow extends javax.swing.JFrame {
 					jSplitPane1.add(jPanel1, JSplitPane.RIGHT);
 					BorderLayout jPanel1Layout = new BorderLayout();
 					jPanel1.setLayout(jPanel1Layout);
-					jPanel1.setPreferredSize(new Dimension(330, 450));
+					jPanel1.setPreferredSize(new Dimension(350, 550));
 					jPanel1.setMinimumSize(new Dimension(250, 350));
 				}
 			}

@@ -8,30 +8,21 @@ import java.awt.event.ActionListener;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 
+import luz.dsexplorer.gui.listener.DSEditorListener;
 import luz.dsexplorer.objects.Result;
 import luz.dsexplorer.objects.Result.Type;
 
 
-/**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
 public class DSEditor extends javax.swing.JPanel {
 	private static final long serialVersionUID = -6928391243482994782L;
 	private JTextField txtValue;
@@ -39,10 +30,15 @@ public class DSEditor extends javax.swing.JPanel {
 	private JLabel lblType;
 	private JLabel lblValue;
 	private JTextField txtAddress;
-	private JLabel jLabel1;
+	private JLabel lblAddress;
 	private Result result;
 	private JTextField txtSize;
-	private JLabel jLabel2;
+	private JLabel lblSize;
+	private JLabel lblName;
+	private JSeparator jSeparator1;
+	private JTextField txtName;
+	private JButton btnAddChild;
+	private enum Action{AddChild, AddressChanged, TypeChanged, SizeChanged, NameChanged}
 	/**
 	* Auto-generated main method to display this 
 	* JPanel inside a new JFrame.
@@ -84,12 +80,32 @@ public class DSEditor extends javax.swing.JPanel {
 				lblValue.setText("Value");
 			}
 			{
-				jLabel1 = new JLabel();
-				jLabel1.setText("Address");
+				lblAddress = new JLabel();
+				lblAddress.setText("Address");
 			}
 			{
-				jLabel2 = new JLabel();
-				jLabel2.setText("Size");
+				btnAddChild = new JButton();
+				btnAddChild.setText("Add Field");
+				btnAddChild.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnAddChildActionPerformed();
+					}
+				});
+			}
+			{
+				jSeparator1 = new JSeparator();
+			}
+			{
+				txtName = new JTextField();
+				txtName.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						txtNameActionPerformed();
+					}
+				});
+			}
+			{
+				lblSize = new JLabel();
+				lblSize.setText("Size");
 			}
 			{
 				txtSize = new JTextField();
@@ -109,17 +125,21 @@ public class DSEditor extends javax.swing.JPanel {
 				});
 			}
 			{
+				lblName = new JLabel();
+				lblName.setText("Name");
+			}
+			{
 				lblType = new JLabel();
 				lblType.setText("Value Type");
 			}
 			thisLayout.setVerticalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				    .addComponent(txtAddress, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(jLabel1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				    .addComponent(txtAddress, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblAddress, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				    .addComponent(txtValue, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(txtValue, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblValue, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -127,28 +147,46 @@ public class DSEditor extends javax.swing.JPanel {
 				    .addComponent(lblType, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				    .addComponent(txtSize, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(jLabel2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addContainerGap(189, 189));
+				    .addComponent(txtSize, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblSize, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				.addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 0, GroupLayout.PREFERRED_SIZE)
+				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+				    .addComponent(txtName, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblName, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				.addComponent(btnAddChild, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				.addContainerGap(114, Short.MAX_VALUE));
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
 				.addGroup(thisLayout.createParallelGroup()
-				    .addComponent(jLabel2, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblType, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(jLabel1, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
-				.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-				.addGroup(thisLayout.createParallelGroup()
-				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				        .addComponent(txtSize, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				        .addGap(0, 56, Short.MAX_VALUE))
-				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				        .addComponent(cbValue, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				        .addGap(0, 56, Short.MAX_VALUE))
-				    .addComponent(txtValue, GroupLayout.Alignment.LEADING, 0, 157, Short.MAX_VALUE)
-				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				        .addComponent(txtAddress, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				        .addGap(0, 56, Short.MAX_VALUE)))
+				    .addGroup(thisLayout.createSequentialGroup()
+				        .addGroup(thisLayout.createParallelGroup()
+				            .addComponent(lblName, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblSize, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblType, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblAddress, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
+				        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+				        .addGroup(thisLayout.createParallelGroup()
+				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                .addComponent(txtName, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				                .addGap(0, 194, Short.MAX_VALUE))
+				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                .addComponent(txtSize, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				                .addGap(0, 194, Short.MAX_VALUE))
+				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                .addComponent(cbValue, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				                .addGap(0, 194, Short.MAX_VALUE))
+				            .addComponent(txtValue, GroupLayout.Alignment.LEADING, 0, 295, Short.MAX_VALUE)
+				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                .addComponent(txtAddress, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				                .addGap(0, 194, Short.MAX_VALUE))
+				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                .addComponent(btnAddChild, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				                .addGap(0, 194, Short.MAX_VALUE))))
+				    .addComponent(jSeparator1, GroupLayout.Alignment.LEADING, 0, 380, Short.MAX_VALUE))
 				.addContainerGap());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -158,33 +196,100 @@ public class DSEditor extends javax.swing.JPanel {
 
 	public void setResult(Result result) {
 		this.result=result;
+		
 		txtValue.setText(result.getValueString());
 		txtAddress.setText(result.getPointerString());
+		txtAddress.setEnabled(!result.isRelative());
 		cbValue.setSelectedItem(result.getType());
 		txtSize.setText(""+result.getSize());
 		txtSize.setEnabled(!result.getType().isFixedSize());
-		
+		txtName.setText(result.getName());
+		txtName.setVisible(result.isCustom());
+		lblName.setVisible(result.isCustom());
+		btnAddChild.setVisible(result.isCustom());
 	}
 	
 	private void txtAddressActionPerformed() {
 		try{
 			result.setPointer(Long.parseLong(txtAddress.getText(),16));
 			txtValue.setText(result.getValueString());
+			fireActionPerformed(Action.AddressChanged, result);
 		}catch(NumberFormatException e){};		
 	}
 	
 	private void cbValueActionPerformed() {
-		result.setType((Type)cbValue.getSelectedItem());
-		txtValue.setText(result.getValueString());
-		txtSize.setText(""+result.getSize());
-		txtSize.setEnabled(!result.getType().isFixedSize());
+		Type newType=(Type)cbValue.getSelectedItem();
+		if (!newType.equals(result.getType())){	//Avoid unecessairy changes
+			result.setType(newType);
+			fireActionPerformed(Action.TypeChanged, result);
+			
+			txtValue.setText(result.getValueString());
+			txtSize.setText(""+result.getSize());
+			txtSize.setEnabled(!result.getType().isFixedSize());
+			txtName.setText(result.getName());
+			txtName.setVisible(result.isCustom());
+			lblName.setVisible(result.isCustom());
+			btnAddChild.setVisible(result.isCustom());
+		}
 	}
 	
 	private void txtSizeActionPerformed() {
 		try{
 			result.setSize(Integer.parseInt(txtSize.getText()));
-			txtValue.setText(result.getValueString());			
+			txtValue.setText(result.getValueString());
+			fireActionPerformed(Action.SizeChanged, result);
 		}catch(NumberFormatException e){};	
 	}
+	
+	private void txtNameActionPerformed() {
+		result.setName(txtName.getText());
+		fireActionPerformed(Action.NameChanged, result);
+	}
+	
+	private void btnAddChildActionPerformed() {
+		Result r = result.addCustomEntry(Type.Byte4);
+		fireActionPerformed(Action.AddChild, r);		
+	}
+	
+	///////////////////////////////////////////////////////////
+	
+	public void addListener(DSEditorListener l) {
+        listenerList.add(DSEditorListener.class, l);
+    }
+    
+    public void removeListener(DSEditorListener l) {
+	    listenerList.remove(DSEditorListener.class, l);
+    }
+    
+    public DSEditorListener[] getListeners() {
+        return (DSEditorListener[])(listenerList.getListeners(DSEditorListener.class));
+    }
+    
+    protected void fireActionPerformed(Action action, Object o) {
+        Object[] listeners = listenerList.getListenerList(); // Guaranteed to return a non-null array
+        // Process the listeners last to first, notifying those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==DSEditorListener.class) {
+            	switch (action){
+	            	case AddChild:
+	            		((DSEditorListener)listeners[i+1]).AddChildPerformed((Result)o);
+	            		break;
+	            	case AddressChanged:
+	            		((DSEditorListener)listeners[i+1]).AddessChanged((Result)o);
+	            		break;
+	            	case TypeChanged:
+	            		((DSEditorListener)listeners[i+1]).TypeChanged((Result)o);
+	            		break;
+	            	case SizeChanged:
+	            		((DSEditorListener)listeners[i+1]).SizeChanged((Result)o);
+	            		break;
+	            	case NameChanged:
+	            		((DSEditorListener)listeners[i+1]).NameChanged((Result)o);
+	            		break;
+            	}
+            }          
+        }
+    }
+
 
 }
