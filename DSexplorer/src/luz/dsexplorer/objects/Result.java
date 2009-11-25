@@ -15,6 +15,7 @@ public class Result extends DefaultMutableTreeNode{
 	private Object value=null;
 	private int size;
 	private Process process;
+	
 	public enum Type{
 		//           fix, 	size, class
 		Byte1		(true,	1,	Byte.class), 
@@ -43,6 +44,7 @@ public class Result extends DefaultMutableTreeNode{
 		public Class getClazz()	       {return clazz;}
 		public boolean isFixedSize() {return fixedSize;}
 	}
+	
 	
 	public Result(Process process, Long pointer, Object value, Type type){
 		this.process=process;

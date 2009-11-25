@@ -17,12 +17,17 @@ import luz.dsexplorer.winapi.tools.PsapiTools;
 import luz.dsexplorer.winapi.tools.Shell32Tools;
 import luz.dsexplorer.winapi.tools.User32Tools;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 
 
 public class Process {
+	private static final Log log = LogFactory.getLog(Process.class);
+	
 	private final int pid;
 	private final String szExeFile;
 	private final int cntThreads;
@@ -61,7 +66,7 @@ public class Process {
 					current=outputBuffer.getByte(pos);
 					if (current==target){
 						getResults().add(new Result(Process.this, address+pos, current, getType()));
-						System.out.println("Found:\t"+Long.toHexString(address+pos));
+						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
 			}
@@ -71,11 +76,11 @@ public class Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Short current;
 				Short target=Short.parseShort(getValue());
-				for (long pos = 0; pos < size; pos=pos+1) {
+				for (long pos = 0; pos < size-1; pos=pos+1) {
 					current=outputBuffer.getShort(pos);
 					if (current==target){
 						getResults().add(new Result(Process.this, address+pos, current, getType()));
-						System.out.println("Found:\t"+Long.toHexString(address+pos));
+						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
 			}
@@ -85,11 +90,11 @@ public class Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Integer current;
 				Integer target=Integer.parseInt(getValue());
-				for (long pos = 0; pos < size; pos=pos+1) {
+				for (long pos = 0; pos < size-3; pos=pos+1) {
 					current=outputBuffer.getInt(pos);
 					if (current==target){
 						getResults().add(new Result(Process.this, address+pos, current, getType()));
-						System.out.println("Found:\t"+Long.toHexString(address+pos));
+						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
 			}
@@ -99,11 +104,11 @@ public class Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Long current;
 				Long target=Long.parseLong(getValue());
-				for (long pos = 0; pos < size; pos=pos+1) {
+				for (long pos = 0; pos < size-7; pos=pos+1) {
 					current=outputBuffer.getLong(pos);
 					if (current==target){
 						getResults().add(new Result(Process.this, address+pos, current, getType()));
-						System.out.println("Found:\t"+Long.toHexString(address+pos));
+						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
 			}
@@ -113,11 +118,11 @@ public class Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Float current;
 				Float target=Float.parseFloat(getValue());
-				for (long pos = 0; pos < size; pos=pos+1) {
+				for (long pos = 0; pos < size-3; pos=pos+1) {
 					current=outputBuffer.getFloat(pos);
 					if (Math.round(current)==Math.round(target)){
 						getResults().add(new Result(Process.this, address+pos, current, getType()));
-						System.out.println("Found:\t"+Long.toHexString(address+pos));
+						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
 			}
@@ -127,11 +132,11 @@ public class Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Double current;
 				Double target=Double.parseDouble(getValue());
-				for (long pos = 0; pos < size; pos=pos+1) {
+				for (long pos = 0; pos < size-7; pos=pos+1) {
 					current=outputBuffer.getDouble(pos);
 					if (Math.round(current)==Math.round(target)){
 						getResults().add(new Result(Process.this, address+pos, current, getType()));
-						System.out.println("Found:\t"+Long.toHexString(address+pos));
+						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
 			}
@@ -311,9 +316,11 @@ public class Process {
 		long regionEnd;
 		MEMORY_BASIC_INFORMATION info;
 		Memory outputBuffer = new Memory(bufferSize);
+		long maxRegionSize=0;
 		
 		for (long regionBegin = from; regionBegin < to; ) {
 			info=VirtualQueryEx(Pointer.createConstant(regionBegin));
+			maxRegionSize=Math.max(maxRegionSize, info.RegionSize);
 			regionEnd=regionBegin+info.RegionSize;
 		
 			if (info.State==Kernel32Tools.MEM_COMMIT 
@@ -330,21 +337,22 @@ public class Process {
 					else
 						readSize=(int)(regionEnd-regionPart);
 					
-					System.out.println("Read:\t"+Long.toHexString(regionPart)+" - "+Long.toHexString(regionPart+readSize)+"\t"+Integer.toHexString(info.Type));
+					log.trace("Read:\t"+Long.toHexString(regionPart)+" - "+Long.toHexString(regionPart+readSize)+"\t"+Integer.toHexString(info.Type));
 					try{
 						ReadProcessMemory(Pointer.createConstant(regionPart), outputBuffer, readSize, null);
-						listener.mem(outputBuffer, regionPart, readSize);					
+						listener.mem(outputBuffer, regionPart, readSize);
 					}catch(Exception e){
-						System.out.println(e.getMessage()+"\t"+Long.toHexString(regionPart)+"\t"+Integer.toHexString(info.Type));
+						log.warn(e.getMessage()+"\t"+Long.toHexString(regionPart)+"\t"+Integer.toHexString(info.Type));
 					}
 				}
 			}
 			regionBegin+=info.RegionSize;
 		}
+		log.debug("maxRegionSize "+(maxRegionSize/1024)+" kB");
 	}
 
 	public List<Result> search(long from, long to, final String value, final Type type) throws Exception {
-		System.out.println("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" type "+type);
+		log.debug("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" type "+type);
 		final List<Result> results = new LinkedList<Result>();
 		long timer=System.currentTimeMillis();
 
@@ -360,7 +368,7 @@ public class Process {
 		search(from, to);
 		
 		
-		System.out.println("timer "+(System.currentTimeMillis()-timer));
+		log.debug("timer "+(System.currentTimeMillis()-timer));
 		return results;
 	}
 
