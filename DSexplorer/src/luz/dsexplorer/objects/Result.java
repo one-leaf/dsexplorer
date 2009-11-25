@@ -130,7 +130,7 @@ public class Result extends DefaultMutableTreeNode{
 		
 		Memory buffer=new Memory(size);
 		try {
-			//log.trace("Read: "+getPointerString());
+			log.trace("Read: "+getPointerString());
 			process.ReadProcessMemory(Pointer.createConstant(getPointer()), buffer, (int)buffer.getSize(), null);
 		} catch (Exception e) {
 			return null;
@@ -156,14 +156,18 @@ public class Result extends DefaultMutableTreeNode{
 	}
 	
 	public void setPointer(Long pointer){
-		valueCacheOK=false;
+		invalidateCache();
+		if (isCustom()){
+			for (int i = 0; i < getChildCount(); i++) 
+				((Result)getChildAt(i)).invalidateCache();
+		}
 		this.pointer=pointer;
 	}
 	
 	public void setType(Type type) {
-		valueCacheOK=false;
+		invalidateCache();
 		this.type = type;
-		this.size=type.getSize();
+		setSize(type.getSize());
 		
 		if (type.equals(Type.Custom)){
 			allowsChildren=true;
@@ -173,14 +177,20 @@ public class Result extends DefaultMutableTreeNode{
 	}
 	
 	public void setSize(int size){
-		valueCacheOK=false;
-		if (size>0 && !type.isFixedSize()){
+		invalidateCache();
+		if(isRelative()){
+			Result parent = (Result)getParent();
+			for (int i = parent.getIndex(this); i < parent.getChildCount(); i++) 
+				((Result)parent.getChildAt(i)).invalidateCache();
+		}
+		
+		if (!type.isFixedSize() || size==type.size){
 			this.size=size;
 		}
 	}
 	
 	public void setValue(Object value) {
-		valueCacheOK=true;
+		invalidateCache();
 		this.valueCache=value;
 		//TODO write mem
 	}
@@ -197,8 +207,30 @@ public class Result extends DefaultMutableTreeNode{
 		return false;
 	}
 	
+	public void invalidateCache(){
+		valueCacheOK=false;
+	}
+	
 	////////////////////////////////////////
 
+	@Override
+	public boolean isLeaf() {
+		return !isCustom();
+	}
+	
+	private boolean areChildrenDefined=false;
+	
+	@Override
+	public int getChildCount() {
+		if (!areChildrenDefined)
+			defineChildNodes();
+		return super.getChildCount();
+	}
+	
+	private void defineChildNodes(){
+		areChildrenDefined=true;
+	}
+	
 	
 	public Result addCustomEntry(Type type){
 //		Long p;
@@ -221,7 +253,7 @@ public class Result extends DefaultMutableTreeNode{
 	
 	@Override
 	public String toString() {
-		return getPointerString()+"-"+getName()+"-"+getValueString();
+		return getPointerString()+" ["+getName()+"] "+(isCustom()?"":getValueString());
 	}
 
 
