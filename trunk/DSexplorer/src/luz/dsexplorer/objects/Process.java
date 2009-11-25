@@ -76,6 +76,7 @@ public class Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Short current;
 				Short target=Short.parseShort(getValue());
+				//TODO handle data which overlaps buffer limits
 				for (long pos = 0; pos < size-1; pos=pos+1) {
 					current=outputBuffer.getShort(pos);
 					if (current==target){
@@ -90,6 +91,7 @@ public class Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Integer current;
 				Integer target=Integer.parseInt(getValue());
+				//TODO handle data which overlaps buffer limits
 				for (long pos = 0; pos < size-3; pos=pos+1) {
 					current=outputBuffer.getInt(pos);
 					if (current==target){
@@ -104,6 +106,7 @@ public class Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Long current;
 				Long target=Long.parseLong(getValue());
+				//TODO handle data which overlaps buffer limits
 				for (long pos = 0; pos < size-7; pos=pos+1) {
 					current=outputBuffer.getLong(pos);
 					if (current==target){
@@ -118,6 +121,7 @@ public class Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Float current;
 				Float target=Float.parseFloat(getValue());
+				//TODO handle data which overlaps buffer limits
 				for (long pos = 0; pos < size-3; pos=pos+1) {
 					current=outputBuffer.getFloat(pos);
 					if (Math.round(current)==Math.round(target)){
@@ -132,6 +136,7 @@ public class Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Double current;
 				Double target=Double.parseDouble(getValue());
+				//TODO handle data which overlaps buffer limits
 				for (long pos = 0; pos < size-7; pos=pos+1) {
 					current=outputBuffer.getDouble(pos);
 					if (Math.round(current)==Math.round(target)){
@@ -142,10 +147,10 @@ public class Process {
 			}
 		};
 		
-		
-		
-		
-		
+		//TODO ByteArray Search
+		//TODO Ascii Search
+		//TODO Unicode Search
+
 	}
 
 	private Pointer handleCache =null;
