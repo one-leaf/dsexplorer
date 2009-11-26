@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import luz.dsexplorer.objects.Result.Type;
 import luz.dsexplorer.objects.listener.MemoryListener;
 import luz.dsexplorer.winapi.interfaces.Kernel32.LPPROCESSENTRY32;
 import luz.dsexplorer.winapi.interfaces.Kernel32.MEMORY_BASIC_INFORMATION;
@@ -356,7 +355,7 @@ public class Process {
 		log.debug("maxRegionSize "+(maxRegionSize/1024)+" kB");
 	}
 
-	public List<Result> search(long from, long to, final String value, final Type type) throws Exception {
+	public List<Result> search(long from, long to, final String value, final DSType type) throws Exception {
 		log.debug("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" type "+type);
 		final List<Result> results = new LinkedList<Result>();
 		long timer=System.currentTimeMillis();

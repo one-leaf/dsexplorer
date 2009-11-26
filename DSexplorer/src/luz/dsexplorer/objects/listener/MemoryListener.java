@@ -2,15 +2,15 @@ package luz.dsexplorer.objects.listener;
 
 import java.util.List;
 
+import luz.dsexplorer.objects.DSType;
 import luz.dsexplorer.objects.Result;
-import luz.dsexplorer.objects.Result.Type;
 
 import com.sun.jna.Memory;
 
 public abstract class MemoryListener {
 	private List<Result> results;
 	private String value;
-	private Type type;
+	private DSType type;
 
 	public List<Result> getResults() {
 		return results;
@@ -20,11 +20,11 @@ public abstract class MemoryListener {
 		return value;
 	}
 	
-	public Type getType() {
+	public DSType getType() {
 		return type;
 	}
 	
-	public void init(List<Result> results, String value, Type type){
+	public void init(List<Result> results, String value, DSType type){
 		this.results=results;
 		this.value=value;
 		this.type=type;
