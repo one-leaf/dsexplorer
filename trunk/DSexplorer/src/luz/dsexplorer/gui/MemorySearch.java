@@ -21,9 +21,9 @@ import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 
 import luz.dsexplorer.gui.listener.MemorySearchListener;
+import luz.dsexplorer.objects.DSType;
 import luz.dsexplorer.objects.Process;
 import luz.dsexplorer.objects.Result;
-import luz.dsexplorer.objects.Result.Type;
 
 
 /**
@@ -158,7 +158,7 @@ public class MemorySearch extends javax.swing.JPanel {
 			}
 			{
 				
-				ComboBoxModel cbValueModel = new DefaultComboBoxModel(Type.values());
+				ComboBoxModel cbValueModel = new DefaultComboBoxModel(DSType.values());
 				cbValue = new JComboBox();
 				cbValue.setModel(cbValueModel);
 				cbValue.setSelectedIndex(2);
@@ -235,7 +235,7 @@ public class MemorySearch extends javax.swing.JPanel {
 		try{
 			int from=Integer.parseInt(txtFrom.getText(),16);
 			int to  =Integer.parseInt(txtTo  .getText(),16);
-			List<Result> results=process.search(from, to, txtSearch.getText(), (Type)cbValue.getSelectedItem());
+			List<Result> results=process.search(from, to, txtSearch.getText(), (DSType)cbValue.getSelectedItem());
 			tblResults.setResults(results);
 		}catch(NumberFormatException e){
 			

@@ -23,6 +23,7 @@ import javax.swing.event.TreeSelectionListener;
 import luz.dsexplorer.gui.listener.DSEditorListener;
 import luz.dsexplorer.gui.listener.MemorySearchListener;
 import luz.dsexplorer.gui.listener.ProcessDialogListener;
+import luz.dsexplorer.objects.Datastructure;
 import luz.dsexplorer.objects.Process;
 import luz.dsexplorer.objects.Result;
 import luz.dsexplorer.objects.ResultList;
@@ -126,7 +127,7 @@ public class MainWindow extends javax.swing.JFrame {
 		dse=new DSEditor();
 		dse.addListener(new DSEditorListener() {
 			@Override
-			public void AddChildPerformed(Result Result) {
+			public void AddFieldPerformed(Datastructure Result) {
 				tree.refresh();	//TODO more precise refresh			
 			}
 
