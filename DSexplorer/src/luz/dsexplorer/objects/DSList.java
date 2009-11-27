@@ -39,22 +39,28 @@ public class DSList  extends AbstractListModel implements MutableComboBoxModel {
 
 	@Override
 	public void addElement(Object obj) {
-		datastructures.add((Datastructure)obj);		
+		datastructures.add((Datastructure)obj);
+		int index=datastructures.indexOf(obj);
+		fireIntervalAdded(this, index, index);
 	}
 
 	@Override
-	public void insertElementAt(Object obj, int i) {
-		datastructures.add(i, (Datastructure)obj);	
+	public void insertElementAt(Object obj, int index) {
+		datastructures.add(index, (Datastructure)obj);
+		fireIntervalAdded(this, index, index);
 	}
 
 	@Override
 	public void removeElement(Object obj) {
-		datastructures.remove(obj);
+		int index=datastructures.indexOf(obj);
+		datastructures.remove(obj);		
+		fireIntervalRemoved(this, index, index);
 	}
 
 	@Override
-	public void removeElementAt(int i) {
-		datastructures.remove(i);
+	public void removeElementAt(int index) {
+		datastructures.remove(index);
+		fireIntervalRemoved(this, index, index);
 	}
 
 

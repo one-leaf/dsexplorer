@@ -150,6 +150,11 @@ public class MainWindow extends javax.swing.JFrame {
 			public void NameChanged(Result o) {
 				tree.refresh();	//TODO more precise refresh
 			}
+
+			@Override
+			public void DSChanged(Result o) {
+				tree.refresh();	//TODO more precise refresh			
+			}
 		});
 
 	}

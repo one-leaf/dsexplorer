@@ -29,6 +29,9 @@ public class DSField {
 		return byteCount;
 	}
 	
+	public long getOffset(){
+		return ds.getOffset(this);
+	}
 	
 
 	public void setType(DSType type) {

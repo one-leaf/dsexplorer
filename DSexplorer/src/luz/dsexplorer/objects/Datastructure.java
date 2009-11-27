@@ -41,18 +41,19 @@ public class Datastructure extends AbstractListModel{
 			bytes+=field.getByteCount();
 		}
 		return bytes;
-	}
-	
+	}	
 	
 	public void refresh(DSField field){
 		int index=fields.indexOf(field);
 		fireContentsChanged(field, index, index);
 	}
-	
-	
+		
 	public void addElement(DSType type, String name) {
 		addElement(new DSField(type, name, this));		
 	}
+	
+	
+
 	
 	
 	private void addElement(Object obj) {
