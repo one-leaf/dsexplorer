@@ -5,6 +5,10 @@ import javax.swing.event.ListDataListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 
+import luz.dsexplorer.objects.datastructure.DSField;
+import luz.dsexplorer.objects.datastructure.DSType;
+import luz.dsexplorer.objects.datastructure.Datastructure;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -366,9 +370,6 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 				//no need to recreate children, because they are only modified
 			}
 		}
-		
-		
-
 	}
 
 	@Override
@@ -402,7 +403,13 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		return getAddressString()+" ["+getName()+"] "+(isCustom()?"":getValueString());
 	}
 
-
+	@Override
+	public Result clone() {
+		Result r = new Result(process, address, valueCache, type);
+		r.setDatastructure(datastructure);
+		r.setPointer(isPointer);
+		return r;
+	}
 
 
 }

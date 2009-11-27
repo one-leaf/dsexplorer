@@ -1,4 +1,4 @@
-package luz.dsexplorer.objects;
+package luz.dsexplorer.objects.datastructure;
 
 public class DSField {
 	private DSType type;

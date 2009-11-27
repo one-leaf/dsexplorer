@@ -1,4 +1,4 @@
-package luz.dsexplorer.objects;
+package luz.dsexplorer.objects.datastructure;
 
 import java.util.LinkedList;
 import java.util.List;

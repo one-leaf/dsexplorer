@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import luz.dsexplorer.objects.datastructure.DSType;
 import luz.dsexplorer.objects.listener.MemoryListener;
 import luz.dsexplorer.winapi.interfaces.Kernel32.LPPROCESSENTRY32;
 import luz.dsexplorer.winapi.interfaces.Kernel32.MEMORY_BASIC_INFORMATION;
