@@ -302,7 +302,7 @@ public class MainWindow extends javax.swing.JFrame {
 						miAbout.setText("About");
 						miAbout.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent evt) {
-								JOptionPane.showMessageDialog(MainWindow.this, "DSExplorer v0.1", "About", JOptionPane.PLAIN_MESSAGE);
+								JOptionPane.showMessageDialog(MainWindow.this, "DSExplorer v0.2", "About", JOptionPane.PLAIN_MESSAGE);
 							}
 						});
 						

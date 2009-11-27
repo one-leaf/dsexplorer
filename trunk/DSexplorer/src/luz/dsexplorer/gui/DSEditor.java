@@ -260,7 +260,7 @@ public class DSEditor extends javax.swing.JPanel {
 		if (custom) txtPointer.setText(result.getPointerString());
 		
 		txtSize.setText(""+result.getByteCount());
-		txtSize.setEnabled(!result.getType().isFixedSize());
+		txtSize.setEditable(!result.getType().isFixedSize());
 		txtName.setText(result.getName());
 		txtValue.setText(result.getValueString());
 		txtValue   .setEditable(!custom);
@@ -290,7 +290,7 @@ public class DSEditor extends javax.swing.JPanel {
 			fireActionPerformed(Action.TypeChanged, result);
 
 			txtSize.setText(""+result.getByteCount());
-			txtSize.setEnabled(!result.getType().isFixedSize());
+			txtSize.setEditable(!result.getType().isFixedSize());
 			txtName.setText(result.getName());
 			txtValue.setText(result.getValueString());
 			txtValue   .setEditable(!custom);
