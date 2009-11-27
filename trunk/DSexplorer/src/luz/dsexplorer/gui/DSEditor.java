@@ -42,8 +42,9 @@ public class DSEditor extends javax.swing.JPanel {
 	private JSeparator jSeparator1;
 	private JTextField txtName;
 	private JButton btnAddField;
-	private enum Action{AddField, AddressChanged, TypeChanged, SizeChanged, NameChanged}
+	private enum Action{AddField, AddressChanged, TypeChanged, SizeChanged, NameChanged, DSChanged}
 	private Result result;
+	private DSList dsList = new DSList();
 
 	/**
 	* Auto-generated main method to display this 
@@ -100,7 +101,7 @@ public class DSEditor extends javax.swing.JPanel {
 			}
 			{
 				cbDSselector = new JComboBox();
-				cbDSselector.setModel(new DSList());
+				cbDSselector.setModel(dsList);
 				cbDSselector.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						cbDSselectorActionPerformed();
@@ -114,6 +115,11 @@ public class DSEditor extends javax.swing.JPanel {
 			{
 				btnAddDS = new JButton();
 				btnAddDS.setText("Add new");
+				btnAddDS.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnAddDSActionPerformed();
+					}
+				});
 			}
 			{
 				jSeparator1 = new JSeparator();
@@ -270,6 +276,9 @@ public class DSEditor extends javax.swing.JPanel {
 		Datastructure ds = (Datastructure)cbDSselector.getSelectedItem();
 		if (result.getDatastructure()!=ds){	//Avoid unecessairy changes
 			result.setDatastructure(ds);
+			
+			txtName.setText(result.getName());
+			fireActionPerformed(Action.DSChanged, result);
 		}
 	}
 	
@@ -289,6 +298,10 @@ public class DSEditor extends javax.swing.JPanel {
 	private void btnAddFieldActionPerformed() {
 		result.getDatastructure().addElement(DSType.Byte4, "new");
 		fireActionPerformed(Action.AddField, result.getDatastructure());		
+	}
+	
+	private void btnAddDSActionPerformed(){
+		dsList.addElement(new Datastructure("new custom"));
 	}
 	
 	///////////////////////////////////////////////////////////
@@ -325,6 +338,8 @@ public class DSEditor extends javax.swing.JPanel {
 	            		break;
 	            	case NameChanged:
 	            		((DSEditorListener)listeners[i+1]).NameChanged((Result)o);
+	            		break;
+	            	case DSChanged:
 	            		break;
             	}
             }          

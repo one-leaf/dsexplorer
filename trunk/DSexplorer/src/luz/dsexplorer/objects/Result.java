@@ -30,10 +30,10 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 	
 	/*
 	 * Three types of Results:
-	 * 1)  normal results on the root of the tree	(datastructure =null, dsField =null)
-	 * 2)  datastructures with children (fields)	(datastructure!=null, dsField =null)
-	 * 3a) Fields (children) of the datastructures	(datastructure!=null, dsField!=null)
-	 * 3b) Fields which are datastructures			(datastructure!=null, dsField!=null)
+	 * 1)  normal results on the root of the tree		(datastructure =null, dsField =null)
+	 * 2)  datastructures with children (fields)		(datastructure!=null, dsField =null)
+	 * 3a) Fields (children) of the datastructures		(datastructure =null, dsField!=null)
+	 * 3b) Fields (children) which are datastructures	(datastructure =null, dsField!=null)
 	 * 
 	 * 
 	 */
@@ -60,7 +60,6 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 	public Result(Process process, DSField field){
 		this(process, null, null, field.getType());
 		this.dsField=field;
-		this.datastructure=dsField.getDatastructure();
 	}
 	
 	
@@ -76,7 +75,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 	public Long getPointer(){
 		if (isRelative()){
 			long p = ((Result)getParent()).getPointer();
-			return p+datastructure.getOffset(dsField);
+			return p+dsField.getOffset();
 		}else{
 			return pointer;
 		}
@@ -167,13 +166,14 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 	}
 	
 	public void setDatastructure(Datastructure ds){
-		System.err.println("ds changed");
+		log.trace("Datastructure changed to "+ds);
 		if (this.datastructure!=null) 
 			this.datastructure.removeListDataListener(this);
 		this.datastructure=ds;
-		if (this.datastructure!=null) 
-			this.datastructure.addListDataListener(this);
-		recreateChilds();			
+		if (ds!=null){
+			ds.addListDataListener(this);
+		}
+		recreateChilds();
 	}	
 	
 	public void setName(String name){
@@ -187,8 +187,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 	public void setPointer(Long pointer){
 		invalidateCache();
 		if (isCustom()){
-			for (int i = 0; i < getChildCount(); i++) 	//invalidate all children
-				((Result)getChildAt(i)).invalidateCache();
+			invalidateChildCache();
 		}
 		if (!isRelative())
 			this.pointer=pointer;
@@ -202,6 +201,8 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		
 		if (isCustom()){
 			setDatastructure(ds);
+		}else{
+			setDatastructure(null);
 		}
 		
 		if(isRelative()){
@@ -220,9 +221,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		
 		if(isRelative()){
 			dsField.setByteCount(size);
-			Result parent = (Result)getParent();
-			for (int i = parent.getIndex(this); i < parent.getChildCount(); i++) 	//invalidate following children
-				((Result)parent.getChildAt(i)).invalidateCache();
+			((Result)getParent()).invalidateChildCache();
 		}
 
 	}
@@ -244,6 +243,12 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 	public void invalidateCache(){
 		valueCacheOK=false;
 	}
+	
+	public void invalidateChildCache(){
+		for (int i = 0; i < getChildCount(); i++)
+			((Result)getChildAt(i)).invalidateCache();
+	}
+	
 	
 	//DefaultMutableTreeNode//////////////////////////////////////
 
@@ -275,19 +280,15 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 	
 
 	
-	//ListDataListener//////////////////////////////////////
+	//ListDataListener (for datastructure)//////////////////////////////////////
 	
-
 	@Override
 	public void contentsChanged(ListDataEvent listdataevent) {
-		invalidateCache();
-		if (isRelative()){
-			Result p =(Result)getParent();
-			Result c;
-			for (int i = 0; i < p.getChildCount(); i++) {
-				c = (Result)p.getChildAt(i);
-				c.invalidateCache();//TODO refresh only following childs
-			}				
+		if(isCustom()){	//only custom Results listen to datastructure changes
+			log.debug("contentsChanged custom");
+			invalidateCache();
+			invalidateChildCache();
+			//no need to recreate children, because they are only modified
 		}
 	}
 
@@ -309,8 +310,10 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		}catch (ArrayIndexOutOfBoundsException e){
 			//Ignore "node has no children"
 		}
-		for (DSField field : datastructure.getFields())
-			add(new Result(process, field));
+		if (datastructure!=null){
+			for (DSField field : datastructure.getFields())
+				add(new Result(process, field));
+		}
 	}
 
 	//Object//////////////////////////////////////
