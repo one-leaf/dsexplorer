@@ -169,7 +169,7 @@ public class MainWindow extends javax.swing.JFrame {
 			BorderLayout thisLayout = new BorderLayout();
 			getContentPane().setLayout(thisLayout);
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			this.setTitle("DSExplorer v0.1");
+			this.setTitle("DSExplorer v0.2");
 			{
 				jSplitPane1 = new JSplitPane();
 				getContentPane().add(jSplitPane1, BorderLayout.CENTER);
