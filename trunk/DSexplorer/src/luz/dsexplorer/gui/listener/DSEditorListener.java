@@ -2,8 +2,8 @@ package luz.dsexplorer.gui.listener;
 
 import java.util.EventListener;
 
-import luz.dsexplorer.objects.Datastructure;
 import luz.dsexplorer.objects.Result;
+import luz.dsexplorer.objects.datastructure.Datastructure;
 
 public interface DSEditorListener extends EventListener  {
     

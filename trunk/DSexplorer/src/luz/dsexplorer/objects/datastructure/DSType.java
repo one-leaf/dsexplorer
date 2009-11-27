@@ -1,4 +1,4 @@
-package luz.dsexplorer.objects;
+package luz.dsexplorer.objects.datastructure;
 
 public enum DSType{
 	//           fix, 	byteCount

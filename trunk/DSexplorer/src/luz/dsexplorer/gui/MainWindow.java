@@ -23,10 +23,10 @@ import javax.swing.event.TreeSelectionListener;
 import luz.dsexplorer.gui.listener.DSEditorListener;
 import luz.dsexplorer.gui.listener.MemorySearchListener;
 import luz.dsexplorer.gui.listener.ProcessDialogListener;
-import luz.dsexplorer.objects.Datastructure;
 import luz.dsexplorer.objects.Process;
 import luz.dsexplorer.objects.Result;
 import luz.dsexplorer.objects.ResultList;
+import luz.dsexplorer.objects.datastructure.Datastructure;
 
 
 
@@ -119,7 +119,7 @@ public class MainWindow extends javax.swing.JFrame {
 			}
 			
 			@Override
-			public void AddPerformed(List<Result> results) {
+			public void AddPerformed(List<Result> results) {			
 				tree.addResults(results);				
 			}
 		});

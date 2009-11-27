@@ -21,9 +21,9 @@ import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 
 import luz.dsexplorer.gui.listener.MemorySearchListener;
-import luz.dsexplorer.objects.DSType;
 import luz.dsexplorer.objects.Process;
 import luz.dsexplorer.objects.Result;
+import luz.dsexplorer.objects.datastructure.DSType;
 
 
 /**

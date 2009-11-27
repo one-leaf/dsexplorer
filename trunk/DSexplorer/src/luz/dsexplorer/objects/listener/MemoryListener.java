@@ -2,8 +2,8 @@ package luz.dsexplorer.objects.listener;
 
 import java.util.List;
 
-import luz.dsexplorer.objects.DSType;
 import luz.dsexplorer.objects.Result;
+import luz.dsexplorer.objects.datastructure.DSType;
 
 import com.sun.jna.Memory;
 

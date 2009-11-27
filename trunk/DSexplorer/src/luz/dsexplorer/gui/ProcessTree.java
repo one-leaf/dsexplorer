@@ -37,7 +37,7 @@ public class ProcessTree extends JTree {
 
 	public void addResults(List<Result> results) {
 		for (Result result : results)
-			rl.add(result);
+			rl.add(result.clone());	//create clones to avoid any border effects
 		refresh();		
 	}
 	
