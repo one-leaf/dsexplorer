@@ -19,6 +19,8 @@ public interface DSEditorListener extends EventListener  {
 
 	public void DSChanged(Result o);
 
+	public void PointerChanged(Result o);
+
 
 
 }

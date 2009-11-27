@@ -48,8 +48,8 @@ public class Datastructure extends AbstractListModel{
 		fireContentsChanged(field, index, index);
 	}
 		
-	public void addElement(DSType type, String name) {
-		addElement(new DSField(type, name, this));		
+	public void addElement(DSType type) {
+		addElement(new DSField(type, type.name(), this));		
 	}
 	
 	

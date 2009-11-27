@@ -95,7 +95,7 @@ public class ResultTable extends JTable{
 			try {
 		    	switch (col){
 		    		case 0:
-		    			return list.get(row).getPointerString();
+		    			return list.get(row).getAddressString();
 		    		case 1: 
 		    			return list.get(row).getValue();
 		    	}
