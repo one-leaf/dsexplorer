@@ -65,7 +65,7 @@ public class Process {
 				for (long pos = 0; pos < size; pos=pos+1) {
 					current=outputBuffer.getByte(pos);
 					if (current==target){
-						getResults().add(new Result(Process.this, address+pos, current, getType()));
+						add(new Result(address+pos, current, getType()));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
@@ -80,7 +80,7 @@ public class Process {
 				for (long pos = 0; pos < size-1; pos=pos+1) {
 					current=outputBuffer.getShort(pos);
 					if (current==target){
-						getResults().add(new Result(Process.this, address+pos, current, getType()));
+						add(new Result(address+pos, current, getType()));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
@@ -95,7 +95,7 @@ public class Process {
 				for (long pos = 0; pos < size-3; pos=pos+1) {
 					current=outputBuffer.getInt(pos);
 					if (current==target){
-						getResults().add(new Result(Process.this, address+pos, current, getType()));
+						add(new Result(address+pos, current, getType()));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
@@ -110,7 +110,7 @@ public class Process {
 				for (long pos = 0; pos < size-7; pos=pos+1) {
 					current=outputBuffer.getLong(pos);
 					if (current==target){
-						getResults().add(new Result(Process.this, address+pos, current, getType()));
+						add(new Result(address+pos, current, getType()));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
@@ -125,7 +125,7 @@ public class Process {
 				for (long pos = 0; pos < size-3; pos=pos+1) {
 					current=outputBuffer.getFloat(pos);
 					if (Math.round(current)==Math.round(target)){
-						getResults().add(new Result(Process.this, address+pos, current, getType()));
+						add(new Result(address+pos, current, getType()));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
@@ -140,7 +140,7 @@ public class Process {
 				for (long pos = 0; pos < size-7; pos=pos+1) {
 					current=outputBuffer.getDouble(pos);
 					if (Math.round(current)==Math.round(target)){
-						getResults().add(new Result(Process.this, address+pos, current, getType()));
+						add(new Result(address+pos, current, getType()));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
@@ -356,9 +356,9 @@ public class Process {
 		log.debug("maxRegionSize "+(maxRegionSize/1024)+" kB");
 	}
 
-	public List<Result> search(long from, long to, final String value, final DSType type) throws Exception {
+	public ResultList search(long from, long to, final String value, final DSType type) throws Exception {
 		log.debug("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" type "+type);
-		final List<Result> results = new LinkedList<Result>();
+		final ResultList results = new ResultList(this);
 		long timer=System.currentTimeMillis();
 		if (value==null || value.trim().equals(""))
 			return results;		

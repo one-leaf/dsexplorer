@@ -264,7 +264,7 @@ public class DSEditor extends javax.swing.JPanel {
 		txtName.setText(result.getName());
 		txtValue.setText(result.getValueString());
 		txtValue   .setEditable(!custom);
-		chbPointer   .setSelected(result.isPointer());
+		chbPointer   .setSelected(result.getIsPointer());
 		chbPointer   .setVisible(custom);
 		lblDSselector.setVisible(custom);
 		cbDSselector .setVisible(custom);
@@ -294,7 +294,7 @@ public class DSEditor extends javax.swing.JPanel {
 			txtName.setText(result.getName());
 			txtValue.setText(result.getValueString());
 			txtValue   .setEditable(!custom);
-			chbPointer   .setSelected(result.isPointer());
+			chbPointer   .setSelected(result.getIsPointer());
 			chbPointer   .setVisible(custom);
 			lblDSselector.setVisible(custom);
 			cbDSselector .setVisible(custom);
@@ -316,7 +316,7 @@ public class DSEditor extends javax.swing.JPanel {
 	
 	private void txtSizeActionPerformed() {
 		try{
-			result.setByteCount(Integer.parseInt(txtSize.getText()));
+			result.setByteCount(Long.parseLong(txtSize.getText()));
 			txtValue.setText(result.getValueString());
 			fireActionPerformed(Action.SizeChanged, result);
 		}catch(NumberFormatException e){};	
@@ -329,7 +329,7 @@ public class DSEditor extends javax.swing.JPanel {
 	
 	private void btnAddFieldActionPerformed() {
 		result.getDatastructure().addElement(DSType.Byte4);
-		fireActionPerformed(Action.AddField, result.getDatastructure());		
+		fireActionPerformed(Action.AddField, result);		
 	}
 	
 	private void btnAddDSActionPerformed(){
@@ -338,8 +338,8 @@ public class DSEditor extends javax.swing.JPanel {
 	
 	private void chbPointerActionPerformed() {
 		boolean isPointer=chbPointer.isSelected();
-		if (result.isPointer()!=isPointer){	//Avoid unecessairy changes	
-			result.setPointer(chbPointer.isSelected());
+		if (result.getIsPointer()!=isPointer){	//Avoid unecessairy changes	
+			result.setIsPointer(chbPointer.isSelected());
 			txtPointer.setText(isPointer?result.getPointerString():null);
 			fireActionPerformed(Action.PointerChanged, result);
 		}
@@ -366,7 +366,7 @@ public class DSEditor extends javax.swing.JPanel {
             if (listeners[i]==DSEditorListener.class) {
             	switch (action){
 	            	case AddField:
-	            		((DSEditorListener)listeners[i+1]).AddFieldPerformed((Datastructure)o);
+	            		((DSEditorListener)listeners[i+1]).AddFieldPerformed((Result)o);
 	            		break;
 	            	case AddressChanged:
 	            		((DSEditorListener)listeners[i+1]).AddessChanged((Result)o);

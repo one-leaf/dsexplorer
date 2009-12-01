@@ -3,20 +3,29 @@ package luz.dsexplorer.objects.datastructure;
 public class DSField {
 	private DSType type;
 	private String name;
-	private Datastructure ds;
+	private Datastructure datastructure;
 	private long byteCount;
+
+	/* only for XMLEncoder */
+	public DSField(){
+		
+	}
 	
-	public DSField(DSType type, String name, Datastructure ds){
+	public DSField(DSType type, String name, Datastructure datastructure){
+		this(type, name, type.getByteCount(), datastructure);
+	}
+	
+	public DSField(DSType type, String name, long byteCount, Datastructure datastructure){
 		this.type=type;
 		this.name=name;
-		this.ds=ds;
-		this.byteCount=type.getByteCount();
+		this.datastructure=datastructure;
+		this.byteCount=byteCount;
 	}
 
 	public Datastructure getDatastructure(){
-		return ds;
+		return datastructure;
 	}
-
+	
 	public DSType getType() {
 		return type;
 	}
@@ -30,31 +39,34 @@ public class DSField {
 	}
 	
 	public long getOffset(){
-		return ds.getOffset(this);
+		return datastructure.getOffset(this);
 	}
 	
 
 	public void setType(DSType type) {
 		this.type = type;
 		this.byteCount=type.getByteCount();
-		ds.refresh(this);
+		if (datastructure!=null)
+			datastructure.refresh(this);
 	}
 	
 	public void setName(String name) {
 		this.name = name;
-		ds.refresh(this);
+		if (datastructure!=null)
+			datastructure.refresh(this);
 	}
 
 
 
 	
 	public void setByteCount(long byteCount){
-		if (!type.isFixedSize()){
+		if (type==null || !type.isFixedSize()){
 			this.byteCount=byteCount;
 		}else{
 			this.byteCount=type.getByteCount();
 		}
-		ds.refresh(this);
+		if (datastructure!=null)
+			datastructure.refresh(this);
 	}
 	
 	
