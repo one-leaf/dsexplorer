@@ -5,8 +5,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.List;
 
+import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -19,6 +21,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.filechooser.FileFilter;
 
 import luz.dsexplorer.gui.listener.DSEditorListener;
 import luz.dsexplorer.gui.listener.MemorySearchListener;
@@ -26,7 +29,6 @@ import luz.dsexplorer.gui.listener.ProcessDialogListener;
 import luz.dsexplorer.objects.Process;
 import luz.dsexplorer.objects.Result;
 import luz.dsexplorer.objects.ResultList;
-import luz.dsexplorer.objects.datastructure.Datastructure;
 
 
 
@@ -71,6 +73,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private ProcessDialog pd;
 	private MemorySearch ms;
 	private DSEditor dse;
+	private JFileChooser fc;
 	
 	/**
 	* Auto-generated main method to display this JFrame
@@ -95,7 +98,7 @@ public class MainWindow extends javax.swing.JFrame {
 			@Override
 			public void okPerformed(Process p) {
 				tree.setProcess(p);
-				ms.setProcess(p);
+				ms.setProcess(p);	//FIXME necessairy?
 			}
 			
 			@Override
@@ -127,41 +130,54 @@ public class MainWindow extends javax.swing.JFrame {
 		dse=new DSEditor();
 		dse.addListener(new DSEditorListener() {
 			@Override
-			public void AddFieldPerformed(Datastructure Result) {
-				tree.refresh();	//TODO more precise refresh			
+			public void AddFieldPerformed(Result result) {
+				tree.refresh();		//TODO more precise refresh, possible?			
 			}
 
 			@Override
 			public void AddessChanged(Result result) {
-				tree.refresh();	//TODO more precise refresh			
+				tree.refresh(result);			
 			}
 
 			@Override
-			public void SizeChanged(Result o) {
-				tree.refresh();	//TODO more precise refresh
+			public void SizeChanged(Result result) {
+				tree.refresh(result);
 			}
 
 			@Override
-			public void TypeChanged(Result o) {
-				tree.refresh();	//TODO more precise refresh
+			public void TypeChanged(Result result) {
+				tree.refresh(result);
 			}
 
 			@Override
-			public void NameChanged(Result o) {
-				tree.refresh();	//TODO more precise refresh
+			public void NameChanged(Result result) {
+				tree.refresh(result);
 			}
 
 			@Override
-			public void DSChanged(Result o) {
-				tree.refresh();	//TODO more precise refresh			
+			public void DSChanged(Result result) {
+				tree.refresh(result);			
 			}
 
 			@Override
-			public void PointerChanged(Result o) {
-				tree.refresh();	//TODO more precise refresh				
+			public void PointerChanged(Result result) {
+				tree.refresh(result);				
 			}
 		});
-
+		
+		fc = new JFileChooser();
+		fc.setFileFilter(new FileFilter() {					
+			public boolean accept(File f) {				
+				if(f != null && (f.isDirectory() || f.getName().toLowerCase().endsWith(".xml")))		
+					return true;			
+				else				
+					return false;								
+			}
+			
+			public String getDescription() {						
+				return "xml DS Explorer savefile";
+			}
+		});
 	}
 	
 	private void initGUI() {
@@ -208,16 +224,31 @@ public class MainWindow extends javax.swing.JFrame {
 						miNew = new JMenuItem();
 						mFile.add(miNew);
 						miNew.setText("New");
+						miNew.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								miNewActionPerformed(evt);
+							}
+						});
 					}
 					{
 						miOpen = new JMenuItem();
 						mFile.add(miOpen);
 						miOpen.setText("Open...");
+						miOpen.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								miOpenActionPerformed(evt);
+							}
+						});
 					}
 					{
 						miSave = new JMenuItem();
 						mFile.add(miSave);
 						miSave.setText("Save as...");
+						miSave.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								miSaveActionPerformed(evt);
+							}
+						});
 					}
 					{
 						jSeparator1 = new JSeparator();
@@ -314,7 +345,9 @@ public class MainWindow extends javax.swing.JFrame {
 			e.printStackTrace();
 		}
 	}
-	
+
+
+	//$hide>>$
 	
 	private void treeSelectionEvent(TreeSelectionEvent evt) {
 		Object node=evt.getPath().getLastPathComponent();
@@ -341,5 +374,41 @@ public class MainWindow extends javax.swing.JFrame {
 	private void miExitActionPerformed() {
 		this.dispose();
 	}
+		
+	private void miNewActionPerformed(ActionEvent evt) {
+		tree.reset();
 
+	}
+	
+	private void miSaveActionPerformed(ActionEvent evt) {
+		File f=null;
+		while(fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			f = fc.getSelectedFile();
+			String path = f.getAbsolutePath();					
+			if(!path.toLowerCase().endsWith(".xml"))
+				f = new File(path + ".xml");
+			if(f.exists()){
+				if(JOptionPane.showConfirmDialog(this, "Overwrite "+f.getName()+" ?", "Overwrite", JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION)
+					break;
+			}else
+				break;				
+		}
+		if (f!=null){
+			tree.saveToFile(f);
+		}
+	}	
+	
+	private void miOpenActionPerformed(ActionEvent evt) {
+		File f=null;
+		while(fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			f = fc.getSelectedFile();
+			if (f.exists())
+				break;
+		}
+		if (f!=null){
+			tree.openFromFile(f);
+		}
+	}
+	
+	//$hide<<$
 }

@@ -1,19 +1,18 @@
 package luz.dsexplorer.objects.listener;
 
-import java.util.List;
-
 import luz.dsexplorer.objects.Result;
+import luz.dsexplorer.objects.ResultList;
 import luz.dsexplorer.objects.datastructure.DSType;
 
 import com.sun.jna.Memory;
 
 public abstract class MemoryListener {
-	private List<Result> results;
+	private ResultList results;
 	private String value;
 	private DSType type;
 
-	public List<Result> getResults() {
-		return results;
+	public void add(Result result) {
+		results.add(result);
 	}
 	
 	public String getValue() {
@@ -24,8 +23,8 @@ public abstract class MemoryListener {
 		return type;
 	}
 	
-	public void init(List<Result> results, String value, DSType type){
-		this.results=results;
+	public void init(ResultList results2, String value, DSType type){
+		this.results=results2;
 		this.value=value;
 		this.type=type;
 	}

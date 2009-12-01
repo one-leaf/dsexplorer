@@ -1,6 +1,8 @@
 package luz.dsexplorer.gui;
 
 import java.awt.Font;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import javax.swing.JTree;
@@ -17,28 +19,50 @@ public class ProcessTree extends JTree {
 	private ResultList rl;
 	private DefaultTreeModel model;
 	private TreeSelectionModel sm = getSelectionModel();
+
 	
 	public ProcessTree() {
 		this.setModel(null);
 		this.setFont(new Font("Lucida Console", Font.PLAIN, 11));
+		
+
 	}
 	
 	public void setProcess(Process p){
-		rl = new ResultList(p);
-		model=new DefaultTreeModel(rl);
-		this.setModel(model);
-		sm.setSelectionPath(new TreePath(model.getRoot()));
+		if (rl==null){
+			rl = new ResultList(p);
+			model=new DefaultTreeModel(rl);
+			this.setModel(model);
+			sm.setSelectionPath(new TreePath(rl));		
+		}else{
+			rl.setProcess(p);
+			model.nodeChanged(rl);
+		}
 	}
 	
 	public void addResult(Result result) {
-		rl.add(result);
-		refresh();
+		Result r;
+		int begin=rl.getChildCount();
+		int[] indexes= new int[1];
+		{
+			r = result.clone();		//create clones to avoid any border effects
+			rl.add(r);
+			indexes[0]=begin;
+		}
+		model.nodesWereInserted(rl, indexes);
 	}
 
 	public void addResults(List<Result> results) {
-		for (Result result : results)
-			rl.add(result.clone());	//create clones to avoid any border effects
-		refresh();		
+		Result r;
+		int begin=rl.getChildCount();
+		int[] indexes= new int[results.size()];
+		
+		for (int i = 0; i < indexes.length; i++) {
+			r=results.get(i).clone();//create clones to avoid any border effects
+			rl.add(r);
+			indexes[i]=begin+i;
+		}
+		model.nodesWereInserted(rl, indexes);
 	}
 	
 	public void refresh(){
@@ -49,5 +73,33 @@ public class ProcessTree extends JTree {
 		this.expandPath(selection);	
 	}
 
+	public void refresh(Result result) {
+		model.nodeStructureChanged(result);	//nodeChanged is not enough
+	}
+
+	public void reset() {
+		rl = new ResultList(rl==null?null:rl.getProcess());
+		model=new DefaultTreeModel(rl);
+		this.setModel(model);
+		sm.setSelectionPath(new TreePath(rl));
+	}
+	
+	public void saveToFile(File file){
+		try {
+			rl.saveToFile(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void openFromFile(File file){
+		try {
+			reset();
+			rl.openFromFile(file);
+			refresh();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

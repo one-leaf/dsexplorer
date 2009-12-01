@@ -12,6 +12,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import luz.dsexplorer.objects.Result;
+import luz.dsexplorer.objects.ResultList;
 
 
 public class ResultTable extends JTable{
@@ -65,10 +66,10 @@ public class ResultTable extends JTable{
 		private String[] columnNames = {"Address", "Value"};
 		@SuppressWarnings("unchecked")
 		private Class[] classes = {String.class, Integer.class};
-		private List<Result> list = new LinkedList<Result>();
+		private ResultList list;
 		
 	    public Result getResultAt(int row) {
-			return list.get(row);
+	    	return (Result)list.getChildAt(row);
 		}
 
 		public void refresh() {
@@ -82,7 +83,10 @@ public class ResultTable extends JTable{
 	    
 	    @Override
 	    public int getRowCount() {
-	        return list.size();
+	    	if (list==null)
+	    		return 0;
+	    	else
+	    		return list.getChildCount();
 	    }
 	    
 	    @Override
@@ -95,9 +99,9 @@ public class ResultTable extends JTable{
 			try {
 		    	switch (col){
 		    		case 0:
-		    			return list.get(row).getAddressString();
+		    			return ((Result)list.getChildAt(row)).getAddressString();
 		    		case 1: 
-		    			return list.get(row).getValue();
+		    			return ((Result)list.getChildAt(row)).getValue();
 		    	}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -111,13 +115,13 @@ public class ResultTable extends JTable{
 			return classes[c];
 	    }
 
-		public void setResults(List<Result> search) {
+		public void setResults(ResultList search) {
 			list = search;
 			fireTableDataChanged();
 		}
 	}
 
-	public void setResults(List<Result> search) {
+	public void setResults(ResultList search) {
 		model.setResults(search);		
 	}
 

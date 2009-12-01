@@ -8,22 +8,32 @@ import javax.swing.AbstractListModel;
 public class Datastructure extends AbstractListModel{
 	private static final long serialVersionUID = 4479689750597516075L;
 	private String name;
-	private List<DSField> fields=new LinkedList<DSField>();
+	private List<DSField> fields;
+
+	/* only for XMLEncoder */
+	public Datastructure(){
+	}
 	
 	public Datastructure(String name){
-		this.setName(name);
-	}
-
-	public void setName(String name) {
 		this.name = name;
+		this.fields=new LinkedList<DSField>();
 	}
 
 	public String getName() {
 		return name;
 	}
 	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public List<DSField> getFields(){
 		return fields;
+	}
+	
+	/* only for XMLEncoder */
+	public void setFields(List<DSField> fields){
+		this.fields=fields;
 	}
 	
 	public int getByteCount(){

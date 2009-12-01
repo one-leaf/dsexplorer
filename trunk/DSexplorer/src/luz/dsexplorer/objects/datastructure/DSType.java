@@ -20,6 +20,6 @@ public enum DSType{
 		this.byteCount=size;
 	}
 	
-	public int getByteCount()	       {return byteCount;}
+	public long getByteCount()	   {return byteCount;}
 	public boolean isFixedSize() {return fixedSize;}
 }

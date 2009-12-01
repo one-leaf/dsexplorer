@@ -17,26 +17,25 @@ import com.sun.jna.Pointer;
 
 public class Result extends DefaultMutableTreeNode implements ListDataListener{
 	private static final long serialVersionUID = 4163723615095260358L;
-	private Process process;
-	private Datastructure datastructure=null;
-	private DSField dsField=null;
+	private static final Log log = LogFactory.getLog(Result.class);
+	private transient ResultList resultList;
+	
+	private Datastructure datastructure;
+	private DSField dsField;
 	
 	private String name;
 	private DSType type;
 	private long byteCount;
-	private Long address;
-	
+	private Long address;	
 	private boolean isPointer;
-	private Long pointerCache=null;
-	private boolean pointerCacheOK=false;
 	
-	private Object valueCache=null;
-	private boolean valueCacheOK=false;
+	private transient Long pointerCache=null;
+	private transient boolean pointerCacheOK=false;
+	
+	private transient Object valueCache=null;
+	private transient boolean valueCacheOK=false;
 
-	private static final Log log = LogFactory.getLog(Result.class);
-	
 
-	
 	/*
 	 * Four types of Results:
 	 * 1) normal results on the root of the tree		(datastructure =null, dsField =null)
@@ -46,15 +45,30 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 	 * 
 	 */
 	
-	public Result(Process process, Long address, Object value, DSType type){
-		this.process=process;
+	public Result(){
+		
+	}
+	
+	/* only for XMLEncoder */
+	public Result(Long address, DSType type, String name, boolean isPointer){
+		this(null, address, null, type, null, name, isPointer);
+	}
+	
+	public Result(Long address, Object value, DSType type){
+		this(null, address, value, type, null, type.name(), false);
+	}
+	
+	public Result(ResultList resultList, Long address, Object value, DSType type, Datastructure ds, String name, boolean isPointer){
+		this.resultList=resultList;
 		this.address=address;
 		this.valueCache=value;
 		this.valueCacheOK=(value!=null);
 		this.type=type;
 		this.byteCount=type.getByteCount();
-		this.name=type.name();
-	}	
+		this.name=name;
+		this.isPointer=isPointer;	
+		this.datastructure=ds;
+	}
 	
 	/**
 	 * Create Result from a DataStructure Field. This means this Result depends on the parent Result.
@@ -63,8 +77,8 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 	 * @param parent
 	 * @param field
 	 */
-	public Result(Process process, DSField field){
-		this(process, null, null, field.getType());
+	public Result(ResultList resultList, DSField field){
+		this(resultList, null, null, field.getType(), null, field.getName(), false);
 		this.dsField=field;
 	}
 	
@@ -96,7 +110,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 						return base+dsField.getOffset();
 				}
 			}else{
-				log.warn("Relative Result without Parent (weird->needs fix)");	//FIMXE results without parent
+				log.warn("Relative Result without Parent (weird->needs fix)");	//FIXME results without parent
 				return null;
 			}
 		}else{
@@ -163,7 +177,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		Memory buffer=new Memory(getByteCount());
 		try {
 			log.trace("Read: "+getAddressString());
-			process.ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
+			getProcess().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
 			switch (getType()) {
 				case Byte1:		valueCache=buffer.getByte     (0);							break;
 				case Byte2:		valueCache=buffer.getShort    (0);							break;
@@ -184,7 +198,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		return valueCache;
 	}
 	
-	public boolean isPointer(){
+	public boolean getIsPointer(){
 		return isPointer;
 	}
 	
@@ -198,7 +212,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		Memory buffer=new Memory(4);
 		try {
 			log.trace("Pointer: "+getAddressString());
-			process.ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
+			getProcess().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
 			pointerCache=(long)buffer.getInt(0);
 		} catch (Exception e) {
 			log.warn(e);
@@ -206,6 +220,22 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		}
 		pointerCacheOK=true;
 		return pointerCache;
+	}
+	
+	private Process getProcess() throws Exception{
+		if (resultList!=null){
+			return resultList.getProcess();
+		}else {
+			Object root=getRoot();
+			if (root instanceof ResultList){
+				log.warn("Result not linked to ResultList but has it as root");
+				return ((ResultList)root).getProcess();
+			}else{
+				Exception e= new Exception("Result not linked to ResultList");
+				log.error(e);
+				throw(e);
+			}
+		}
 	}
 	
 	public String getPointerString() {
@@ -269,10 +299,10 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		}
 	}
 	
-	public void setByteCount(int size){
+	public void setByteCount(long size){
 		log.trace("setByteCount "+size);
 		invalidateCache();
-		if (!type.isFixedSize() || size==type.getByteCount()){
+		if (type==null || !type.isFixedSize() || size==type.getByteCount()){
 			this.byteCount=size;
 		}
 		
@@ -289,11 +319,15 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		//TODO write mem
 	}
 	
-	public void setPointer(boolean isPointer) {
+	public void setIsPointer(boolean isPointer) {
 		if (isCustom()){	//Only for datastructures? (design question)
 			this.isPointer=isPointer;
 			invalidateChildCache();
 		}
+	}
+	
+	public void setResultList(ResultList resultList) {
+		this.resultList=resultList;		
 	}
 	
 	
@@ -349,7 +383,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 					return;
 			}
 			for (DSField field : ds.getFields())
-				add(new Result(process, field));
+				add(new Result(resultList, field));
 		}
 	}
 
@@ -358,6 +392,8 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 	
 	@Override
 	public void contentsChanged(ListDataEvent listdataevent) {
+		//TODO if name changes, no need to refresh the memory value
+		
 		if(isCustom()){	//only custom Results listen to datastructure changes
 			if (isRelative()){
 				log.debug("contentsChanged custom+relative");
@@ -392,7 +428,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		}
 		if (datastructure!=null){
 			for (DSField field : datastructure.getFields())
-				add(new Result(process, field));
+				add(new Result(resultList, field));
 		}
 	}
 
@@ -405,11 +441,11 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 
 	@Override
 	public Result clone() {
-		Result r = new Result(process, address, valueCache, type);
-		r.setDatastructure(datastructure);
-		r.setPointer(isPointer);
+		Result r = new Result(resultList, address, valueCache, type, datastructure, name, isPointer);
 		return r;
 	}
+
+
 
 
 }
