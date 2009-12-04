@@ -7,14 +7,15 @@ import javax.swing.UIManager;
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 
-import luz.dsexplorer.objects.Process;
-import luz.dsexplorer.objects.ProcessList;
-import luz.dsexplorer.winapi.interfaces.Shell32;
-import luz.dsexplorer.winapi.interfaces.Kernel32.LPSYSTEM_INFO;
-import luz.dsexplorer.winapi.interfaces.Ntdll.PEB;
-import luz.dsexplorer.winapi.interfaces.Ntdll.PROCESS_BASIC_INFORMATION;
-import luz.dsexplorer.winapi.interfaces.Ntdll.RTL_USER_PROCESS_PARAMETERS;
-import luz.dsexplorer.winapi.interfaces.Psapi.PPROCESS_MEMORY_COUNTERS;
+import luz.dsexplorer.winapi.ProcessList;
+import luz.dsexplorer.winapi.WinAPI;
+import luz.dsexplorer.winapi.jna.Shell32;
+import luz.dsexplorer.winapi.jna.Kernel32.LPSYSTEM_INFO;
+import luz.dsexplorer.winapi.jna.Ntdll.PEB;
+import luz.dsexplorer.winapi.jna.Ntdll.PROCESS_BASIC_INFORMATION;
+import luz.dsexplorer.winapi.jna.Ntdll.RTL_USER_PROCESS_PARAMETERS;
+import luz.dsexplorer.winapi.jna.Psapi.PPROCESS_MEMORY_COUNTERS;
+import luz.dsexplorer.winapi.objects.Process;
 import luz.dsexplorer.winapi.tools.Advapi32Tools;
 import luz.dsexplorer.winapi.tools.Kernel32Tools;
 import luz.dsexplorer.winapi.tools.NtdllTools;
@@ -27,6 +28,7 @@ import luz.dsexplorer.winapi.tools.User32Tools;
 public class Test {
  
     public static void main(String[] args) throws Exception {
+    	final WinAPI winAPI   = WinAPI.getInstance();
         final Kernel32Tools k32 = Kernel32Tools.getInstance();
         final PsapiTools psapi = PsapiTools.getInstance();
         final User32Tools u32 =User32Tools.getInstance();
@@ -38,8 +40,7 @@ public class Test {
         
         int pid=13880;
         Process p=null;
-        ProcessList list = k32.getProcessList();
-        list.refreshWindows();
+        ProcessList list = winAPI.getProcessList();
         for (Process pr : list) {
 			if (pr.getPid()==pid){
 				p=pr;

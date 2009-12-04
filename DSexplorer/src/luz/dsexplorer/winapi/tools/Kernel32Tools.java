@@ -1,12 +1,13 @@
 package luz.dsexplorer.winapi.tools;
 
-import luz.dsexplorer.objects.Process;
-import luz.dsexplorer.objects.ProcessList;
-import luz.dsexplorer.winapi.interfaces.Kernel32;
-import luz.dsexplorer.winapi.interfaces.Kernel32.ENUMRESNAMEPROC;
-import luz.dsexplorer.winapi.interfaces.Kernel32.LPPROCESSENTRY32;
-import luz.dsexplorer.winapi.interfaces.Kernel32.LPSYSTEM_INFO;
-import luz.dsexplorer.winapi.interfaces.Kernel32.MEMORY_BASIC_INFORMATION;
+import java.util.LinkedList;
+import java.util.List;
+
+import luz.dsexplorer.winapi.jna.Kernel32;
+import luz.dsexplorer.winapi.jna.Kernel32.ENUMRESNAMEPROC;
+import luz.dsexplorer.winapi.jna.Kernel32.LPPROCESSENTRY32;
+import luz.dsexplorer.winapi.jna.Kernel32.LPSYSTEM_INFO;
+import luz.dsexplorer.winapi.jna.Kernel32.MEMORY_BASIC_INFORMATION;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
@@ -91,8 +92,8 @@ public class Kernel32Tools {
 	
 	
 	
-	public ProcessList getProcessList() throws Exception{
-		ProcessList list = new ProcessList();
+	public List<LPPROCESSENTRY32> getProcessList() throws Exception{
+		List<LPPROCESSENTRY32> list = new LinkedList<LPPROCESSENTRY32>();
 		
         Pointer hProcessSnap = k32.CreateToolhelp32Snapshot(Kernel32Tools.TH32CS_SNAPPROCESS, 0);
         
@@ -105,9 +106,9 @@ public class Kernel32Tools {
        
         do{
         	if (pe32.th32ProcessID!=0){
-	        	Process process = new Process(pe32);
-	        	list.add(process);
+	        	list.add(pe32);
         	}
+        	pe32 = new LPPROCESSENTRY32();
         }while(k32.Process32Next(hProcessSnap, pe32));
 		return list;		
 	}

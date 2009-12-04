@@ -5,8 +5,9 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 
-import luz.dsexplorer.objects.Process;
-import luz.dsexplorer.objects.ProcessList;
+import luz.dsexplorer.winapi.ProcessList;
+import luz.dsexplorer.winapi.WinAPI;
+import luz.dsexplorer.winapi.objects.Process;
 
 
 public class ProcessTable extends JTable{
@@ -46,13 +47,13 @@ public class ProcessTable extends JTable{
 		@SuppressWarnings("unchecked")
 		private Class[] classes = {Integer.class, ImageIcon.class, String.class, String.class};
 		private ProcessList list = new ProcessList();
-		
+		private WinAPI winapi = WinAPI.getInstance();
 	    public MyTableModel(){
 
 	    }
 	    
 	    public void refresh() {
-			list.refresh();
+	    	list = winapi.getProcessList();
 			fireTableDataChanged();	
 		}
 

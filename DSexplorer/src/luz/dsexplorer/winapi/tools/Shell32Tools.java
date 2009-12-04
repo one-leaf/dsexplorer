@@ -1,6 +1,6 @@
 package luz.dsexplorer.winapi.tools;
 
-import luz.dsexplorer.winapi.interfaces.Shell32;
+import luz.dsexplorer.winapi.jna.Shell32;
 
 import com.sun.jna.Pointer;
 

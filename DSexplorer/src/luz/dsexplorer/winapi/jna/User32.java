@@ -1,9 +1,10 @@
-package luz.dsexplorer.winapi.interfaces;
+package luz.dsexplorer.winapi.jna;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.win32.StdCallLibrary;
 
 public interface User32 extends StdCallLibrary {
@@ -75,6 +76,11 @@ public interface User32 extends StdCallLibrary {
      */
     Pointer SendMessageA(Pointer hWnd,int Msg,int wParam,int lParam);
     
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms644952(VS.85).aspx
+     */
+    int SendMessageTimeoutA(Pointer hWnd,int Msg,int wParam,int lParam, int fuFlags, int uTimeout, PointerByReference lpdwResult);
+        
 	/*
 	 * http://msdn.microsoft.com/en-us/library/ms633580(VS.85).aspx
      */

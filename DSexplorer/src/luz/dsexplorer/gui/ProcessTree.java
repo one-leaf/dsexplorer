@@ -10,9 +10,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import luz.dsexplorer.objects.Process;
-import luz.dsexplorer.objects.Result;
-import luz.dsexplorer.objects.ResultList;
+import luz.dsexplorer.winapi.ResultList;
+import luz.dsexplorer.winapi.objects.Process;
+import luz.dsexplorer.winapi.objects.Result;
 
 public class ProcessTree extends JTree {
 	private static final long serialVersionUID = 8889377903469038055L;
@@ -78,10 +78,8 @@ public class ProcessTree extends JTree {
 	}
 
 	public void reset() {
-		rl = new ResultList(rl==null?null:rl.getProcess());
-		model=new DefaultTreeModel(rl);
-		this.setModel(model);
-		sm.setSelectionPath(new TreePath(rl));
+		rl.removeAllChildren();
+		model.nodeStructureChanged(rl);
 	}
 	
 	public void saveToFile(File file){

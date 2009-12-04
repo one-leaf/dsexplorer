@@ -1,29 +1,26 @@
 package luz.dsexplorer.objects.datastructure;
 
+import javax.swing.event.EventListenerList;
+
 public class DSField {
 	private DSType type;
 	private String name;
-	private Datastructure datastructure;
 	private long byteCount;
+	private transient EventListenerList listenerList = new EventListenerList();
 
 	/* only for XMLEncoder */
 	public DSField(){
 		
 	}
 	
-	public DSField(DSType type, String name, Datastructure datastructure){
-		this(type, name, type.getByteCount(), datastructure);
+	public DSField(DSType type, String name){
+		this(type, name, type.getByteCount());
 	}
 	
-	public DSField(DSType type, String name, long byteCount, Datastructure datastructure){
+	public DSField(DSType type, String name, long byteCount){
 		this.type=type;
 		this.name=name;
-		this.datastructure=datastructure;
 		this.byteCount=byteCount;
-	}
-
-	public Datastructure getDatastructure(){
-		return datastructure;
 	}
 	
 	public DSType getType() {
@@ -37,27 +34,17 @@ public class DSField {
 	public long getByteCount() {
 		return byteCount;
 	}
-	
-	public long getOffset(){
-		return datastructure.getOffset(this);
-	}
-	
 
 	public void setType(DSType type) {
 		this.type = type;
 		this.byteCount=type.getByteCount();
-		if (datastructure!=null)
-			datastructure.refresh(this);
+		fireActionPerformed(this);
 	}
 	
 	public void setName(String name) {
 		this.name = name;
-		if (datastructure!=null)
-			datastructure.refresh(this);
+		fireActionPerformed(this);
 	}
-
-
-
 	
 	public void setByteCount(long byteCount){
 		if (type==null || !type.isFixedSize()){
@@ -65,11 +52,33 @@ public class DSField {
 		}else{
 			this.byteCount=type.getByteCount();
 		}
-		if (datastructure!=null)
-			datastructure.refresh(this);
+		fireActionPerformed(this);
 	}
 	
+	///////////////////////////////////////////////////////////
 	
+	public void addListener(DSFieldListener l) {
+        listenerList.add(DSFieldListener.class, l);
+    }
+    
+    public void removeListener(DSFieldListener l) {
+	    listenerList.remove(DSFieldListener.class, l);
+    }
+    
+    public DSFieldListener[] getListeners() {
+        return (DSFieldListener[]) listenerList.getListenerList();
+    }
+    
+    protected void fireActionPerformed(Object o) {
+    	 Object[] listeners = listenerList.getListenerList(); // Guaranteed to return a non-null array
+         // Process the listeners last to first, notifying those that are interested in this event
+         for (int i = listeners.length-1; i>=0; i--) {
+             if (listeners[i]==DSFieldListener.class) {
+            	 ((DSFieldListener)listeners[i+1]).changed((DSField)o);
+             }          
+         }
+    }
+    
 
 	
 }

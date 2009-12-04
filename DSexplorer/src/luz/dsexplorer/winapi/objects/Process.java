@@ -1,4 +1,4 @@
-package luz.dsexplorer.objects;
+package luz.dsexplorer.winapi.objects;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -6,16 +6,16 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import luz.dsexplorer.objects.datastructure.DSType;
-import luz.dsexplorer.objects.listener.MemoryListener;
-import luz.dsexplorer.winapi.interfaces.Kernel32.LPPROCESSENTRY32;
-import luz.dsexplorer.winapi.interfaces.Kernel32.MEMORY_BASIC_INFORMATION;
-import luz.dsexplorer.winapi.interfaces.Ntdll.PEB;
-import luz.dsexplorer.winapi.interfaces.Ntdll.PROCESS_BASIC_INFORMATION;
+import luz.dsexplorer.winapi.ModuleList;
+import luz.dsexplorer.winapi.ResultList;
+import luz.dsexplorer.winapi.WinAPI;
+import luz.dsexplorer.winapi.constants.GAFlags;
+import luz.dsexplorer.winapi.constants.ProcessInformationClass;
+import luz.dsexplorer.winapi.jna.Kernel32.LPPROCESSENTRY32;
+import luz.dsexplorer.winapi.jna.Kernel32.MEMORY_BASIC_INFORMATION;
+import luz.dsexplorer.winapi.jna.Ntdll.PEB;
+import luz.dsexplorer.winapi.jna.Ntdll.PROCESS_BASIC_INFORMATION;
 import luz.dsexplorer.winapi.tools.Kernel32Tools;
-import luz.dsexplorer.winapi.tools.NtdllTools;
-import luz.dsexplorer.winapi.tools.PsapiTools;
-import luz.dsexplorer.winapi.tools.Shell32Tools;
-import luz.dsexplorer.winapi.tools.User32Tools;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,7 +27,9 @@ import com.sun.jna.ptr.IntByReference;
 
 public class Process {
 	private static final Log log = LogFactory.getLog(Process.class);
-	
+	private WinAPI winAPI   = WinAPI.getInstance();
+
+	private List<Pointer> hWnds = new LinkedList<Pointer>();
 	private final int pid;
 	private final String szExeFile;
 	private final int cntThreads;
@@ -42,13 +44,7 @@ public class Process {
 	private MemoryListener Floatlistener;
 	private MemoryListener Doublelistener;
 	
-	
-	private Kernel32Tools k32   = Kernel32Tools.getInstance();
-	private PsapiTools    psapi = PsapiTools   .getInstance();
-	private Shell32Tools  s32   = Shell32Tools .getInstance();
-	private NtdllTools    nt    = NtdllTools   .getInstance();
-	private User32Tools   u32   = User32Tools  .getInstance();
-	private List<Pointer> hWnds = new LinkedList<Pointer>();
+
 	
 	public Process(LPPROCESSENTRY32 pe32) {
 		this.pid=pe32.th32ProcessID;
@@ -157,7 +153,7 @@ public class Process {
 	public Pointer getHandle() throws Exception{
 		if (handleCache!=null)
 			return handleCache;
-		handleCache = k32.OpenProcess(Kernel32Tools.PROCESS_ALL_ACCESS, false, this.pid);
+		handleCache = winAPI.OpenProcess(Kernel32Tools.PROCESS_ALL_ACCESS, false, this.pid);
 		return handleCache;
 	}
 	
@@ -200,7 +196,7 @@ public class Process {
 	
 	public String getProcessImageFileName(){
 		 try {
-			return psapi.GetProcessImageFileNameA(getHandle());
+			return winAPI.GetProcessImageFileNameA(getHandle());
 		} catch (Exception e) {
 			return "";
 		}
@@ -208,17 +204,17 @@ public class Process {
 
 	public String getModuleFileNameExA(){
 		 try {
-			return psapi.GetModuleFileNameExA(getHandle(), null);
+			return winAPI.GetModuleFileNameExA(getHandle(), null);
 		} catch (Exception e) {
 			return "";
 		}
 	}
 
-	public List<Module> getModules(){
+	public ModuleList getModules(){
 		try {
-			return psapi.EnumProcessModules(getHandle());
+			return winAPI.EnumProcessModules(getHandle());
 		} catch (Exception e) {
-			return new LinkedList<Module>();
+			return null;
 		}
 	}
 
@@ -227,8 +223,8 @@ public class Process {
 		if (moduleCache!=null)
 			return moduleCache;	
 
-		List<Module> modules = getModules();
-		if (modules.size()>0)
+		ModuleList modules = getModules();
+		if (modules!=null && modules.size()>0)
 			moduleCache=modules.get(0);
 
 		return moduleCache;
@@ -252,7 +248,7 @@ public class Process {
 	
 	public int getMemUsage() {
 		try {
-			return psapi.GetProcessMemoryInfo(getHandle()).WorkingSetSize;
+			return winAPI.GetProcessMemoryInfo(getHandle()).WorkingSetSize;
 		} catch (Exception e) {
 			return 0;
 		}
@@ -265,14 +261,14 @@ public class Process {
 		
 		Pointer hIcon = null;
 		
-        hIcon=s32.ExtractSmallIcon(this.getModuleFileNameExA(), 1);        
+        hIcon=winAPI.ExtractSmallIcon(this.getModuleFileNameExA(), 1);        
         if (hIcon==null){
-        	hIcon=s32.ExtractSmallIcon(this.getSzExeFile(), 1);
+        	hIcon=winAPI.ExtractSmallIcon(this.getSzExeFile(), 1);
         }
         
         if (hIcon==null){      	
         	if(hWnds.size()>0){
-        		hIcon = u32.getHIcon(u32.GetAncestor(hWnds.get(0), User32Tools.GA_ROOTOWNER));
+        		hIcon = winAPI.getHIcon(winAPI.GetAncestor(hWnds.get(0), GAFlags.GA_ROOTOWNER));
         	}
 //        	for (Pointer hWnd : hWnds) {
 //        		hIcon = u32.getHIcon(hWnd);
@@ -282,7 +278,7 @@ public class Process {
         }
         
         if (hIcon!=null)
-        	iconCache=new ImageIcon(u32.getIcon(hIcon));
+        	iconCache=new ImageIcon(winAPI.getIcon(hIcon));
         else
         	iconCache=new ImageIcon();
         return iconCache;        
@@ -293,7 +289,7 @@ public class Process {
 		if (infoCache!=null)
 			return infoCache;
 		try {
-			infoCache = nt.NtQueryInformationProcess(getHandle(), NtdllTools.ProcessBasicInformation);
+			infoCache = winAPI.NtQueryInformationProcess(getHandle(), ProcessInformationClass.ProcessBasicInformation);
 		} catch (Exception e) {}
 		
 		return infoCache;
@@ -308,11 +304,11 @@ public class Process {
 	}
 	
 	public MEMORY_BASIC_INFORMATION VirtualQueryEx(Pointer lpAddress) throws Exception{
-		return k32.VirtualQueryEx(getHandle(), lpAddress);
+		return winAPI.VirtualQueryEx(getHandle(), lpAddress);
 	}
 	
 	public void ReadProcessMemory(Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Exception{
-		k32.ReadProcessMemory(getHandle(), pointer, outputBuffer, nSize, outNumberOfBytesRead);
+		winAPI.ReadProcessMemory(getHandle(), pointer, outputBuffer, nSize, outNumberOfBytesRead);
 	}
 	
 	private void search(long from, long to) throws Exception{

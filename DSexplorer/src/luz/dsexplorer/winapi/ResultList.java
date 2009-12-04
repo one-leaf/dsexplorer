@@ -1,4 +1,4 @@
-package luz.dsexplorer.objects;
+package luz.dsexplorer.winapi;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -12,6 +12,12 @@ import java.io.FileOutputStream;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
+
+import luz.dsexplorer.winapi.objects.Process;
+import luz.dsexplorer.winapi.objects.Result;
+
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
 
 /**
  * This class groups Result objects which represent memory pointers with their interpretation.
@@ -30,10 +36,10 @@ public class ResultList extends DefaultMutableTreeNode{
 		this.process=process;
 	}
 	
-
-	public Process getProcess() {
-		return process;
+	public void ReadProcessMemory(Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Exception{
+		process.ReadProcessMemory(pointer, outputBuffer, nSize, outNumberOfBytesRead);
 	}
+	
 	
 	public void setProcess(Process process) {
 		this.process=process;
@@ -91,11 +97,11 @@ public class ResultList extends DefaultMutableTreeNode{
 //		);
 			
 		
-		Result child;
+		Object child;
 		for (int i = 0; i < getChildCount(); i++) {
-			child=(Result)getChildAt(i);
+			child=getChildAt(i);
 			System.out.println(child.toString());
-			e.writeObject(child.clone());
+			e.writeObject(((Result)child).clone());
 			
 		}
 		e.close();

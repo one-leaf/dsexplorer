@@ -1,8 +1,7 @@
-package luz.dsexplorer.objects.listener;
+package luz.dsexplorer.winapi.objects;
 
-import luz.dsexplorer.objects.Result;
-import luz.dsexplorer.objects.ResultList;
 import luz.dsexplorer.objects.datastructure.DSType;
+import luz.dsexplorer.winapi.ResultList;
 
 import com.sun.jna.Memory;
 

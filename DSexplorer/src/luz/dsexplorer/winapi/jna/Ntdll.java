@@ -1,6 +1,4 @@
-package luz.dsexplorer.winapi.interfaces;
-
-import luz.dsexplorer.winapi.tools.Kernel32Tools;
+package luz.dsexplorer.winapi.jna;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
@@ -12,7 +10,7 @@ import com.sun.jna.win32.StdCallLibrary;
 
 public interface Ntdll extends StdCallLibrary{
 	Ntdll INSTANCE = (Ntdll) Native.loadLibrary("ntdll", Ntdll.class);
-	final Kernel32Tools k32 = Kernel32Tools.getInstance();
+	final Kernel32 k32 = Kernel32.INSTANCE;
 	
 	public static class PROCESS_BASIC_INFORMATION extends Structure {
 		public int ExitStatus;
@@ -27,7 +25,7 @@ public interface Ntdll extends StdCallLibrary{
 			this.process=process;
 		}
 
-		public PEB getPEB() throws Exception{
+		public PEB getPEB() {
 			if (PebBaseAddress==null)
 				return null;
 	        PEB peb = new PEB(process);
@@ -63,7 +61,7 @@ public interface Ntdll extends StdCallLibrary{
 			this.process=process;
 		}
 		
-		public RTL_USER_PROCESS_PARAMETERS getProcessParameters() throws Exception{
+		public RTL_USER_PROCESS_PARAMETERS getProcessParameters() {
 			if (ProcessParameters==null)
 				return new RTL_USER_PROCESS_PARAMETERS(process);
 			RTL_USER_PROCESS_PARAMETERS pp = new RTL_USER_PROCESS_PARAMETERS(process);
@@ -114,7 +112,7 @@ public interface Ntdll extends StdCallLibrary{
 		}
 		
 		private Memory str=null;
-		private String readUNICODE_STRING(Pointer pointer) throws Exception{
+		private String readUNICODE_STRING(Pointer pointer) {
 			if (pointer==null)
 				return null;
 			if (str==null)

@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.swing.AbstractListModel;
 
-public class Datastructure extends AbstractListModel{
+public class Datastructure extends AbstractListModel implements DSFieldListener{
 	private static final long serialVersionUID = 4479689750597516075L;
 	private String name;
 	private List<DSField> fields;
@@ -53,21 +53,15 @@ public class Datastructure extends AbstractListModel{
 		return bytes;
 	}	
 	
-	public void refresh(DSField field){
-		int index=fields.indexOf(field);
-		fireContentsChanged(field, index, index);
-	}
-		
+	
 	public void addElement(DSType type) {
-		addElement(new DSField(type, type.name(), this));		
+		addElement(new DSField(type, type.name()));		
 	}
-	
-	
-
-	
 	
 	private void addElement(Object obj) {
-		fields.add((DSField)obj);
+		DSField field = (DSField)obj;
+		field.addListener(this);
+		fields.add(field);
 		int index=fields.size()-1;
 		fireIntervalAdded(obj, index, index);
 	}
@@ -87,6 +81,14 @@ public class Datastructure extends AbstractListModel{
 		Object obj = fields.get(index);
 		fields.remove(index);
 		fireIntervalRemoved(obj, index, index);
+	}
+		
+	//DSFieldListener//////////////////////////////////////
+	
+	@Override
+	public void changed(Object field) {
+		int index=fields.indexOf(field);
+		fireContentsChanged(field, index, index);	
 	}
 	
 
@@ -108,6 +110,8 @@ public class Datastructure extends AbstractListModel{
 	public String toString() {
 		return name;
 	}
+
+
 
 
 
