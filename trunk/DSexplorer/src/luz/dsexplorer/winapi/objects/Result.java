@@ -1,4 +1,4 @@
-package luz.dsexplorer.objects;
+package luz.dsexplorer.winapi.objects;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -8,6 +8,7 @@ import javax.swing.tree.MutableTreeNode;
 import luz.dsexplorer.objects.datastructure.DSField;
 import luz.dsexplorer.objects.datastructure.DSType;
 import luz.dsexplorer.objects.datastructure.Datastructure;
+import luz.dsexplorer.winapi.ResultList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 
-public class Result extends DefaultMutableTreeNode implements ListDataListener{
+public class Result extends DefaultMutableTreeNode implements ListDataListener, Cloneable{
 	private static final long serialVersionUID = 4163723615095260358L;
 	private static final Log log = LogFactory.getLog(Result.class);
 	private transient ResultList resultList;
@@ -42,6 +43,13 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 	 * 2) datastructures with children (fields)			(datastructure!=null, dsField =null)
 	 * 3) Fields (children) of the datastructures		(datastructure =null, dsField!=null)
 	 * 4) Fields (children) which are datastructures	(datastructure!=null, dsField!=null)
+	 * 
+	 *             |Not Custom|  Custom  |
+	 * ------------+----------+----------+
+	 * Not Relative|    1     |    2     |
+	 * ------------+----------+----------+
+	 *     Relative|    3     |    4     |
+	 * ------------+----------+----------+
 	 * 
 	 */
 	
@@ -97,17 +105,17 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 			Result p=((Result)getParent());
 			if (p!=null){
 				if (p.isPointer){
-					Long base = p.getPointer();
+					Long base = p.getPointer();	//WARNING: Indirect recursion(getPointer->getAddress)
 					if (base==null) 
 						return null;
 					else
-						return base+dsField.getOffset();				
+						return base+p.getDatastructure().getOffset(dsField);	//If it is relative->parent is datastructure			
 				}else{
-					Long base = p.getAddress();	//WARNING : recursion
+					Long base = p.getAddress();	//WARNING : direct recursion (intentionally)
 					if (base==null)
 						return null;
 					else
-						return base+dsField.getOffset();
+						return base+p.getDatastructure().getOffset(dsField);	//If it is relative->parent is datastructure
 				}
 			}else{
 				log.warn("Relative Result without Parent (weird->needs fix)");	//FIXME results without parent
@@ -177,7 +185,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		Memory buffer=new Memory(getByteCount());
 		try {
 			log.trace("Read: "+getAddressString());
-			getProcess().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
+			getResultList().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
 			switch (getType()) {
 				case Byte1:		valueCache=buffer.getByte     (0);							break;
 				case Byte2:		valueCache=buffer.getShort    (0);							break;
@@ -202,7 +210,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		return isPointer;
 	}
 	
-	public Long getPointer(){
+	private Long getPointer(){
 		if (!isPointer)
 			return null;
 		
@@ -212,7 +220,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		Memory buffer=new Memory(4);
 		try {
 			log.trace("Pointer: "+getAddressString());
-			getProcess().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
+			getResultList().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
 			pointerCache=(long)buffer.getInt(0);
 		} catch (Exception e) {
 			log.warn(e);
@@ -222,14 +230,14 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 		return pointerCache;
 	}
 	
-	private Process getProcess() throws Exception{
+	private ResultList getResultList() throws Exception{
 		if (resultList!=null){
-			return resultList.getProcess();
+			return resultList;
 		}else {
 			Object root=getRoot();
 			if (root instanceof ResultList){
 				log.warn("Result not linked to ResultList but has it as root");
-				return ((ResultList)root).getProcess();
+				return (ResultList)root;
 			}else{
 				Exception e= new Exception("Result not linked to ResultList");
 				log.error(e);
@@ -247,7 +255,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 	
 	public Datastructure getDatastructure(){
 		if (isRelative())
-			return dsField.getDatastructure();
+			return 	((Result)getParent()).getDatastructure();
 		else
 			return datastructure;
 	}
@@ -375,14 +383,10 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener{
 	private void defineChildNodes(){
 		if (!areChildrenDefined){
 			areChildrenDefined=true;
-			Datastructure ds = datastructure;
-			if (ds==null){
-				if (dsField!=null) 
-					ds=dsField.getDatastructure();
-				else
-					return;
+			if (datastructure==null){
+				return;
 			}
-			for (DSField field : ds.getFields())
+			for (DSField field : datastructure.getFields())
 				add(new Result(resultList, field));
 		}
 	}

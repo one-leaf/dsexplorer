@@ -20,10 +20,10 @@ import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 
 import luz.dsexplorer.gui.listener.DSEditorListener;
-import luz.dsexplorer.objects.Result;
 import luz.dsexplorer.objects.datastructure.DSList;
 import luz.dsexplorer.objects.datastructure.DSType;
 import luz.dsexplorer.objects.datastructure.Datastructure;
+import luz.dsexplorer.winapi.objects.Result;
 
 
 public class DSEditor extends javax.swing.JPanel {

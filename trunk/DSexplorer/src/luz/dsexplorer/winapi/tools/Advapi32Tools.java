@@ -1,9 +1,9 @@
 package luz.dsexplorer.winapi.tools;
 
-import luz.dsexplorer.winapi.interfaces.Advapi32;
-import luz.dsexplorer.winapi.interfaces.Kernel32;
-import luz.dsexplorer.winapi.interfaces.Advapi32.LUID;
-import luz.dsexplorer.winapi.interfaces.Advapi32.TOKEN_PRIVILEGES;
+import luz.dsexplorer.winapi.jna.Advapi32;
+import luz.dsexplorer.winapi.jna.Kernel32;
+import luz.dsexplorer.winapi.jna.Advapi32.LUID;
+import luz.dsexplorer.winapi.jna.Advapi32.TOKEN_PRIVILEGES;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -45,8 +45,7 @@ public class Advapi32Tools {
     public static final int TOKEN_READ = (STANDARD_RIGHTS_READ | TOKEN_QUERY);
     public static final int TOKEN_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED | TOKEN_ASSIGN_PRIMARY |
         TOKEN_DUPLICATE | TOKEN_IMPERSONATE | TOKEN_QUERY | TOKEN_QUERY_SOURCE |
-        TOKEN_ADJUST_PRIVILEGES | TOKEN_ADJUST_GROUPS | TOKEN_ADJUST_DEFAULT |
-        TOKEN_ADJUST_SESSIONID);
+        TOKEN_ADJUST_PRIVILEGES | TOKEN_ADJUST_GROUPS | TOKEN_ADJUST_DEFAULT | TOKEN_ADJUST_SESSIONID);
 
 	////////////////////////////////////////////////////////////////////////
 	

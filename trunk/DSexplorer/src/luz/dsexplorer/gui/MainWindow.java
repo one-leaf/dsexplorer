@@ -26,9 +26,9 @@ import javax.swing.filechooser.FileFilter;
 import luz.dsexplorer.gui.listener.DSEditorListener;
 import luz.dsexplorer.gui.listener.MemorySearchListener;
 import luz.dsexplorer.gui.listener.ProcessDialogListener;
-import luz.dsexplorer.objects.Process;
-import luz.dsexplorer.objects.Result;
-import luz.dsexplorer.objects.ResultList;
+import luz.dsexplorer.winapi.ResultList;
+import luz.dsexplorer.winapi.objects.Process;
+import luz.dsexplorer.winapi.objects.Result;
 
 
 

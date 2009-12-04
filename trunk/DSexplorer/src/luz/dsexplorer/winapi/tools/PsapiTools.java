@@ -3,10 +3,9 @@ package luz.dsexplorer.winapi.tools;
 import java.util.LinkedList;
 import java.util.List;
 
-import luz.dsexplorer.objects.Module;
-import luz.dsexplorer.winapi.interfaces.Psapi;
-import luz.dsexplorer.winapi.interfaces.Psapi.LPMODULEINFO;
-import luz.dsexplorer.winapi.interfaces.Psapi.PPROCESS_MEMORY_COUNTERS;
+import luz.dsexplorer.winapi.jna.Psapi;
+import luz.dsexplorer.winapi.jna.Psapi.LPMODULEINFO;
+import luz.dsexplorer.winapi.jna.Psapi.PPROCESS_MEMORY_COUNTERS;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -44,8 +43,8 @@ public class PsapiTools {
 		return list;
 	}
 	
-	public List<Module> EnumProcessModules(Pointer hProcess) throws Exception{
-		List<Module> list = new LinkedList<Module>();
+	public List<Pointer> EnumProcessModules(Pointer hProcess) throws Exception{
+		List<Pointer> list = new LinkedList<Pointer>();
 		
 		Pointer[] lphModule = new Pointer[256];
 		IntByReference lpcbNeededs= new IntByReference();
@@ -55,7 +54,7 @@ public class PsapiTools {
             throw new Exception("EnumProcessModules failed. Error: "+err);
     	}
 		for (int i = 0; i < lpcbNeededs.getValue()/4; i++) {
-			list.add(new Module(hProcess, lphModule[i]));
+			list.add(lphModule[i]);
 		}
 		
 		return list;

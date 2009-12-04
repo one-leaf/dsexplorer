@@ -2,7 +2,7 @@ package luz.dsexplorer.gui.listener;
 
 import java.util.EventListener;
 
-import luz.dsexplorer.objects.Result;
+import luz.dsexplorer.winapi.objects.Result;
 
 public interface DSEditorListener extends EventListener  {
     
