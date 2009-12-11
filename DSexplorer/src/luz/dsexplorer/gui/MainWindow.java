@@ -26,9 +26,9 @@ import javax.swing.filechooser.FileFilter;
 import luz.dsexplorer.gui.listener.DSEditorListener;
 import luz.dsexplorer.gui.listener.MemorySearchListener;
 import luz.dsexplorer.gui.listener.ProcessDialogListener;
-import luz.dsexplorer.winapi.ResultList;
 import luz.dsexplorer.winapi.objects.Process;
 import luz.dsexplorer.winapi.objects.Result;
+import luz.dsexplorer.winapi.objects.ResultListImpl;
 
 
 
@@ -351,7 +351,7 @@ public class MainWindow extends javax.swing.JFrame {
 	
 	private void treeSelectionEvent(TreeSelectionEvent evt) {
 		Object node=evt.getPath().getLastPathComponent();
-		if (node instanceof ResultList){
+		if (node instanceof ResultListImpl){
 			jPanel1.removeAll();
 			jPanel1.add(ms, BorderLayout.CENTER);
 			jPanel1.repaint();

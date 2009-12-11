@@ -17,7 +17,6 @@ import luz.dsexplorer.winapi.jna.Gdi32.BITMAPINFO;
 import luz.dsexplorer.winapi.jna.Gdi32.BITMAPINFOHEADER;
 import luz.dsexplorer.winapi.jna.User32.ICONINFO;
 import luz.dsexplorer.winapi.jna.User32.WNDENUMPROC;
-import luz.dsexplorer.winapi.objects.Process;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -74,8 +73,7 @@ public class User32Tools {
 		return mutex;
 	}
 	
-	public Pointer getHwnd(Process process){
-		final int pidx=process.getPid();
+	public Pointer getHwnd(final int pidx){
 		final Container<Pointer> mutex=new Container<Pointer>();
 		
 		new Thread(new Runnable(){

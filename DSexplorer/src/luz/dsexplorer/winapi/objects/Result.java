@@ -8,7 +8,6 @@ import javax.swing.tree.MutableTreeNode;
 import luz.dsexplorer.objects.datastructure.DSField;
 import luz.dsexplorer.objects.datastructure.DSType;
 import luz.dsexplorer.objects.datastructure.Datastructure;
-import luz.dsexplorer.winapi.ResultList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -185,7 +184,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 		Memory buffer=new Memory(getByteCount());
 		try {
 			log.trace("Read: "+getAddressString());
-			getResultList().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
+			getProcess().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
 			switch (getType()) {
 				case Byte1:		valueCache=buffer.getByte     (0);							break;
 				case Byte2:		valueCache=buffer.getShort    (0);							break;
@@ -220,7 +219,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 		Memory buffer=new Memory(4);
 		try {
 			log.trace("Pointer: "+getAddressString());
-			getResultList().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
+			getProcess().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
 			pointerCache=(long)buffer.getInt(0);
 		} catch (Exception e) {
 			log.warn(e);
@@ -230,14 +229,14 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 		return pointerCache;
 	}
 	
-	private ResultList getResultList() throws Exception{
+	private Process getProcess() throws Exception{
 		if (resultList!=null){
-			return resultList;
+			return resultList.getProcess();
 		}else {
 			Object root=getRoot();
 			if (root instanceof ResultList){
 				log.warn("Result not linked to ResultList but has it as root");
-				return (ResultList)root;
+				return ((ResultList)root).getProcess();
 			}else{
 				Exception e= new Exception("Result not linked to ResultList");
 				log.error(e);
