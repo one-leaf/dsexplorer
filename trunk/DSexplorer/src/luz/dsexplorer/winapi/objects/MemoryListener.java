@@ -1,7 +1,6 @@
 package luz.dsexplorer.winapi.objects;
 
 import luz.dsexplorer.objects.datastructure.DSType;
-import luz.dsexplorer.winapi.ResultList;
 
 import com.sun.jna.Memory;
 

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import luz.dsexplorer.winapi.jna.Kernel32.LPPROCESSENTRY32;
 import luz.dsexplorer.winapi.objects.Process;
+import luz.dsexplorer.winapi.objects.ProcessImpl;
 
 import com.sun.jna.Pointer;
 
@@ -18,7 +19,7 @@ public class ProcessList implements Iterable<Process> {
 
 	
 	public void add(LPPROCESSENTRY32 pe32){
-		Process p = new Process(pe32);
+		Process p = new ProcessImpl(pe32);	//TODO Who should create the instance?
 		map.put(p.getPid(), p);
 		list.add(p);
 	}	
@@ -26,7 +27,6 @@ public class ProcessList implements Iterable<Process> {
 	public void add(int pid, Pointer hWnd) {
 		map.get(pid).addHwnd(hWnd);
 	}
-	
 	
 	
 	public Process get(Integer index){

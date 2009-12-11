@@ -11,8 +11,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import luz.dsexplorer.winapi.ResultList;
 import luz.dsexplorer.winapi.objects.Result;
+import luz.dsexplorer.winapi.objects.ResultList;
 
 
 public class ResultTable extends JTable{
@@ -115,14 +115,14 @@ public class ResultTable extends JTable{
 			return classes[c];
 	    }
 
-		public void setResults(ResultList search) {
-			list = search;
+		public void setResults(ResultList results) {
+			list = results;
 			fireTableDataChanged();
 		}
 	}
 
-	public void setResults(ResultList search) {
-		model.setResults(search);		
+	public void setResults(ResultList results) {
+		model.setResults(results);		
 	}
 
 

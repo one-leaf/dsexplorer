@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -22,9 +21,8 @@ import javax.swing.WindowConstants;
 
 import luz.dsexplorer.gui.listener.MemorySearchListener;
 import luz.dsexplorer.objects.datastructure.DSType;
-import luz.dsexplorer.winapi.ResultList;
 import luz.dsexplorer.winapi.objects.Process;
-import luz.dsexplorer.winapi.objects.Result;
+import luz.dsexplorer.winapi.objects.ResultList;
 
 
 /**
@@ -286,8 +284,8 @@ public class MemorySearch extends javax.swing.JPanel {
         }
     }
 
-	public void setProcess(Process process) {
-		this.process=process;
+	public void setProcess(Process p) {
+		this.process=p;
 	}
 
 

@@ -1,4 +1,4 @@
-package luz.dsexplorer.winapi;
+package luz.dsexplorer.winapi.objects;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -13,11 +13,6 @@ import java.io.FileOutputStream;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 
-import luz.dsexplorer.winapi.objects.Process;
-import luz.dsexplorer.winapi.objects.Result;
-
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.IntByReference;
 
 /**
  * This class groups Result objects which represent memory pointers with their interpretation.
@@ -28,18 +23,17 @@ import com.sun.jna.ptr.IntByReference;
  * @author cappella
  *
  */
-public class ResultList extends DefaultMutableTreeNode{
+public class ResultListImpl extends DefaultMutableTreeNode implements ResultList{
 	private static final long serialVersionUID = 2132455546694390451L;
 	private Process process;
 	
-	public ResultList(Process process){
+	public ResultListImpl(Process process){
 		this.process=process;
 	}
-	
-	public void ReadProcessMemory(Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Exception{
-		process.ReadProcessMemory(pointer, outputBuffer, nSize, outNumberOfBytesRead);
+
+	public Process getProcess(){
+		return this.process;
 	}
-	
 	
 	public void setProcess(Process process) {
 		this.process=process;
@@ -106,6 +100,7 @@ public class ResultList extends DefaultMutableTreeNode{
 		}
 		e.close();
 	}
+	
 	
 	
 	public void openFromFile(File file) throws FileNotFoundException{

@@ -10,13 +10,13 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import luz.dsexplorer.winapi.ResultList;
 import luz.dsexplorer.winapi.objects.Process;
 import luz.dsexplorer.winapi.objects.Result;
+import luz.dsexplorer.winapi.objects.ResultListImpl;
 
 public class ProcessTree extends JTree {
 	private static final long serialVersionUID = 8889377903469038055L;
-	private ResultList rl;
+	private ResultListImpl rl;
 	private DefaultTreeModel model;
 	private TreeSelectionModel sm = getSelectionModel();
 
@@ -30,7 +30,7 @@ public class ProcessTree extends JTree {
 	
 	public void setProcess(Process p){
 		if (rl==null){
-			rl = new ResultList(p);
+			rl = new ResultListImpl(p);
 			model=new DefaultTreeModel(rl);
 			this.setModel(model);
 			sm.setSelectionPath(new TreePath(rl));		

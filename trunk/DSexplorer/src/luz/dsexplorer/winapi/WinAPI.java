@@ -1,7 +1,6 @@
 package luz.dsexplorer.winapi;
 
 import java.awt.image.BufferedImage;
-import java.util.LinkedList;
 import java.util.List;
 
 import luz.dsexplorer.winapi.constants.GAFlags;
@@ -46,9 +45,8 @@ public class WinAPI {
 		
 		try {
 			List<LPPROCESSENTRY32>  processes = k32.getProcessList();
-			for (LPPROCESSENTRY32 pe32 : processes) {
+			for (LPPROCESSENTRY32 pe32 : processes)
 				plist.add(pe32);
-			}
 	
 			List<Pointer> hWnds = u32.EnumWindows();
 			IntByReference lpdwProcessId=new IntByReference();
@@ -91,12 +89,8 @@ public class WinAPI {
 		return psapi.GetProcessImageFileNameA(hProcess);
 	}
 	
-	public ModuleList EnumProcessModules(Pointer hProcess) throws Exception{
-		ModuleList modules = new ModuleList(hProcess);
-		List<Pointer> pointers = psapi.EnumProcessModules(hProcess);
-		for (Pointer pointer: pointers)
-			modules.add(pointer);	
-		return modules;
+	public List<Pointer> EnumProcessModules(Pointer hProcess) throws Exception{
+		return psapi.EnumProcessModules(hProcess);
 	}
 	
 	public PPROCESS_MEMORY_COUNTERS GetProcessMemoryInfo(Pointer Process) throws Exception{
