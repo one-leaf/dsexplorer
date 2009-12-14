@@ -21,8 +21,8 @@ import javax.swing.WindowConstants;
 
 import luz.dsexplorer.gui.listener.MemorySearchListener;
 import luz.dsexplorer.objects.datastructure.DSType;
-import luz.dsexplorer.winapi.objects.Process;
-import luz.dsexplorer.winapi.objects.ResultList;
+import luz.dsexplorer.winapi.api.Process;
+import luz.dsexplorer.winapi.api.ResultList;
 
 
 /**

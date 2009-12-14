@@ -10,9 +10,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import luz.dsexplorer.winapi.objects.Process;
-import luz.dsexplorer.winapi.objects.Result;
-import luz.dsexplorer.winapi.objects.ResultListImpl;
+import luz.dsexplorer.winapi.api.Process;
+import luz.dsexplorer.winapi.api.Result;
+import luz.dsexplorer.winapi.api.ResultListImpl;
 
 public class ProcessTree extends JTree {
 	private static final long serialVersionUID = 8889377903469038055L;

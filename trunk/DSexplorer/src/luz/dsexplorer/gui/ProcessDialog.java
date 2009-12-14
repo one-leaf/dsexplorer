@@ -18,7 +18,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import luz.dsexplorer.gui.listener.ProcessDialogListener;
-import luz.dsexplorer.winapi.objects.Process;
+import luz.dsexplorer.winapi.api.Process;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo

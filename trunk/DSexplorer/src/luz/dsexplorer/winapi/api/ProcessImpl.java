@@ -1,4 +1,4 @@
-package luz.dsexplorer.winapi.objects;
+package luz.dsexplorer.winapi.api;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import luz.dsexplorer.objects.datastructure.DSType;
-import luz.dsexplorer.winapi.WinAPI;
 import luz.dsexplorer.winapi.constants.GAFlags;
 import luz.dsexplorer.winapi.constants.ProcessInformationClass;
 import luz.dsexplorer.winapi.jna.Kernel32.LPPROCESSENTRY32;
@@ -25,7 +24,7 @@ import com.sun.jna.ptr.IntByReference;
 
 public class ProcessImpl implements Process {
 	private static final Log log = LogFactory.getLog(ProcessImpl.class);
-	private WinAPI winAPI   = WinAPI.getInstance();
+	private WinAPI winAPI;
 
 	private List<Pointer> hWnds = new LinkedList<Pointer>();
 	private final int pid;
@@ -44,7 +43,8 @@ public class ProcessImpl implements Process {
 	
 
 	
-	public ProcessImpl(LPPROCESSENTRY32 pe32) {
+	public ProcessImpl(LPPROCESSENTRY32 pe32, WinAPI winapi) {
+		this.winAPI=winapi;
 		this.pid=pe32.th32ProcessID;
 		this.szExeFile=pe32.getSzExeFile();
 		this.cntThreads=pe32.cntThreads;
@@ -213,7 +213,7 @@ public class ProcessImpl implements Process {
 			List<Pointer> pointers = winAPI.EnumProcessModules(getHandle());
 			List<Module> modules = new LinkedList<Module>();
 			for (Pointer hModule : pointers) 
-				modules.add(new Module(getHandle(), hModule));
+				modules.add(new Module(getHandle(), hModule, winAPI));
 			return modules;
 		} catch (Exception e) {
 			return null;

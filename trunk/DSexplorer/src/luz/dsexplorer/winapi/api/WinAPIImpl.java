@@ -1,4 +1,4 @@
-package luz.dsexplorer.winapi;
+package luz.dsexplorer.winapi.api;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -19,8 +19,8 @@ import luz.dsexplorer.winapi.tools.User32Tools;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 
-public class WinAPI {
-	private static WinAPI INSTANCE=null;
+public class WinAPIImpl implements WinAPI{
+	private static WinAPIImpl INSTANCE=null;
 	
 	private Kernel32Tools k32   = Kernel32Tools.getInstance();
 	private PsapiTools    psapi = PsapiTools   .getInstance();
@@ -28,11 +28,11 @@ public class WinAPI {
 	private NtdllTools    nt    = NtdllTools   .getInstance();
 	private User32Tools   u32   = User32Tools  .getInstance();
 	
-	private WinAPI(){}
+	private WinAPIImpl(){}
 	
 	public static WinAPI getInstance(){
 		if (INSTANCE==null)
-			INSTANCE=new WinAPI();
+			INSTANCE=new WinAPIImpl();
 		return INSTANCE;
 	}
 	
@@ -46,7 +46,7 @@ public class WinAPI {
 		try {
 			List<LPPROCESSENTRY32>  processes = k32.getProcessList();
 			for (LPPROCESSENTRY32 pe32 : processes)
-				plist.add(pe32);
+				plist.add(new ProcessImpl(pe32, this));
 	
 			List<Pointer> hWnds = u32.EnumWindows();
 			IntByReference lpdwProcessId=new IntByReference();

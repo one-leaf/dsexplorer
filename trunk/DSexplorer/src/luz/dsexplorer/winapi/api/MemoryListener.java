@@ -1,4 +1,4 @@
-package luz.dsexplorer.winapi.objects;
+package luz.dsexplorer.winapi.api;
 
 import luz.dsexplorer.objects.datastructure.DSType;
 
