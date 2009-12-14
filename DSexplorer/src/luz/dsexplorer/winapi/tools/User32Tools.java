@@ -24,21 +24,19 @@ import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
 public class User32Tools {
-	private static User32Tools INSTANCE=null;
+	private static final User32Tools INSTANCE=new User32Tools();	//Eager Creation
 	private static User32 u32 = User32.INSTANCE;
 	private Gdi32 gdi32 = Gdi32.INSTANCE;
 	
 	private User32Tools(){}
 	
 	public static User32Tools getInstance(){
-		if (INSTANCE==null)
-			INSTANCE=new User32Tools();
 		return INSTANCE;
 	}
 	
 	////////////////////////////////////////////////////////////////////////
 	
-	private class Container<A>{
+	private static class Container<A>{
 		A object=null;
 		void setFirst(A object){
 			this.object=object;

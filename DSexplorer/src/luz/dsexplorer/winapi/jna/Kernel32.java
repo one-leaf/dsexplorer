@@ -51,7 +51,7 @@ public interface Kernel32 extends StdCallLibrary {
     /*
      * http://msdn.microsoft.com/en-us/library/ms684839(VS.85).aspx
      */
-    public static class LPPROCESSENTRY32 extends Structure implements Cloneable{
+    public static class LPPROCESSENTRY32 extends Structure {
 		//public static class ByValue     extends LPPROCESSENTRY32 implements Structure.ByValue {}
 		//public static class ByReference extends LPPROCESSENTRY32 implements Structure.ByReference {}
 		public int				dwSize;							//The size of the structure, in bytes. If you do not initialize dwSize, Process32First fails.

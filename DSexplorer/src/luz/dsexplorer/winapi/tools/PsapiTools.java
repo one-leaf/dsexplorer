@@ -13,14 +13,12 @@ import com.sun.jna.ptr.IntByReference;
 
 
 public class PsapiTools {
-	private static PsapiTools  INSTANCE=null;
+	private static final PsapiTools  INSTANCE=new PsapiTools();	//Eager Creation
 	private static Psapi psapi = Psapi.INSTANCE;
 
 	private PsapiTools(){}
 	
 	public static PsapiTools getInstance(){
-		if (INSTANCE==null)
-			INSTANCE=new PsapiTools();
 		return INSTANCE;
 	}	
 

@@ -135,7 +135,7 @@ public class ResultListImpl extends DefaultMutableTreeNode implements ResultList
 	@Override
 	public String toString() {
 		if (process==null)
-			return null;
+			return "<no process>";
 		return process.getSzExeFile();
 	}
 

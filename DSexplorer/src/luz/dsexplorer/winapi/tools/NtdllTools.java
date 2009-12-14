@@ -8,14 +8,12 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 
 public class NtdllTools {
-	private static NtdllTools INSTANCE=null;
+	private static final NtdllTools INSTANCE=new NtdllTools();	//Eager Creation
 	private static Ntdll nt = Ntdll.INSTANCE;
 	
 	private NtdllTools(){}
 	
 	public static NtdllTools getInstance(){
-		if (INSTANCE==null)
-			INSTANCE=new NtdllTools();
 		return INSTANCE;
 	}
 	

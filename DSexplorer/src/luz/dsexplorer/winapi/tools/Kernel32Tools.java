@@ -13,14 +13,12 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 
 public class Kernel32Tools {
-	private static Kernel32Tools INSTANCE=null;
+	private static final Kernel32Tools INSTANCE=new Kernel32Tools();	//Eager Creation
 	private static Kernel32 k32 = Kernel32.INSTANCE;
 	
 	private Kernel32Tools(){}
 	
 	public static Kernel32Tools getInstance(){
-		if (INSTANCE==null)
-			INSTANCE=new Kernel32Tools();
 		return INSTANCE;
 	}
 	
