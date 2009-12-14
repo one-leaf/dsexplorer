@@ -1,4 +1,4 @@
-package luz.dsexplorer.winapi;
+package luz.dsexplorer.winapi.api;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -6,9 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import luz.dsexplorer.winapi.jna.Kernel32.LPPROCESSENTRY32;
-import luz.dsexplorer.winapi.objects.Process;
-import luz.dsexplorer.winapi.objects.ProcessImpl;
 
 import com.sun.jna.Pointer;
 
@@ -18,8 +15,7 @@ public class ProcessList implements Iterable<Process> {
 	private List        <Process> list= new LinkedList      <Process>();
 
 	
-	public void add(LPPROCESSENTRY32 pe32){
-		Process p = new ProcessImpl(pe32);	//TODO Who should create the instance?
+	public void add(Process p){
 		map.put(p.getPid(), p);
 		list.add(p);
 	}	

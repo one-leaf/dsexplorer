@@ -11,8 +11,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import luz.dsexplorer.winapi.objects.Result;
-import luz.dsexplorer.winapi.objects.ResultList;
+import luz.dsexplorer.winapi.api.Result;
+import luz.dsexplorer.winapi.api.ResultList;
 
 
 public class ResultTable extends JTable{

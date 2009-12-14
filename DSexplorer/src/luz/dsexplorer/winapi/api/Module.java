@@ -1,6 +1,5 @@
-package luz.dsexplorer.winapi.objects;
+package luz.dsexplorer.winapi.api;
 
-import luz.dsexplorer.winapi.WinAPI;
 import luz.dsexplorer.winapi.jna.Psapi.LPMODULEINFO;
 
 import com.sun.jna.Pointer;
@@ -12,11 +11,12 @@ public class Module {
 	private int  SizeOfImage=0;
 	private Pointer EntryPoint=null;
 	
-	private WinAPI winApi = WinAPI.getInstance();
+	private WinAPI winAPI;
 	
 	protected Module(){}		
 			
-	public Module(Pointer hProcess, Pointer hModule){
+	public Module(Pointer hProcess, Pointer hModule, WinAPI winAPI){
+		this.winAPI=winAPI;
 		this.hProcess=hProcess;
 		this.hModule=hModule;
 	}
@@ -26,14 +26,14 @@ public class Module {
 	}
 	
 	public String getFileName(){
-		return winApi.GetModuleFileNameExA(hProcess,hModule);
+		return winAPI.GetModuleFileNameExA(hProcess,hModule);
 	}
 	
 	
 	private void GetModuleInformation(){
 		if(lpBaseOfDll==null){
 			try {
-				LPMODULEINFO x = winApi.GetModuleInformation(hProcess, hModule);
+				LPMODULEINFO x = winAPI.GetModuleInformation(hProcess, hModule);
 				lpBaseOfDll=x.lpBaseOfDll;
 				SizeOfImage=x.SizeOfImage;
 				EntryPoint=x.EntryPoint;

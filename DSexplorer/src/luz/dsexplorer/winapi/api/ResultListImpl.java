@@ -1,4 +1,4 @@
-package luz.dsexplorer.winapi.objects;
+package luz.dsexplorer.winapi.api;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
