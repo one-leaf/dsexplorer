@@ -170,7 +170,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 			return sb.toString();			
 			
 		default:
-			return value==null?null:value.toString();
+			return value.toString();
 		}
 	}
 	

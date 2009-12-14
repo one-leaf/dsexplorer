@@ -5,14 +5,12 @@ import luz.dsexplorer.winapi.jna.Shell32;
 import com.sun.jna.Pointer;
 
 public class Shell32Tools {
-	private static Shell32Tools INSTANCE=null;
+	private static Shell32Tools INSTANCE=new Shell32Tools();	//Eager Creation
 	private static Shell32 s32 = Shell32.INSTANCE;
 	
 	private Shell32Tools(){}
 	
 	public static Shell32Tools getInstance(){
-		if (INSTANCE==null)
-			INSTANCE=new Shell32Tools();
 		return INSTANCE;
 	}
 	

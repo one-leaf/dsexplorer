@@ -73,7 +73,7 @@ public class ProcessImpl implements Process {
 				//TODO handle data which overlaps buffer limits
 				for (long pos = 0; pos < size-1; pos=pos+1) {
 					current=outputBuffer.getShort(pos);
-					if (current==target){
+					if (current.equals(target)){
 						add(new Result(address+pos, current, getType()));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
@@ -88,7 +88,7 @@ public class ProcessImpl implements Process {
 				//TODO handle data which overlaps buffer limits
 				for (long pos = 0; pos < size-3; pos=pos+1) {
 					current=outputBuffer.getInt(pos);
-					if (current==target){
+					if (current.equals(target)){
 						add(new Result(address+pos, current, getType()));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
@@ -103,7 +103,7 @@ public class ProcessImpl implements Process {
 				//TODO handle data which overlaps buffer limits
 				for (long pos = 0; pos < size-7; pos=pos+1) {
 					current=outputBuffer.getLong(pos);
-					if (current==target){
+					if (current.equals(target)){
 						add(new Result(address+pos, current, getType()));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}

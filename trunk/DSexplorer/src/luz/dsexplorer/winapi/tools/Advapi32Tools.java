@@ -10,15 +10,13 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
 
 public class Advapi32Tools {
-	private static Advapi32Tools INSTANCE=null;
+	private static final Advapi32Tools INSTANCE=new Advapi32Tools();	//Eager Creation
 	private static Advapi32 a32 = Advapi32.INSTANCE;
 	private static Kernel32 k32 = Kernel32.INSTANCE;
 	
 	private Advapi32Tools(){}
 	
 	public static Advapi32Tools getInstance(){
-		if (INSTANCE==null)
-			INSTANCE=new Advapi32Tools();
 		return INSTANCE;
 	}
 	
