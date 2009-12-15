@@ -101,7 +101,7 @@ public class ResultTable extends JTable{
 		    		case 0:
 		    			return ((Result)list.getChildAt(row)).getAddressString();
 		    		case 1: 
-		    			return ((Result)list.getChildAt(row)).getValue();
+		    			return ((Result)list.getChildAt(row)).getValueString();
 		    	}
 			} catch (Exception e) {
 				e.printStackTrace();

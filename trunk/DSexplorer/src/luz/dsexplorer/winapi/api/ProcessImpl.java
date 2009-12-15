@@ -145,8 +145,29 @@ public class ProcessImpl implements Process {
 			}
 		};
 		
-		//TODO ByteArray Search
-		//TODO Ascii Search
+		ByteArrayListener=new MemoryListener() {
+			@Override
+			public void mem(Memory outputBuffer, long address, long size) {
+				byte[] current;
+				String value=getValue().trim();
+				byte[] target = new byte[value.length()/2];
+				for (int i = 0; i < target.length; i++)
+				   target[i] = (byte) Integer.parseInt(value.substring(2*i, 2*i+2), 16);
+				int targetSize=target.length;
+				boolean equal;
+				for (long pos = 0; pos < size-targetSize; pos=pos+1) {
+					current = outputBuffer.getByteArray(pos, targetSize);
+					equal=true;
+					for (int i = 0; i < target.length; i++)
+						if (current[i]!=target[i]) equal=false;		
+					if (equal){
+						add(new Result(address+pos, current, getType(), targetSize));
+						log.debug("Found:\t"+Long.toHexString(address+pos));
+					}
+				}
+			}
+		};
+		
 		AsciiListener=new MemoryListener() {
 			Charset ascii=Charset.forName("US-ASCII");
 			@Override
@@ -163,7 +184,7 @@ public class ProcessImpl implements Process {
 				}
 			}
 		};
-		//TODO Unicode Search
+		
 		UnicodeListener=new MemoryListener() {
 			Charset utf16=Charset.forName("UTF-16");
 			@Override

@@ -29,7 +29,7 @@ public class Init {
 		try {
 			a32.enableDebugPrivilege(k32.GetCurrentProcess());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.warn("enableDebugPrivilege", e);
 		}
 		
 		SwingUtilities.invokeLater(new Runnable() {
