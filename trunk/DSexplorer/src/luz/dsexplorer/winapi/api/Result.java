@@ -184,7 +184,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 		Memory buffer=new Memory(getByteCount());
 		try {
 			log.trace("Read: "+getAddressString());
-			getProcess().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
+			getResultList().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
 			switch (getType()) {
 				case Byte1:		valueCache=buffer.getByte     (0);							break;
 				case Byte2:		valueCache=buffer.getShort    (0);							break;
@@ -219,7 +219,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 		Memory buffer=new Memory(4);
 		try {
 			log.trace("Pointer: "+getAddressString());
-			getProcess().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
+			getResultList().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
 			pointerCache=(long)buffer.getInt(0);
 		} catch (Exception e) {
 			log.warn(e);
@@ -229,14 +229,14 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 		return pointerCache;
 	}
 	
-	private Process getProcess() throws Exception{
+	private ResultList getResultList() throws Exception{
 		if (resultList!=null){
-			return resultList.getProcess();
+			return resultList;
 		}else {
 			Object root=getRoot();
 			if (root instanceof ResultList){
 				log.warn("Result not linked to ResultList but has it as root");
-				return ((ResultList)root).getProcess();
+				return ((ResultList)root);
 			}else{
 				Exception e= new Exception("Result not linked to ResultList");
 				log.error(e);
@@ -444,8 +444,8 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 
 	@Override
 	public Result clone() {
-		Result r = new Result(resultList, address, valueCache, type, datastructure, name, isPointer);
-		return r;
+		Result c = (Result)super.clone();
+		return c;
 	}
 
 
