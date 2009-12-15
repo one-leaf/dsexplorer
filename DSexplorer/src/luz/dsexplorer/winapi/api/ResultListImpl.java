@@ -13,6 +13,9 @@ import java.io.FileOutputStream;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
+
 
 /**
  * This class groups Result objects which represent memory pointers with their interpretation.
@@ -31,9 +34,9 @@ public class ResultListImpl extends DefaultMutableTreeNode implements ResultList
 		this.process=process;
 	}
 
-	public Process getProcess(){
-		return this.process;
-	}
+	public void ReadProcessMemory(Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Exception{
+		process.ReadProcessMemory(pointer, outputBuffer, nSize, outNumberOfBytesRead);
+	}	
 	
 	public void setProcess(Process process) {
 		this.process=process;
