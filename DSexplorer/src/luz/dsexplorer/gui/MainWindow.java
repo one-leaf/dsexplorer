@@ -74,6 +74,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private MemorySearch ms;
 	private DSEditor dse;
 	private JFileChooser fc;
+	private String version="0.3";
 	
 	/**
 	* Auto-generated main method to display this JFrame
@@ -185,7 +186,7 @@ public class MainWindow extends javax.swing.JFrame {
 			BorderLayout thisLayout = new BorderLayout();
 			getContentPane().setLayout(thisLayout);
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			this.setTitle("DSExplorer v0.2");
+			this.setTitle("DSExplorer v"+version);
 			{
 				jSplitPane1 = new JSplitPane();
 				getContentPane().add(jSplitPane1, BorderLayout.CENTER);
@@ -333,7 +334,7 @@ public class MainWindow extends javax.swing.JFrame {
 						miAbout.setText("About");
 						miAbout.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent evt) {
-								JOptionPane.showMessageDialog(MainWindow.this, "DSExplorer v0.2", "About", JOptionPane.PLAIN_MESSAGE);
+								JOptionPane.showMessageDialog(MainWindow.this, "DSExplorer v"+version, "About", JOptionPane.PLAIN_MESSAGE);
 							}
 						});
 						
