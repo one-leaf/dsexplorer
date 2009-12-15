@@ -34,12 +34,15 @@ public class ProcessImpl implements Process {
 	private final int pcPriClassBase;
 	
 	private MemoryListener listener;
-	private MemoryListener Byte1listener;
-	private MemoryListener Byte2listener;
-	private MemoryListener Byte4listener;
-	private MemoryListener Byte8listener;
-	private MemoryListener Floatlistener;
-	private MemoryListener Doublelistener;
+	private MemoryListener Byte1Listener;
+	private MemoryListener Byte2Listener;
+	private MemoryListener Byte4Listener;
+	private MemoryListener Byte8Listener;
+	private MemoryListener FloatListener;
+	private MemoryListener DoubleListener;
+	private MemoryListener ByteArrayListener;
+	private MemoryListener AsciiListener;
+	private MemoryListener UnicodeListener;
 	
 
 	
@@ -51,7 +54,7 @@ public class ProcessImpl implements Process {
 		this.pcPriClassBase=pe32.pcPriClassBase.intValue();
 		this.th32ParentProcessID=pe32.th32ParentProcessID;
 		
-		Byte1listener=new MemoryListener() {
+		Byte1Listener=new MemoryListener() {
 			@Override
 			public void mem(Memory outputBuffer, long address, long size) {
 				byte current;
@@ -65,7 +68,8 @@ public class ProcessImpl implements Process {
 				}
 			}
 		};
-		Byte2listener=new MemoryListener() {
+		
+		Byte2Listener=new MemoryListener() {
 			@Override
 			public void mem(Memory outputBuffer, long address, long size) {
 				Short current;
@@ -80,7 +84,8 @@ public class ProcessImpl implements Process {
 				}
 			}
 		};
-		Byte4listener=new MemoryListener() {
+		
+		Byte4Listener=new MemoryListener() {
 			@Override
 			public void mem(Memory outputBuffer, long address, long size) {
 				Integer current;
@@ -95,7 +100,8 @@ public class ProcessImpl implements Process {
 				}
 			}
 		};
-		Byte8listener=new MemoryListener() {
+		
+		Byte8Listener=new MemoryListener() {
 			@Override
 			public void mem(Memory outputBuffer, long address, long size) {
 				Long current;
@@ -110,7 +116,8 @@ public class ProcessImpl implements Process {
 				}
 			}
 		};
-		Floatlistener=new MemoryListener() {
+		
+		FloatListener=new MemoryListener() {
 			@Override
 			public void mem(Memory outputBuffer, long address, long size) {
 				Float current;
@@ -125,7 +132,8 @@ public class ProcessImpl implements Process {
 				}
 			}
 		};
-		Doublelistener=new MemoryListener() {
+		
+		DoubleListener=new MemoryListener() {
 			@Override
 			public void mem(Memory outputBuffer, long address, long size) {
 				Double current;
@@ -314,7 +322,8 @@ public class ProcessImpl implements Process {
 	}
 	
 	private void search(long from, long to) throws Exception{
-		int bufferSize=512*1024;
+		int partSize=512*1024;
+		int bufferSize=partSize+listener.getOverlapping();
 		int readSize;
 		long regionEnd;
 		MEMORY_BASIC_INFORMATION info;
@@ -332,15 +341,15 @@ public class ProcessImpl implements Process {
 				&& (info.Protect&Kernel32Tools.PAGE_EXECUTE_READ)==0
 				&& (info.Protect&Kernel32Tools.PAGE_READONLY    )==0
 			){
-				//System.out.println("Region:\t"+Long.toHexString(regionBegin)+" - "+Long.toHexString(regionBegin+regionSize)+"\t"+info.BaseAddress);
+				log.trace("Region:\t"+Long.toHexString(regionBegin)+" - "+Long.toHexString(regionBegin+info.RegionSize));
 				
-				for (long regionPart = regionBegin; regionPart < regionEnd; regionPart+=bufferSize) {
+				for (long regionPart = regionBegin; regionPart < regionEnd; regionPart=regionPart+partSize) {
 					if ((regionPart+bufferSize)<regionEnd)
 						readSize=bufferSize;
 					else
 						readSize=(int)(regionEnd-regionPart);
 					
-					log.trace("Read:\t"+Long.toHexString(regionPart)+" - "+Long.toHexString(regionPart+readSize)+"\t"+Integer.toHexString(info.Type));
+					log.trace("Read:\t\t"+Long.toHexString(regionPart)+" - "+Long.toHexString(regionPart+readSize)+"\t"+Integer.toHexString(info.Type));
 					try{
 						ReadProcessMemory(Pointer.createConstant(regionPart), outputBuffer, readSize, null);
 						listener.mem(outputBuffer, regionPart, readSize);
@@ -362,12 +371,15 @@ public class ProcessImpl implements Process {
 			return results;		
 
 		switch (type){
-			case Byte1:		listener=Byte1listener;		break;	
-			case Byte2:		listener=Byte2listener;		break;	
-			case Byte4:		listener=Byte4listener;		break;	
-			case Byte8:		listener=Byte8listener;		break;
-			case Float:		listener=Floatlistener;		break;	
-			case Double:	listener=Doublelistener;	break;	
+			case Byte1:		listener=Byte1Listener; 	break;	
+			case Byte2:		listener=Byte2Listener;		break;	
+			case Byte4:		listener=Byte4Listener; 	break;	
+			case Byte8:		listener=Byte8Listener; 	break;
+			case Float:		listener=FloatListener;		break;	
+			case Double:	listener=DoubleListener;	break;
+			case ByteArray:	listener=ByteArrayListener;	break;	
+			case Ascii:		listener=AsciiListener;		break;	
+			case Unicode:	listener=UnicodeListener;	break;	
 		}
 		listener.init(results, value, type);
 		search(from, to);
