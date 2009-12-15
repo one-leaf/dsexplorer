@@ -41,15 +41,15 @@ public abstract class MemoryListener {
 		this.value=value;
 		this.type=type;
 		switch (type){
-			case Byte1:		overlapping=0;	break;	
-			case Byte2:		overlapping=1;	break;	
-			case Byte4:		overlapping=3;	break;	
-			case Byte8:		overlapping=7;	break;
-			case Float:		overlapping=3;	break;	
-			case Double:	overlapping=7;	break;
-			case ByteArray:	overlapping=value.length()/2;	break;	
-			case Ascii:		overlapping=value.length();		break;	
-			case Unicode:	overlapping=value.length();		break;	
+			case Byte1:		overlapping=0;						break;	
+			case Byte2:		overlapping=1;						break;	
+			case Byte4:		overlapping=3;						break;	
+			case Byte8:		overlapping=7;						break;
+			case Float:		overlapping=3;						break;	
+			case Double:	overlapping=7;						break;
+			case ByteArray:	overlapping=(value.length()+1)/2;	break;	
+			case Ascii:		overlapping=value.length();			break;	
+			case Unicode:	overlapping=value.length()*2;		break;	//Assume utf16 = 2 bytes
 		}
 	}
 	

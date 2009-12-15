@@ -1,5 +1,7 @@
 package luz.dsexplorer.winapi.api;
 
+import java.nio.charset.Charset;
+
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -19,6 +21,8 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 	private static final long serialVersionUID = 4163723615095260358L;
 	private static final Log log = LogFactory.getLog(Result.class);
 	private transient ResultList resultList;
+	private transient Charset ascii=Charset.forName("US-ASCII");
+	private transient Charset utf16=Charset.forName("UTF-16");
 	
 	private Datastructure datastructure;
 	private DSField dsField;
@@ -63,6 +67,11 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 	
 	public Result(Long address, Object value, DSType type){
 		this(null, address, value, type, null, type.name(), false);
+	}
+	
+	public Result(Long address, Object value, DSType type, long byteCount){
+		this(null, address, value, type, null, type.name(), false);
+		setByteCount(byteCount);
 	}
 	
 	public Result(ResultList resultList, Long address, Object value, DSType type, Datastructure ds, String name, boolean isPointer){
@@ -160,15 +169,6 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 				sb.append(String.format("%1$02X", bytes[i]));
 			}
 			return sb.toString();
-			
-		case Ascii:
-			sb = new StringBuilder();
-			byte[] chars=(byte[])value;
-			for (int i = 0; i < chars.length; i++) {
-				sb.append((char)chars[i]);
-			}
-			return sb.toString();			
-			
 		default:
 			return value.toString();
 		}
@@ -186,16 +186,24 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 			log.trace("Read: "+getAddressString());
 			getResultList().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
 			switch (getType()) {
-				case Byte1:		valueCache=buffer.getByte     (0);							break;
-				case Byte2:		valueCache=buffer.getShort    (0);							break;
-				case Byte4:		valueCache=buffer.getInt      (0);							break;
-				case Byte8:		valueCache=buffer.getLong     (0);							break;
-				case Float:		valueCache=buffer.getFloat    (0);							break;
-				case Double:	valueCache=buffer.getDouble   (0);							break;
-				case Ascii:		valueCache=buffer.getByteArray(0, (int)buffer.getSize());	break;
-				case Unicode:	valueCache=buffer.getString   (0);							break;
-				case ByteArray:	valueCache=buffer.getByteArray(0, (int)buffer.getSize());	break;
-				case Custom:	valueCache=null;											break;
+				case Byte1:		valueCache=buffer.getByte     (0); break;
+				case Byte2:		valueCache=buffer.getShort    (0); break;
+				case Byte4:		valueCache=buffer.getInt      (0); break;
+				case Byte8:		valueCache=buffer.getLong     (0); break;
+				case Float:		valueCache=buffer.getFloat    (0); break;
+				case Double:	valueCache=buffer.getDouble   (0); break;
+				case Ascii:		
+					valueCache=new String(buffer.getByteArray(0, (int)buffer.getSize()), ascii);
+					break;
+				case Unicode:	
+					valueCache=new String(buffer.getByteArray(0, (int)buffer.getSize()), utf16);					
+					break;
+				case ByteArray:	
+					valueCache=buffer.getByteArray(0, (int)buffer.getSize());	
+					break;
+				case Custom:	
+					valueCache=null;											
+					break;
 			}
 		} catch (Exception e) {
 			log.warn(e);
