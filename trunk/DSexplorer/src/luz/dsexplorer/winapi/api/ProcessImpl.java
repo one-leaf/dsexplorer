@@ -1,5 +1,6 @@
 package luz.dsexplorer.winapi.api;
 
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -74,7 +75,6 @@ public class ProcessImpl implements Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Short current;
 				Short target=Short.parseShort(getValue());
-				//TODO handle data which overlaps buffer limits
 				for (long pos = 0; pos < size-1; pos=pos+1) {
 					current=outputBuffer.getShort(pos);
 					if (current.equals(target)){
@@ -90,7 +90,6 @@ public class ProcessImpl implements Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Integer current;
 				Integer target=Integer.parseInt(getValue());
-				//TODO handle data which overlaps buffer limits
 				for (long pos = 0; pos < size-3; pos=pos+1) {
 					current=outputBuffer.getInt(pos);
 					if (current.equals(target)){
@@ -106,7 +105,6 @@ public class ProcessImpl implements Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Long current;
 				Long target=Long.parseLong(getValue());
-				//TODO handle data which overlaps buffer limits
 				for (long pos = 0; pos < size-7; pos=pos+1) {
 					current=outputBuffer.getLong(pos);
 					if (current.equals(target)){
@@ -122,7 +120,6 @@ public class ProcessImpl implements Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Float current;
 				Float target=Float.parseFloat(getValue());
-				//TODO handle data which overlaps buffer limits
 				for (long pos = 0; pos < size-3; pos=pos+1) {
 					current=outputBuffer.getFloat(pos);
 					if (Math.round(current)==Math.round(target)){
@@ -138,7 +135,6 @@ public class ProcessImpl implements Process {
 			public void mem(Memory outputBuffer, long address, long size) {
 				Double current;
 				Double target=Double.parseDouble(getValue());
-				//TODO handle data which overlaps buffer limits
 				for (long pos = 0; pos < size-7; pos=pos+1) {
 					current=outputBuffer.getDouble(pos);
 					if (Math.round(current)==Math.round(target)){
@@ -151,7 +147,39 @@ public class ProcessImpl implements Process {
 		
 		//TODO ByteArray Search
 		//TODO Ascii Search
+		AsciiListener=new MemoryListener() {
+			Charset ascii=Charset.forName("US-ASCII");
+			@Override
+			public void mem(Memory outputBuffer, long address, long size) {
+				String current;
+				String target=getValue();
+				int targetSize=target.length();
+				for (long pos = 0; pos < size-targetSize; pos=pos+1) {
+					current = new String(outputBuffer.getByteArray(pos, targetSize), ascii);
+					if (current.equalsIgnoreCase(target)){
+						add(new Result(address+pos, current, getType(), targetSize));
+						log.debug("Found:\t"+Long.toHexString(address+pos));
+					}
+				}
+			}
+		};
 		//TODO Unicode Search
+		UnicodeListener=new MemoryListener() {
+			Charset utf16=Charset.forName("UTF-16");
+			@Override
+			public void mem(Memory outputBuffer, long address, long size) {
+				String current;
+				String target=getValue();
+				int targetSize=target.length()*2;	//Assume utf16 = 2 bytes
+				for (long pos = 0; pos < size-targetSize; pos=pos+1) {
+					current = new String(outputBuffer.getByteArray(pos, targetSize), utf16);
+					if (current.equalsIgnoreCase(target)){
+						add(new Result(address+pos, current, getType(), targetSize));
+						log.debug("Found:\t"+Long.toHexString(address+pos));
+					}
+				}
+			}
+		};
 
 	}
 
@@ -388,6 +416,9 @@ public class ProcessImpl implements Process {
 		log.debug("timer "+(System.currentTimeMillis()-timer));
 		return results;
 	}
+	
+	//TODO stop search function
+	//TODO search function progess
 
 	
 }
