@@ -12,16 +12,19 @@ public class DSList  extends AbstractListModel implements MutableComboBoxModel {
 	Datastructure selected=null;
 	
 	public DSList(){
-		datastructures.add(new Datastructure("new custom"));
 	}
 	
 	@Override
 	public Datastructure getElementAt(int i) {
+		if (datastructures.size()==0)
+			datastructures.add(new Datastructure("new custom"));
 		return datastructures.get(i);
 	}
 
 	@Override
 	public int getSize() {
+		if (datastructures.size()==0)
+			datastructures.add(new Datastructure("new custom"));
 		return datastructures.size();
 	}
 	
@@ -39,6 +42,11 @@ public class DSList  extends AbstractListModel implements MutableComboBoxModel {
 
 	@Override
 	public void addElement(Object obj) {
+		System.out.println(obj.hashCode());
+		
+		if (datastructures.contains(obj))
+			return;		//Avoid duplicates
+		
 		datastructures.add((Datastructure)obj);
 		int index=datastructures.indexOf(obj);
 		fireIntervalAdded(this, index, index);
@@ -46,6 +54,8 @@ public class DSList  extends AbstractListModel implements MutableComboBoxModel {
 
 	@Override
 	public void insertElementAt(Object obj, int index) {
+		if (datastructures.contains(obj))
+			return;		//Avoid duplicates
 		datastructures.add(index, (Datastructure)obj);
 		fireIntervalAdded(this, index, index);
 	}

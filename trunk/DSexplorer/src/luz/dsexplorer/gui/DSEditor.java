@@ -274,6 +274,11 @@ public class DSEditor extends javax.swing.JPanel {
 		txtPointer   .setVisible(custom);
 	}
 	
+	public void setDataStructures(DSList datastructures) {
+		this.dsList=datastructures;
+		cbDSselector.setModel(dsList);		
+	}
+	
 	private void txtAddressActionPerformed() {
 		try{
 			result.setAddress(Long.parseLong(txtAddress.getText(),16));
@@ -390,6 +395,8 @@ public class DSEditor extends javax.swing.JPanel {
             }          
         }
     }
+
+
     
     //TODO Datastructure selector
 
