@@ -26,6 +26,7 @@ import javax.swing.filechooser.FileFilter;
 import luz.dsexplorer.gui.listener.DSEditorListener;
 import luz.dsexplorer.gui.listener.MemorySearchListener;
 import luz.dsexplorer.gui.listener.ProcessDialogListener;
+import luz.dsexplorer.objects.datastructure.DSType;
 import luz.dsexplorer.winapi.api.Process;
 import luz.dsexplorer.winapi.api.Result;
 import luz.dsexplorer.winapi.api.ResultListImpl;
@@ -274,11 +275,21 @@ public class MainWindow extends javax.swing.JFrame {
 						miAdd = new JMenuItem();
 						mEdit.add(miAdd);
 						miAdd.setText("Add");
+						miAdd.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								miAddActionPerformed(evt);
+							}
+						});
 					}
 					{
 						miDelete = new JMenuItem();
 						mEdit.add(miDelete);
 						miDelete.setText("Delete");
+						miDelete.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								miDeleteActionPerformed(evt);
+							}
+						});
 					}
 					{
 						jSeparator3 = new JSeparator();
@@ -416,6 +427,16 @@ public class MainWindow extends javax.swing.JFrame {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private void miDeleteActionPerformed(ActionEvent evt) {
+		tree.deleteSelected();
+	}
+	
+	
+	private void miAddActionPerformed(ActionEvent evt) {
+		Result r = new Result(0L, null, DSType.Byte4);
+		tree.addResult(r);
 	}
 	
 	//$hide<<$

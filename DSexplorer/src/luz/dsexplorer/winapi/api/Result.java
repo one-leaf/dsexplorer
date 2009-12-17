@@ -6,6 +6,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import luz.dsexplorer.exceptions.NoProcessException;
 import luz.dsexplorer.objects.datastructure.DSField;
@@ -68,11 +69,6 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 	
 	public Result(){
 		
-	}
-	
-	/* only for XMLEncoder */
-	public Result(Long address, DSType type, String name, boolean isPointer){
-		this(null, address, null, type, null, name, isPointer);
 	}
 	
 	public Result(Long address, Object value, DSType type){
@@ -193,33 +189,38 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 		
 		Memory buffer=new Memory(getByteCount());
 		try {
-			log.trace("Read: "+getAddressString());
-			getResultList().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
-			switch (getType()) {
-				case Byte1:		valueCache=buffer.getByte     (0); break;
-				case Byte2:		valueCache=buffer.getShort    (0); break;
-				case Byte4:		valueCache=buffer.getInt      (0); break;
-				case Byte8:		valueCache=buffer.getLong     (0); break;
-				case Float:		valueCache=buffer.getFloat    (0); break;
-				case Double:	valueCache=buffer.getDouble   (0); break;
-				case Ascii:		
-					valueCache=new String(buffer.getByteArray(0, (int)buffer.getSize()), ascii);
-					break;
-				case Unicode:	
-					valueCache=new String(buffer.getByteArray(0, (int)buffer.getSize()), utf16);					
-					break;
-				case ByteArray:	
-					valueCache=buffer.getByteArray(0, (int)buffer.getSize());	
-					break;
-				case Custom:	
-					valueCache=null;											
-					break;
+			Long address=getAddress();
+			if (address!=null && address!=0){
+				log.trace("Read: "+getAddressString());
+				getResultList().ReadProcessMemory(Pointer.createConstant(address), buffer, (int)buffer.getSize(), null);
+				switch (getType()) {
+					case Byte1:		valueCache=buffer.getByte     (0); break;
+					case Byte2:		valueCache=buffer.getShort    (0); break;
+					case Byte4:		valueCache=buffer.getInt      (0); break;
+					case Byte8:		valueCache=buffer.getLong     (0); break;
+					case Float:		valueCache=buffer.getFloat    (0); break;
+					case Double:	valueCache=buffer.getDouble   (0); break;
+					case Ascii:		
+						valueCache=new String(buffer.getByteArray(0, (int)buffer.getSize()), ascii);
+						break;
+					case Unicode:	
+						valueCache=new String(buffer.getByteArray(0, (int)buffer.getSize()), utf16);					
+						break;
+					case ByteArray:	
+						valueCache=buffer.getByteArray(0, (int)buffer.getSize());	
+						break;
+					case Custom:	
+						valueCache=null;											
+						break;
+				}
+				valueCacheOK=true;
+			}else{
+				valueCache=null;
 			}
-			valueCacheOK=true;
 		} catch (NoProcessException e){
 			valueCache=null;
 		} catch (Exception e) {
-			log.warn("Cannot Read: "+getAddressString());
+			log.warn("Cannot Read: "+getAddressString(), e);
 			valueCache=null;
 		}
 		return valueCache;
@@ -359,6 +360,22 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 		this.resultList=resultList;		
 	}
 	
+
+	public void delete() {
+		log.info("delete "+this);
+		TreeNode p = getParent();
+		if (p ==null){
+			try {
+				getResultList().remove(this);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else if(p instanceof Result){
+			Result parent = (Result)p;
+			parent.getDatastructure().removeElement(this.dsField);		
+		}
+	}
+	
 	
 	//Helper//////////////////////////////////////
 	
@@ -469,6 +486,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 		Result c = (Result)super.clone();
 		return c;
 	}
+
 
 
 
