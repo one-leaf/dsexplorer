@@ -46,7 +46,13 @@ public class ResultTable extends JTable{
 		return list;
 	}
 	
-	
+	public List<Result> getResults() {	
+		List<Result> list = new LinkedList<Result>();
+		for (int row=0;row<model.getRowCount();row++)
+			list.add(model.getResultAt(row));
+		
+		return list;
+	}
 	
 	
 	private static class MyCellRenderer extends DefaultTableCellRenderer{

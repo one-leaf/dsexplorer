@@ -45,6 +45,8 @@ public class ProcessTree extends JTree {
 	}
 	
 	public void setResultList(ResultList list) {
+		if (rl!=null)
+			list.setProcess(rl.getProcess());
 		rl=list;
 		model=new DefaultTreeModel(rl);
 		this.setModel(model);
@@ -90,8 +92,10 @@ public class ProcessTree extends JTree {
 	}
 
 	public void reset() {
-		rl.removeAllChildren();
-		model.nodeStructureChanged(rl);
+		if (rl!=null){
+			rl.removeAllChildren();
+			model.nodeStructureChanged(rl);
+		}
 	}
 	
 	public void saveToFile(File file){
@@ -100,6 +104,19 @@ public class ProcessTree extends JTree {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void deleteSelected() {
+		TreePath[] paths = getSelectionPaths();
+		for (TreePath treePath : paths) {
+			Object o = treePath.getLastPathComponent();
+			if (o instanceof Result){
+				log.info("t delete");
+				Result r = (Result)o;
+				r.delete();	
+			}
+		}
+		this.refresh();		
 	}
 
 

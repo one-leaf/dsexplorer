@@ -2,17 +2,27 @@
 <project default="dist" name="DSexplorer">
     <!--ANT 1.7 is required-->
 	
+	<property name="dir.lib"			value="lib" />
+	<property name="dir.bin"			value="bin" />
+	<property name="dir.dist"			value="dist" />
+
+	
     <target name="dist">
-        <jar destfile="dist/dsExplorer.jar">
+		<pathconvert property="classpathString" pathsep=" ">
+			<fileset dir="${dir.lib}" includes="*.jar"/>
+			<flattenmapper />
+		</pathconvert>
+    	
+        <jar destfile="${dir.dist}/dsExplorer.jar">
             <manifest>
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
-                <attribute name="Rsrc-Main-Class" value="luz.dsexplorer.init.Init"/>
-                <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ commons-logging-1.1.1.jar jna3.2.3.jar jna3.2.3-examples.jar"/>
+            	<attribute name="Class-Path" value="."/>
+            	<attribute name="Rsrc-Main-Class" value="luz.dsexplorer.init.Init"/>
+                <attribute name="Rsrc-Class-Path" value="./ ${classpathString}"/>
             </manifest>
             <zipfileset src="jar-in-jar-loader.zip"/>
-            <fileset dir="bin"/>
-            <zipfileset dir="lib" includes="*.jar"/>
+            <fileset dir="${dir.bin}"/>
+            <zipfileset dir="${dir.lib}" includes="*.jar"/>
         </jar>
     </target>
 </project>

@@ -65,6 +65,11 @@ public class ResultListImpl implements MutableTreeNode, ResultList{
 		this.process=process;
 	}
 	
+	public Process getProcess() {
+		return this.process;
+	}
+	
+	
 	public void removeAllChildren() {
 		results.clear();		
 	}

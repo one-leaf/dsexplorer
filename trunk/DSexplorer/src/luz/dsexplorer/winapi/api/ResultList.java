@@ -15,6 +15,7 @@ public interface ResultList extends MutableTreeNode {
 	public void ReadProcessMemory(Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws NoProcessException, Exception;
     public void add(MutableTreeNode newChild);
 	public void setProcess(Process p);
+	public Process getProcess();
 	public void removeAllChildren();
 	public void saveToFile(File file) throws Exception;
 
