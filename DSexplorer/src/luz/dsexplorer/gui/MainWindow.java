@@ -74,7 +74,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private MemorySearch ms;
 	private DSEditor dse;
 	private JFileChooser fc;
-	private String version="0.3";
+	private String version="0.4";
 	
 	/**
 	* Auto-generated main method to display this JFrame
@@ -142,17 +142,17 @@ public class MainWindow extends javax.swing.JFrame {
 
 			@Override
 			public void SizeChanged(Result result) {
-				tree.refresh(result);
+				tree.refresh();
 			}
 
 			@Override
 			public void TypeChanged(Result result) {
-				tree.refresh(result);
+				tree.refresh();
 			}
 
 			@Override
 			public void NameChanged(Result result) {
-				tree.refresh(result);
+				tree.refresh();
 			}
 
 			@Override
@@ -407,7 +407,14 @@ public class MainWindow extends javax.swing.JFrame {
 				break;
 		}
 		if (f!=null){
-			tree.openFromFile(f);
+			ResultListImpl rl;
+			try {
+				rl = ResultListImpl.openFromFile(f);
+				tree.setResultList(rl);
+				dse.setDataStructures(rl.getDatastructures());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

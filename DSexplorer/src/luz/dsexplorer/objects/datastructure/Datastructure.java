@@ -5,18 +5,21 @@ import java.util.List;
 
 import javax.swing.AbstractListModel;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.ElementList;
+
 public class Datastructure extends AbstractListModel implements DSFieldListener{
 	private static final long serialVersionUID = 4479689750597516075L;
+	@Attribute
 	private String name;
-	private List<DSField> fields;
+	@ElementList(inline=true, required=false)	//May be empty
+	private List<DSField> fields=new LinkedList<DSField>();
 
-	/* only for XMLEncoder */
-	public Datastructure(){
-	}
+	//only for xml deserialization
+	public Datastructure(){};
 	
 	public Datastructure(String name){
 		this.name = name;
-		this.fields=new LinkedList<DSField>();
 	}
 
 	public String getName() {
@@ -29,11 +32,6 @@ public class Datastructure extends AbstractListModel implements DSFieldListener{
 	
 	public List<DSField> getFields(){
 		return fields;
-	}
-	
-	/* only for XMLEncoder */
-	public void setFields(List<DSField> fields){
-		this.fields=fields;
 	}
 	
 	public int getByteCount(){

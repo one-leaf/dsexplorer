@@ -7,12 +7,15 @@ import javax.swing.event.ListDataListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 
+import luz.dsexplorer.exceptions.NoProcessException;
 import luz.dsexplorer.objects.datastructure.DSField;
 import luz.dsexplorer.objects.datastructure.DSType;
 import luz.dsexplorer.objects.datastructure.Datastructure;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
@@ -24,13 +27,20 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 	private transient Charset ascii=Charset.forName("US-ASCII");
 	private transient Charset utf16=Charset.forName("UTF-16");
 	
+	@Element(required=false)
 	private Datastructure datastructure;
+	@Element(required=false)
 	private DSField dsField;
 	
+	@Attribute
 	private String name;
+	@Attribute
 	private DSType type;
+	@Attribute
 	private long byteCount;
+	@Attribute
 	private Long address;	
+	@Attribute
 	private boolean isPointer;
 	
 	private transient Long pointerCache=null;
@@ -205,11 +215,13 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 					valueCache=null;											
 					break;
 			}
+			valueCacheOK=true;
+		} catch (NoProcessException e){
+			valueCache=null;
 		} catch (Exception e) {
-			log.warn(e);
+			log.warn("Cannot Read: "+getAddressString());
 			valueCache=null;
 		}
-		valueCacheOK=true;
 		return valueCache;
 	}
 	
@@ -229,6 +241,8 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 			log.trace("Pointer: "+getAddressString());
 			getResultList().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
 			pointerCache=(long)buffer.getInt(0);
+		} catch (NoProcessException e){
+			pointerCache=null;
 		} catch (Exception e) {
 			log.warn(e);
 			pointerCache=null;

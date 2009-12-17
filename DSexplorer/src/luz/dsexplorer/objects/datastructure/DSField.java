@@ -2,17 +2,21 @@ package luz.dsexplorer.objects.datastructure;
 
 import javax.swing.event.EventListenerList;
 
+import org.simpleframework.xml.Attribute;
+
+
 public class DSField {
+	@Attribute
 	private DSType type;
+	@Attribute
 	private String name;
+	@Attribute
 	private long byteCount;
 	private transient EventListenerList listenerList = new EventListenerList();
 
-	/* only for XMLEncoder */
-	public DSField(){
-		
-	}
-	
+	//only for xml deserialization
+	public DSField(){}
+
 	public DSField(DSType type, String name){
 		this(type, name, type.getByteCount());
 	}
@@ -58,7 +62,7 @@ public class DSField {
 	///////////////////////////////////////////////////////////
 	
 	public void addListener(DSFieldListener l) {
-        listenerList.add(DSFieldListener.class, l);
+		listenerList.add(DSFieldListener.class, l);
     }
     
     public void removeListener(DSFieldListener l) {

@@ -2,7 +2,6 @@ package luz.dsexplorer.gui;
 
 import java.awt.Font;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.List;
 
 import javax.swing.JTree;
@@ -12,11 +11,16 @@ import javax.swing.tree.TreeSelectionModel;
 
 import luz.dsexplorer.winapi.api.Process;
 import luz.dsexplorer.winapi.api.Result;
+import luz.dsexplorer.winapi.api.ResultList;
 import luz.dsexplorer.winapi.api.ResultListImpl;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class ProcessTree extends JTree {
 	private static final long serialVersionUID = 8889377903469038055L;
-	private ResultListImpl rl;
+	private static final Log log = LogFactory.getLog(ProcessTree.class);
+	private ResultList rl;
 	private DefaultTreeModel model;
 	private TreeSelectionModel sm = getSelectionModel();
 
@@ -38,6 +42,13 @@ public class ProcessTree extends JTree {
 			rl.setProcess(p);
 			model.nodeChanged(rl);
 		}
+	}
+	
+	public void setResultList(ResultList list) {
+		rl=list;
+		model=new DefaultTreeModel(rl);
+		this.setModel(model);
+		refresh();		
 	}
 	
 	public void addResult(Result result) {
@@ -66,6 +77,7 @@ public class ProcessTree extends JTree {
 	}
 	
 	public void refresh(){
+		log.info("refresh");
 		TreePath selection = sm.getSelectionPath();
 		model.reload();		//FIXME selection disapears
 							//FIXME expansion disapears
@@ -85,19 +97,11 @@ public class ProcessTree extends JTree {
 	public void saveToFile(File file){
 		try {
 			rl.saveToFile(file);
-		} catch (FileNotFoundException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void openFromFile(File file){
-		try {
-			reset();
-			rl.openFromFile(file);
-			refresh();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
+
 
 }
