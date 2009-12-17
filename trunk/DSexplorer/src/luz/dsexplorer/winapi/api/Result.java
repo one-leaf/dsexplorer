@@ -67,9 +67,7 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 	 * 
 	 */
 	
-	public Result(){
-		
-	}
+	public Result(){}
 	
 	public Result(Long address, Object value, DSType type){
 		this(null, address, value, type, null, type.name(), false);

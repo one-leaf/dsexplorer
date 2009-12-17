@@ -34,11 +34,12 @@ public class ProcessTable extends JTable{
 		model.refresh();		
 	}
 	
-	public Process getSelectedProcess(){
-		int row = this.getSelectedRow();
-		if (row!=-1)
-			return model.getProcessAt(row);
-		else
+	public Process getSelectedProcess(){		
+		int rowSorted = this.getSelectedRow();
+		if (rowSorted!=-1){
+			int rowReal =getRowSorter().convertRowIndexToModel(rowSorted);
+			return model.getProcessAt(rowReal);
+		}else
 			return null;
 	}
 
