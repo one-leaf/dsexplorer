@@ -97,17 +97,18 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 	 * @param parent
 	 * @param field
 	 */
-	public Result(ResultList resultList, DSField field){
-		this(resultList, null, null, field.getType(), null, field.getName(), false);
+	public Result(ResultList resultList, DSField field, Datastructure ds){
+		this(resultList, null, null, field.getType(), DSType.Custom.equals(field.getType())?ds:null, field.getName(), false);
 		this.dsField=field;
 	}
 	
 	
 	public String getName(){
-		if (isRelative())
-			return dsField.getName();
-		else if(isCustom())
+		if(isCustom())
 			return datastructure.getName();
+		else if (isRelative())
+			return dsField.getName();
+
 		else		
 			return name;
 	}
@@ -274,9 +275,9 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 	
 	
 	public Datastructure getDatastructure(){
-		if (isRelative())
-			return 	((Result)getParent()).getDatastructure();
-		else
+//		if (isRelative())
+//			return 	((Result)getParent()).getDatastructure();
+//		else
 			return datastructure;
 	}
 	
@@ -288,6 +289,8 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 		if (ds!=null)
 			ds.addListDataListener(this);
 		recreateChilds();
+		
+		//TODO if changing nested ds->recreate all the affected tree paths
 	}	
 	
 	public void setName(String name){
@@ -419,11 +422,14 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 	private void defineChildNodes(){
 		if (!areChildrenDefined){
 			areChildrenDefined=true;
-			if (datastructure==null){
-				return;
+			if(isCustom()){
+				if (datastructure==null){
+					log.warn("isCustom but has no datastructure");
+					return;
+				}
+				for (DSField field : datastructure.getFields())
+					add(new Result(resultList, field, datastructure));
 			}
-			for (DSField field : datastructure.getFields())
-				add(new Result(resultList, field));
 		}
 	}
 
@@ -464,11 +470,17 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 		try{
 			removeAllChildren();
 		}catch (ArrayIndexOutOfBoundsException e){
+			log.warn("removeAllChildren failed");
 			//Ignore "node has no children"
 		}
-		if (datastructure!=null){
+		if (isCustom()){
+			if (datastructure==null){
+				log.warn("isCustom but has no datastructure");
+				return;
+			}
+			log.trace("recreate Childs "+this);
 			for (DSField field : datastructure.getFields())
-				add(new Result(resultList, field));
+				add(new Result(resultList, field, datastructure));
 		}
 	}
 
