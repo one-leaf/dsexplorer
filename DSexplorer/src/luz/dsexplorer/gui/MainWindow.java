@@ -158,7 +158,7 @@ public class MainWindow extends javax.swing.JFrame {
 
 			@Override
 			public void DSChanged(Result result) {
-				tree.refresh(result);			
+				tree.refresh();			
 			}
 
 			@Override
