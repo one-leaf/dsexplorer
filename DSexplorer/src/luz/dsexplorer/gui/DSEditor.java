@@ -19,10 +19,12 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 
-import luz.dsexplorer.gui.listener.DSEditorListener;
-import luz.dsexplorer.objects.datastructure.DSList;
-import luz.dsexplorer.objects.datastructure.DSType;
-import luz.dsexplorer.objects.datastructure.Datastructure;
+import luz.dsexplorer.datastructures.Container;
+import luz.dsexplorer.datastructures.ContainerImpl;
+import luz.dsexplorer.datastructures.DSList;
+import luz.dsexplorer.datastructures.DSType;
+import luz.dsexplorer.datastructures.Datastructure;
+import luz.dsexplorer.datastructures.simple.Byte4;
 import luz.dsexplorer.winapi.api.Result;
 
 
@@ -43,9 +45,8 @@ public class DSEditor extends javax.swing.JPanel {
 	private JSeparator jSeparator1;
 	private JTextField txtName;
 	private JButton btnAddField;
-	private enum Action{AddField, AddressChanged, TypeChanged, SizeChanged, NameChanged, DSChanged, PointerChanged}
 	private Result result;
-	private DSList dsList = new DSList();
+	private DSList dsList;
 	private JTextField txtPointer;
 	private JCheckBox chbPointer;
 	private Font font = new Font("Lucida Console", Font.PLAIN, 11);
@@ -119,7 +120,6 @@ public class DSEditor extends javax.swing.JPanel {
 			}
 			{
 				cbDSselector = new JComboBox();
-				cbDSselector.setModel(dsList);
 				cbDSselector.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						cbDSselectorActionPerformed();
@@ -251,61 +251,85 @@ public class DSEditor extends javax.swing.JPanel {
 	//$hide>>$
 	public void setResult(Result result) {
 		this.result=result;
+		Datastructure ds = result.getDatastructure();
+		
+		
 		txtAddress.setText(result.getAddressString());
-		txtAddress.setEnabled(!result.isRelative());
-		cbValue.setSelectedItem(result.getType());
+		txtAddress.setEditable(result.isSimpleResult());
+		cbValue.setSelectedItem(ds.getType());
 		
-		boolean custom=result.isCustom();
-		if (custom) cbDSselector.setSelectedItem(result.getDatastructure());
-		if (custom) txtPointer.setText(result.getPointerString());
-		
-		txtSize.setText(""+result.getByteCount());
-		txtSize.setEditable(!result.getType().isFixedSize());
-		txtName.setText(result.getName());
+
+		boolean container=ds.isContainer();
+		if (container){
+			Container c = (Container)ds;
+			cbDSselector.setSelectedItem(ds);
+			txtPointer.setText(result.getPointerString());
+			chbPointer.setSelected(c.isPointer());
+		}
+
+		txtSize.setText(""+ds.getByteCount());
+		txtSize.setEditable(!ds.isByteCountFix());
+		txtName.setText(ds.getName());
 		txtValue.setText(result.getValueString());
-		txtValue   .setEditable(!custom);
-		chbPointer   .setSelected(result.getIsPointer());
-		chbPointer   .setVisible(custom);
-		lblDSselector.setVisible(custom);
-		cbDSselector .setVisible(custom);
-		btnAddField  .setVisible(custom);
-		btnAddDS     .setVisible(custom);
-		chbPointer   .setVisible(custom);		
-		txtPointer   .setVisible(custom);
+		txtValue   .setEditable(!container);
+
+		chbPointer   .setVisible(container);
+		lblDSselector.setVisible(container);
+		cbDSselector .setVisible(container);
+		btnAddField  .setVisible(container);
+		btnAddDS     .setVisible(container);
+		chbPointer   .setVisible(container);		
+		txtPointer   .setVisible(container);
 	}
 	
-	public void setDataStructures(DSList datastructures) {
-		this.dsList=datastructures;
-		cbDSselector.setModel(dsList);		
+	public void setDataStructures(DSList dsList) {
+		this.dsList=dsList;
+		cbDSselector.setModel(this.dsList);		
 	}
 	
 	private void txtAddressActionPerformed() {
 		try{
 			result.setAddress(Long.parseLong(txtAddress.getText(),16));
 			txtValue.setText(result.getValueString());
-			fireActionPerformed(Action.AddressChanged, result);
 		}catch(NumberFormatException e){};		
 	}
 	
 	private void cbValueActionPerformed() {
 		DSType newType=(DSType)cbValue.getSelectedItem();
-		if (!newType.equals(result.getType())){	//Avoid unecessairy changes
-			result.setType(newType, (Datastructure)cbDSselector.getItemAt(0));
-			boolean custom=result.isCustom();
-			fireActionPerformed(Action.TypeChanged, result);
+		Datastructure ds = result.getDatastructure();
+		
+		if (!newType.equals(ds.getType())){	//Avoid unecessairy changes
+			
+			if (newType.equals(DSType.Container)){
+				Datastructure item=(Datastructure)cbDSselector.getItemAt(0);
+				if (item==null)
+					dsList.addElement(new ContainerImpl());
+				
+				result.setDatastructure(item);
+				cbDSselector.setSelectedItem(item);
+			}else{
+				result.setDatastructure(newType.getInstance());
+			}
+			
+			ds = result.getDatastructure();
+			boolean container=ds.isContainer();
+			if (container){
+				Container c = (Container)ds;				
+				chbPointer.setSelected(c.isPointer());
+			}
 
-			txtSize.setText(""+result.getByteCount());
-			txtSize.setEditable(!result.getType().isFixedSize());
-			txtName.setText(result.getName());
+
+			txtSize.setText(""+ds.getByteCount());
+			txtSize.setEditable(!ds.isByteCountFix());
+			txtName.setText(ds.getName());
 			txtValue.setText(result.getValueString());
-			txtValue   .setEditable(!custom);
-			chbPointer   .setSelected(result.getIsPointer());
-			chbPointer   .setVisible(custom);
-			lblDSselector.setVisible(custom);
-			cbDSselector .setVisible(custom);
-			btnAddField  .setVisible(custom);
-			btnAddDS     .setVisible(custom);
-			txtPointer   .setVisible(custom);
+			txtValue   .setEditable(!container);
+			chbPointer   .setVisible(container);
+			lblDSselector.setVisible(container);
+			cbDSselector .setVisible(container);
+			btnAddField  .setVisible(container);
+			btnAddDS     .setVisible(container);
+			txtPointer   .setVisible(container);
 		}
 	}
 	
@@ -314,91 +338,41 @@ public class DSEditor extends javax.swing.JPanel {
 		if (result.getDatastructure()!=ds){	//Avoid unecessairy changes
 			result.setDatastructure(ds);
 			
-			txtName.setText(result.getName());
-			fireActionPerformed(Action.DSChanged, result);
+			txtName.setText(result.getDatastructure().getName());
 		}
 	}
 	
 	private void txtSizeActionPerformed() {
 		try{
-			result.setByteCount(Long.parseLong(txtSize.getText()));
+			result.getDatastructure().setByteCount(Integer.parseInt(txtSize.getText()));
 			txtValue.setText(result.getValueString());
-			fireActionPerformed(Action.SizeChanged, result);
 		}catch(NumberFormatException e){};	
 	}
 	
 	private void txtNameActionPerformed() {
-		result.setName(txtName.getText());
-		fireActionPerformed(Action.NameChanged, result);
+		result.getDatastructure().setName(txtName.getText());
 	}
 	
 	private void btnAddFieldActionPerformed() {
-		result.getDatastructure().addElement(DSType.Byte4);
-		fireActionPerformed(Action.AddField, result);		
+		Datastructure ds = result.getDatastructure();
+		((Container)ds).addField(new Byte4());
+		txtSize.setText(""+ds.getByteCount());
+
 	}
 	
 	private void btnAddDSActionPerformed(){
-		dsList.addElement(new Datastructure("new custom"));
+		dsList.addElement(new ContainerImpl());
 	}	
 	
 	private void chbPointerActionPerformed() {
 		boolean isPointer=chbPointer.isSelected();
-		if (result.getIsPointer()!=isPointer){	//Avoid unecessairy changes	
-			result.setIsPointer(chbPointer.isSelected());
+		Container c = (Container)result.getDatastructure();
+		if (c.isPointer()!=isPointer){	//Avoid unecessairy changes	
+			c.setPointer(chbPointer.isSelected());
 			txtPointer.setText(isPointer?result.getPointerString():null);
-			fireActionPerformed(Action.PointerChanged, result);
+			txtSize.setText(""+c.getByteCount());
 		}
 	}
-	
-	///////////////////////////////////////////////////////////
-	
-	public void addListener(DSEditorListener l) {
-        listenerList.add(DSEditorListener.class, l);
-    }
-    
-    public void removeListener(DSEditorListener l) {
-	    listenerList.remove(DSEditorListener.class, l);
-    }
-    
-    public DSEditorListener[] getListeners() {
-        return (DSEditorListener[])(listenerList.getListeners(DSEditorListener.class));
-    }
-    
-    protected void fireActionPerformed(Action action, Object o) {
-        Object[] listeners = listenerList.getListenerList(); // Guaranteed to return a non-null array
-        // Process the listeners last to first, notifying those that are interested in this event
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==DSEditorListener.class) {
-            	switch (action){
-	            	case AddField:
-	            		((DSEditorListener)listeners[i+1]).AddFieldPerformed((Result)o);
-	            		break;
-	            	case AddressChanged:
-	            		((DSEditorListener)listeners[i+1]).AddessChanged((Result)o);
-	            		break;
-	            	case TypeChanged:
-	            		((DSEditorListener)listeners[i+1]).TypeChanged((Result)o);
-	            		break;
-	            	case SizeChanged:
-	            		((DSEditorListener)listeners[i+1]).SizeChanged((Result)o);
-	            		break;
-	            	case NameChanged:
-	            		((DSEditorListener)listeners[i+1]).NameChanged((Result)o);
-	            		break;
-	            	case DSChanged:
-	            		((DSEditorListener)listeners[i+1]).DSChanged((Result)o);
-	            		break;
-	            	case PointerChanged:
-	            		((DSEditorListener)listeners[i+1]).PointerChanged((Result)o);
-	            		break;
-            	}
-            }          
-        }
-    }
-
-
-    
-    //TODO Datastructure selector
 
   //$hide<<$
 }

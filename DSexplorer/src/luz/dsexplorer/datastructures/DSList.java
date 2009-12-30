@@ -1,4 +1,4 @@
-package luz.dsexplorer.objects.datastructure;
+package luz.dsexplorer.datastructures;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -6,38 +6,43 @@ import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.MutableComboBoxModel;
 
+import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Root;
+
+@Root
 public class DSList  extends AbstractListModel implements MutableComboBoxModel {
 	private static final long serialVersionUID = 4670423301077836254L;
-	List<Datastructure> datastructures = new LinkedList<Datastructure>();
-	Datastructure selected=null;
+	@ElementList(inline=true)
+	List<Container> datastructures = new LinkedList<Container>();
+	Container selected=null;
 	
 	public DSList(){
 	}
 	
 	@Override
-	public Datastructure getElementAt(int i) {
+	public Container getElementAt(int i) {
 		if (datastructures.size()==0)
-			datastructures.add(new Datastructure("new custom"));
+			datastructures.add(new ContainerImpl());
 		return datastructures.get(i);
 	}
 
 	@Override
 	public int getSize() {
 		if (datastructures.size()==0)
-			datastructures.add(new Datastructure("new custom"));
+			datastructures.add(new ContainerImpl());
 		return datastructures.size();
 	}
 	
 	
 
-	@Override
-	public Datastructure getSelectedItem() {
+		@Override
+	public Container getSelectedItem() {
 		return selected;
 	}
 
 	@Override
 	public void setSelectedItem(Object obj) {
-		selected=(Datastructure)obj;		
+		selected=(Container)obj;		
 	}
 
 	@Override
@@ -47,7 +52,7 @@ public class DSList  extends AbstractListModel implements MutableComboBoxModel {
 		if (datastructures.contains(obj))
 			return;		//Avoid duplicates
 		
-		datastructures.add((Datastructure)obj);
+		datastructures.add((Container)obj);
 		int index=datastructures.indexOf(obj);
 		fireIntervalAdded(this, index, index);
 	}
@@ -56,7 +61,7 @@ public class DSList  extends AbstractListModel implements MutableComboBoxModel {
 	public void insertElementAt(Object obj, int index) {
 		if (datastructures.contains(obj))
 			return;		//Avoid duplicates
-		datastructures.add(index, (Datastructure)obj);
+		datastructures.add(index, (Container)obj);
 		fireIntervalAdded(this, index, index);
 	}
 

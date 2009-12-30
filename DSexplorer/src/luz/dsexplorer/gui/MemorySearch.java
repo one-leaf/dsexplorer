@@ -20,8 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 
+import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.gui.listener.MemorySearchListener;
-import luz.dsexplorer.objects.datastructure.DSType;
 import luz.dsexplorer.winapi.api.Process;
 import luz.dsexplorer.winapi.api.Result;
 import luz.dsexplorer.winapi.api.ResultList;

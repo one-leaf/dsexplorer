@@ -23,12 +23,12 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileFilter;
 
-import luz.dsexplorer.gui.listener.DSEditorListener;
+import luz.dsexplorer.datastructures.simple.Byte4;
 import luz.dsexplorer.gui.listener.MemorySearchListener;
 import luz.dsexplorer.gui.listener.ProcessDialogListener;
-import luz.dsexplorer.objects.datastructure.DSType;
 import luz.dsexplorer.winapi.api.Process;
 import luz.dsexplorer.winapi.api.Result;
+import luz.dsexplorer.winapi.api.ResultList;
 import luz.dsexplorer.winapi.api.ResultListImpl;
 
 
@@ -75,7 +75,8 @@ public class MainWindow extends javax.swing.JFrame {
 	private MemorySearch ms;
 	private DSEditor dse;
 	private JFileChooser fc;
-	private String version="0.4";
+	private ResultListImpl rl = new ResultListImpl();
+	private String version="0.5";
 	
 	/**
 	* Auto-generated main method to display this JFrame
@@ -130,42 +131,7 @@ public class MainWindow extends javax.swing.JFrame {
 		});
 		
 		dse=new DSEditor();
-		dse.addListener(new DSEditorListener() {
-			@Override
-			public void AddFieldPerformed(Result result) {
-				tree.refresh();		//TODO more precise refresh, possible?			
-			}
-
-			@Override
-			public void AddessChanged(Result result) {
-				tree.refresh(result);			
-			}
-
-			@Override
-			public void SizeChanged(Result result) {
-				tree.refresh();
-			}
-
-			@Override
-			public void TypeChanged(Result result) {
-				tree.refresh();
-			}
-
-			@Override
-			public void NameChanged(Result result) {
-				tree.refresh();
-			}
-
-			@Override
-			public void DSChanged(Result result) {
-				tree.refresh();			
-			}
-
-			@Override
-			public void PointerChanged(Result result) {
-				tree.refresh(result);				
-			}
-		});
+		dse.setDataStructures(rl.getDatastructures());
 		
 		fc = new JFileChooser();
 		fc.setFileFilter(new FileFilter() {					
@@ -199,6 +165,7 @@ public class MainWindow extends javax.swing.JFrame {
 					{
 						tree = new ProcessTree();
 						jScrollPane1.setViewportView(tree);
+						tree.setResultList(rl);
 						tree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 							public void valueChanged(TreeSelectionEvent evt) {
 								treeSelectionEvent(evt);							
@@ -435,8 +402,9 @@ public class MainWindow extends javax.swing.JFrame {
 	
 	
 	private void miAddActionPerformed(ActionEvent evt) {
-		Result r = new Result(0L, null, DSType.Byte4);
+		Result r = new Result(new Byte4());
 		tree.addResult(r);
+		//TODO context relative addField or addResult
 	}
 	
 	//$hide<<$
