@@ -6,7 +6,8 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import luz.dsexplorer.objects.datastructure.DSType;
+import luz.dsexplorer.datastructures.DSType;
+import luz.dsexplorer.datastructures.Datastructure;
 import luz.dsexplorer.winapi.constants.GAFlags;
 import luz.dsexplorer.winapi.constants.ProcessInformationClass;
 import luz.dsexplorer.winapi.jna.Kernel32.LPPROCESSENTRY32;
@@ -63,7 +64,7 @@ public class ProcessImpl implements Process {
 				for (long pos = 0; pos < size; pos=pos+1) {
 					current=outputBuffer.getByte(pos);
 					if (current==target){
-						add(new Result(address+pos, current, getType()));
+						add(new Result(getResultList(), getType(), address+pos, current));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
@@ -78,7 +79,7 @@ public class ProcessImpl implements Process {
 				for (long pos = 0; pos < size-1; pos=pos+1) {
 					current=outputBuffer.getShort(pos);
 					if (current.equals(target)){
-						add(new Result(address+pos, current, getType()));
+						add(new Result(getResultList(), getType(), address+pos, current));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
@@ -93,7 +94,7 @@ public class ProcessImpl implements Process {
 				for (long pos = 0; pos < size-3; pos=pos+1) {
 					current=outputBuffer.getInt(pos);
 					if (current.equals(target)){
-						add(new Result(address+pos, current, getType()));
+						add(new Result(getResultList(), getType(), address+pos, current));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
@@ -108,7 +109,7 @@ public class ProcessImpl implements Process {
 				for (long pos = 0; pos < size-7; pos=pos+1) {
 					current=outputBuffer.getLong(pos);
 					if (current.equals(target)){
-						add(new Result(address+pos, current, getType()));
+						add(new Result(getResultList(), getType(), address+pos, current));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
@@ -123,7 +124,7 @@ public class ProcessImpl implements Process {
 				for (long pos = 0; pos < size-3; pos=pos+1) {
 					current=outputBuffer.getFloat(pos);
 					if (Math.round(current)==Math.round(target)){
-						add(new Result(address+pos, current, getType()));
+						add(new Result(getResultList(), getType(), address+pos, current));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
@@ -138,7 +139,7 @@ public class ProcessImpl implements Process {
 				for (long pos = 0; pos < size-7; pos=pos+1) {
 					current=outputBuffer.getDouble(pos);
 					if (Math.round(current)==Math.round(target)){
-						add(new Result(address+pos, current, getType()));
+						add(new Result(getResultList(), getType(), address+pos, current));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
@@ -161,7 +162,9 @@ public class ProcessImpl implements Process {
 					for (int i = 0; i < target.length; i++)
 						if (current[i]!=target[i]) equal=false;		
 					if (equal){
-						add(new Result(address+pos, current, getType(), targetSize));
+						Datastructure ds = getType();
+						ds.setByteCount(targetSize);
+						add(new Result(getResultList(), ds, address+pos, current));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
@@ -178,7 +181,9 @@ public class ProcessImpl implements Process {
 				for (long pos = 0; pos < size-targetSize; pos=pos+1) {
 					current = new String(outputBuffer.getByteArray(pos, targetSize), ascii);
 					if (current.equalsIgnoreCase(target)){
-						add(new Result(address+pos, current, getType(), targetSize));
+						Datastructure ds = getType();
+						ds.setByteCount(targetSize);
+						add(new Result(getResultList(), ds, address+pos, current));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}
@@ -195,7 +200,9 @@ public class ProcessImpl implements Process {
 				for (long pos = 0; pos < size-targetSize; pos=pos+1) {
 					current = new String(outputBuffer.getByteArray(pos, targetSize), utf16);
 					if (current.equalsIgnoreCase(target)){
-						add(new Result(address+pos, current, getType(), targetSize));
+						Datastructure ds = getType();
+						ds.setByteCount(targetSize);
+						add(new Result(getResultList(), ds, address+pos, current));
 						log.debug("Found:\t"+Long.toHexString(address+pos));
 					}
 				}

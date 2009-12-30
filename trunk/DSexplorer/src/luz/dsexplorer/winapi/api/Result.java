@@ -1,141 +1,124 @@
 package luz.dsexplorer.winapi.api;
 
-import java.nio.charset.Charset;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+import luz.dsexplorer.datastructures.Container;
+import luz.dsexplorer.datastructures.DSListener;
+import luz.dsexplorer.datastructures.Datastructure;
 import luz.dsexplorer.exceptions.NoProcessException;
-import luz.dsexplorer.objects.datastructure.DSField;
-import luz.dsexplorer.objects.datastructure.DSType;
-import luz.dsexplorer.objects.datastructure.Datastructure;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 
-public class Result extends DefaultMutableTreeNode implements ListDataListener, Cloneable{
-	private static final long serialVersionUID = 4163723615095260358L;
-	private static final Log log = LogFactory.getLog(Result.class);
-	private transient ResultList resultList;
-	private transient Charset ascii=Charset.forName("US-ASCII");
-	private transient Charset utf16=Charset.forName("UTF-16");
-	
-	@Element(required=false)
+@Root
+public class Result implements TreeNode, DSListener, Cloneable {
+	private ResultList resultList;	//needs to be reconstructed after loading
+	@Attribute
+	private Long address;
+	@Element
 	private Datastructure datastructure;
-	@Element(required=false)
-	private DSField dsField;
-	
-	@Attribute
-	private String name;
-	@Attribute
-	private DSType type;
-	@Attribute
-	private long byteCount;
-	@Attribute
-	private Long address;	
-	@Attribute
-	private boolean isPointer;
-	
-	private transient Long pointerCache=null;
-	private transient boolean pointerCacheOK=false;
-	
-	private transient Object valueCache=null;
-	private transient boolean valueCacheOK=false;
+	private int fieldIndex;	//only for fields. used to calcualte the Offset
 
-
-	/*
-	 * Four types of Results:
-	 * 1) normal results on the root of the tree		(datastructure =null, dsField =null)
-	 * 2) datastructures with children (fields)			(datastructure!=null, dsField =null)
-	 * 3) Fields (children) of the datastructures		(datastructure =null, dsField!=null)
-	 * 4) Fields (children) which are datastructures	(datastructure!=null, dsField!=null)
-	 * 
-	 *             |Not Custom|  Custom  |
-	 * ------------+----------+----------+
-	 * Not Relative|    1     |    2     |
-	 * ------------+----------+----------+
-	 *     Relative|    3     |    4     |
-	 * ------------+----------+----------+
-	 * 
-	 */
+	private Object valueCache=null;
+	private boolean valueCacheOK=false;
 	
-	public Result(){}
+	private Long pointerCache=null;
+	private boolean pointerCacheOK=false;
 	
-	public Result(Long address, Object value, DSType type){
-		this(null, address, value, type, null, type.name(), false);
-	}
+	protected Result(){}
 	
-	public Result(Long address, Object value, DSType type, long byteCount){
-		this(null, address, value, type, null, type.name(), false);
-		setByteCount(byteCount);
-	}
-	
-	public Result(ResultList resultList, Long address, Object value, DSType type, Datastructure ds, String name, boolean isPointer){
+	//used from Process to create results 
+	public Result(ResultList resultList, Datastructure datastructure, long address, Object value){
 		this.resultList=resultList;
 		this.address=address;
 		this.valueCache=value;
-		this.valueCacheOK=(value!=null);
-		this.type=type;
-		this.byteCount=type.getByteCount();
-		this.name=name;
-		this.isPointer=isPointer;	
-		this.datastructure=ds;
+		this.valueCacheOK=false;
+		this.datastructure=datastructure;
+		this.datastructure.addListener(this);
 	}
-	
-	/**
-	 * Create Result from a DataStructure Field. This means this Result depends on the parent Result.
-	 * The pointer is calculated from the base of the parent and the offset of the field.
-	 * @param process
-	 * @param parent
-	 * @param field
-	 */
-	public Result(ResultList resultList, DSField field, Datastructure ds){
-		this(resultList, null, null, field.getType(), DSType.Custom.equals(field.getType())?ds:null, field.getName(), false);
-		this.dsField=field;
+		
+	//used from Results to create children
+	public Result(ResultList resultList, Result parent, Datastructure datastructure, int fieldIndex){
+		this.resultList=resultList;
+		this.parent=parent;
+		this.fieldIndex=fieldIndex;
+		this.datastructure=datastructure;
+		this.datastructure.addListener(this);
 	}
-	
-	
-	public String getName(){
-		if(isCustom())
-			return datastructure.getName();
-		else if (isRelative())
-			return dsField.getName();
 
-		else		
-			return name;
+	//Used to create manual Results
+	public Result(Datastructure datastructure) {
+		this.datastructure=datastructure;
+		this.datastructure.addListener(this);		
+	}
+
+	public void setDatastructure(Datastructure newDS) {
+		Datastructure oldDS=this.datastructure;
+
+		if (isSimpleResult()){	//simple result
+			log.debug("change ds");
+			
+			oldDS.removeListener(this);
+			removeAllChilds();
+			valueCacheOK=false;
+			this.datastructure = newDS;
+			newDS.addListener(this);
+			if (!newDS.isContainer())
+				newDS.setName(oldDS.getName());	//take over old name
+
+			getResultList().reload(this);	//if ds changed->childs may change
+		}else{
+			log.debug("change field");
+			Container dsParent = (Container)oldDS.getContainer();
+			dsParent.replaceField(oldDS, newDS, fieldIndex);
+		}
+	}
+
+	public Datastructure getDatastructure() {
+		return datastructure;
+	}
+
+	public void setResultList(ResultList resultList) {
+		this.resultList = resultList;
+	}
+
+	public ResultList getResultList() {
+		return resultList;
 	}
 	
-	public Long getAddress(){
-		if (isRelative()){
-			Result p=((Result)getParent());
-			if (p!=null){
-				if (p.isPointer){
-					Long base = p.getPointer();	//WARNING: Indirect recursion(getPointer->getAddress)
-					if (base==null) 
-						return null;
-					else
-						return base+p.getDatastructure().getOffset(dsField);	//If it is relative->parent is datastructure			
-				}else{
-					Long base = p.getAddress();	//WARNING : direct recursion (intentionally)
-					if (base==null)
-						return null;
-					else
-						return base+p.getDatastructure().getOffset(dsField);	//If it is relative->parent is datastructure
-				}
-			}else{
-				log.warn("Relative Result without Parent (weird->needs fix)");	//FIXME results without parent
-				return null;
-			}
-		}else{
+	public void setAddress(Long address) {
+		if (isSimpleResult()){		//only for simple result
+			this.address = address;
+			invalidateParentAndChilds();
+		}
+	}
+	
+	public Long getAddress() {
+		if (isSimpleResult()){	//simple result
 			return address;
+		}else{
+
+			Container dsParent=(Container)datastructure.getContainer();
+			Long address;
+			if (dsParent.isPointer())
+				address=((Result)parent).getPointer();	//warning, recursion, down to the root
+			else	
+				address=((Result)parent).getAddress();	//warning, recursion, down to the root
+			if (address!=null){
+				address+=dsParent.getOffset(fieldIndex);
+			}
+			return address;	
 		}
 	}
 	
@@ -144,74 +127,52 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 		return p==null?null:String.format("%1$08X", p);
 	}
 	
-	public DSType getType() {
-		if (isRelative())
-			return dsField.getType();
-		else
-			return type;
-	}
 	
-	public long getByteCount() {
-		if(isRelative()){
-			return dsField.getByteCount();
-		}else if (isCustom()){
-			return datastructure.getByteCount();
-		}else{
-			return byteCount;
-		}
-	}
-	
-	public String getValueString(){
-		Object value = getValue();
-		if (value==null) return null;
-		
-		StringBuilder sb;
-		switch (getType()) {
-		case ByteArray:
-			sb = new StringBuilder();
-			byte[] bytes=(byte[])value;
-			for (int i = 0; i < bytes.length; i++) {
-				sb.append(String.format("%1$02X", bytes[i]));
+	private Long getPointer(){
+		if (datastructure.isContainer()){
+			Container c = (Container)datastructure;
+			if (c.isPointer()){
+				
+				if(pointerCacheOK)
+					return pointerCache;	
+				
+				Memory buffer=new Memory(4);
+				try {
+					log.trace("Pointer: "+getAddressString());
+					getResultList().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
+					pointerCache=(long)buffer.getInt(0);
+				} catch (NoProcessException e){
+					pointerCache=null;
+				} catch (Exception e) {
+					log.warn(e);
+					pointerCache=null;
+				}
+				pointerCacheOK=true;
+				return pointerCache;
 			}
-			return sb.toString();
-		default:
-			return value.toString();
 		}
+		return null;
+	}
+	
+	public String getPointerString() {
+		Long p=getPointer();
+		return p==null?null:String.format("%1$08X", p);
 	}
 	
 	public Object getValue(){
-		if (isCustom())
+		if (datastructure.isContainer())
 			return null;
 		
 		if(valueCacheOK)
 			return valueCache;
 		
-		Memory buffer=new Memory(getByteCount());
+		Memory buffer=new Memory(datastructure.getByteCount());
 		try {
 			Long address=getAddress();
 			if (address!=null && address!=0){
 				log.trace("Read: "+getAddressString());
 				getResultList().ReadProcessMemory(Pointer.createConstant(address), buffer, (int)buffer.getSize(), null);
-				switch (getType()) {
-					case Byte1:		valueCache=buffer.getByte     (0); break;
-					case Byte2:		valueCache=buffer.getShort    (0); break;
-					case Byte4:		valueCache=buffer.getInt      (0); break;
-					case Byte8:		valueCache=buffer.getLong     (0); break;
-					case Float:		valueCache=buffer.getFloat    (0); break;
-					case Double:	valueCache=buffer.getDouble   (0); break;
-					case Ascii:		
-						valueCache=new String(buffer.getByteArray(0, (int)buffer.getSize()), ascii);
-						break;
-					case Unicode:	
-						valueCache=new String(buffer.getByteArray(0, (int)buffer.getSize()), utf16);					
-						break;
-					case ByteArray:	
-						valueCache=buffer.getByteArray(0, (int)buffer.getSize());	
-						break;
-					case Custom:	
-						valueCache=null;											
-						break;
-				}
+				valueCache=datastructure.eval(buffer);
 				valueCacheOK=true;
 			}else{
 				valueCache=null;
@@ -219,286 +180,223 @@ public class Result extends DefaultMutableTreeNode implements ListDataListener, 
 		} catch (NoProcessException e){
 			valueCache=null;
 		} catch (Exception e) {
-			log.warn("Cannot Read: "+getAddressString(), e);
+			log.warn("Cannot Read: "+getAddressString());
 			valueCache=null;
 		}
 		return valueCache;
 	}
 	
-	public boolean getIsPointer(){
-		return isPointer;
+	public String getValueString(){
+		Object v=getValue();
+		return v==null?null:getDatastructure().valueToString(v);
 	}
-	
-	private Long getPointer(){
-		if (!isPointer)
-			return null;
 		
-		if(pointerCacheOK)
-			return pointerCache;
-		
-		Memory buffer=new Memory(4);
-		try {
-			log.trace("Pointer: "+getAddressString());
-			getResultList().ReadProcessMemory(Pointer.createConstant(getAddress()), buffer, (int)buffer.getSize(), null);
-			pointerCache=(long)buffer.getInt(0);
-		} catch (NoProcessException e){
-			pointerCache=null;
-		} catch (Exception e) {
-			log.warn(e);
-			pointerCache=null;
-		}
-		pointerCacheOK=true;
-		return pointerCache;
-	}
-	
-	private ResultList getResultList() throws Exception{
-		if (resultList!=null){
-			return resultList;
-		}else {
-			Object root=getRoot();
-			if (root instanceof ResultList){
-				log.warn("Result not linked to ResultList but has it as root");
-				return ((ResultList)root);
-			}else{
-				Exception e= new Exception("Result not linked to ResultList");
-				log.error(e);
-				throw(e);
-			}
-		}
-	}
-	
-	public String getPointerString() {
-		Long p=getPointer();
-		return p==null?null:String.format("%1$08X", p);
-	}
-
-	
-	
-	public Datastructure getDatastructure(){
-//		if (isRelative())
-//			return 	((Result)getParent()).getDatastructure();
-//		else
-			return datastructure;
-	}
-	
-	public void setDatastructure(Datastructure ds){
-		log.trace("Datastructure changed to "+ds);
-		if (this.datastructure!=null) 
-			this.datastructure.removeListDataListener(this);
-		this.datastructure=ds;
-		if (ds!=null)
-			ds.addListDataListener(this);
-		recreateChilds();
-		
-		//TODO if changing nested ds->recreate all the affected tree paths
-	}	
-	
-	public void setName(String name){
-		this.name=name;
-		if (isCustom())
-			datastructure.setName(name);
-		else if (isRelative())
-			dsField.setName(name);
-	}
-	
-	public void setAddress(Long address){
-		invalidateCache();
-		if (isCustom()){
-			invalidateChildCache();
-		}
-		if (!isRelative())
-			this.address=address;
-	}
-	
-	public void setType(DSType type, Datastructure ds) {
-		log.trace("SetType "+type);
-		invalidateCache();
-		this.type = type;
-		this.byteCount=type.getByteCount();
-		
-		if (isCustom()){
-			setDatastructure(ds);
-			isPointer=false;
-		}else{
-			setDatastructure(null);
-		}
-		
-		if(isRelative()){
-			MutableTreeNode p = parent;
-			dsField.setType(type);	//FIXME this removes the parent????
-			parent=p;
-		}
-	}
-	
-	public void setByteCount(long size){
-		log.trace("setByteCount "+size);
-		invalidateCache();
-		if (type==null || !type.isFixedSize() || size==type.getByteCount()){
-			this.byteCount=size;
-		}
-		
-		if(isRelative()){
-			dsField.setByteCount(size);
-			((Result)getParent()).invalidateChildCache();
-		}
-
-	}
-	
-	public void setValue(Object value) {
-		invalidateCache();
-		this.valueCache=value;
-		//TODO write mem
-	}
-	
-	public void setIsPointer(boolean isPointer) {
-		if (isCustom()){	//Only for datastructures? (design question)
-			this.isPointer=isPointer;
-			invalidateChildCache();
-		}
-	}
-	
-	public void setResultList(ResultList resultList) {
-		this.resultList=resultList;		
-	}
-	
-
 	public void delete() {
-		log.info("delete "+this);
-		TreeNode p = getParent();
-		if (p ==null){
-			try {
-				getResultList().remove(this);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}else if(p instanceof Result){
-			Result parent = (Result)p;
-			parent.getDatastructure().removeElement(this.dsField);		
+		Container dsParent=(Container)datastructure.getContainer();
+		if (isSimpleResult()){	//simple Result
+			getResultList().remove(this);
+		}else{
+			dsParent.removeField(fieldIndex);
 		}
 	}
 	
-	
-	//Helper//////////////////////////////////////
-	
-	
-	public boolean isCustom(){
-		return DSType.Custom.equals(type);
+	public void setParent(TreeNode parent) {
+		this.parent=parent;		
 	}
-	
-	public boolean isRelative(){
-		return dsField!=null;
-	}
-	
-	private void invalidateCache(){
+
+	public void invalidateParentAndChilds(){
 		valueCacheOK=false;
 		pointerCacheOK=false;
+		getResultList().nodeChanged(this);
+		if (childs!=null)
+			for (Result r : childs)
+				r.invalidateParentAndChilds();
+
 	}
 	
-	private void invalidateChildCache(){
-		for (int i = 0; i < getChildCount(); i++)
-			((Result)getChildAt(i)).invalidateCache();
+	private void invalidateFollowingSiblings(){
+		if (parent instanceof Result){
+			List<Result> siblings = ((Result)parent).childs;
+			if (siblings!=null)		//should not happen
+				for (int i = siblings.indexOf(this)+1; i < siblings.size(); i++)
+					siblings.get(i).invalidateParentAndChilds();
+		}
+	}
+	
+	private void invalidateFollowingChilds(int index){
+		if (childs!=null)
+			for (int i = index+1; i < childs.size(); i++)
+				childs.get(i).invalidateParentAndChilds();
 	}
 	
 	
-	//DefaultMutableTreeNode//////////////////////////////////////
+	//DSListener///////////////////////////////////////////////
+	
+	@Override
+	public void hasChanged() {
+		valueCacheOK=false;
+		getResultList().nodeChanged(this);
+	}
 
 	@Override
-	public boolean isLeaf() {
-		return !isCustom();
+	public void pointerChanged(boolean pointer) {
+		invalidateParentAndChilds();
+		invalidateFollowingSiblings();	//ByteCount has changed of this field (addresses of the following siblings too)
+		getResultList().nodeChanged(this);
+		
 	}
 	
-	private boolean areChildrenDefined=false;
+	// triggered on the parent of the added field
+	@Override
+	public void addedField(Datastructure field, int fieldIndex) {
+		if(childs!=null){
+			Result r = new Result(resultList, this, field, fieldIndex);
+			childs.add(fieldIndex, r);
+			for (int i = fieldIndex+1; i < childs.size(); i++)
+				childs.get(i).fieldIndex++;
+			getResultList().nodeInserted(r);
+		}
+		invalidateFollowingSiblings();	//ByteCount has changed of this field (addresses of the following childs too)
+	}
+	
+	// triggered on the parent of the removed field
+	@Override
+	public void removedField(int fieldIndex) {
+		if(childs!=null){
+			log.debug("field removed");
+			Result child=childs.get(fieldIndex);
+			if (child.fieldIndex==fieldIndex){
+				childs.remove(fieldIndex);
+				for (int i = fieldIndex; i < childs.size(); i++)
+					childs.get(i).fieldIndex--;
+				getResultList().nodeRemoved(child, fieldIndex);
+			}
+		}			
+	}
+	
+	// triggered on the parent of the removed field
+	@Override
+	public void replacedField(Datastructure oldField, Datastructure newField, int fieldIndex) {
+		if(childs!=null){			
+			log.debug("replaced Field");
+			Result child=childs.get(fieldIndex);
+			if (child.fieldIndex==fieldIndex){
+				oldField.removeListener(child);
+				child.removeAllChilds();
+				child.valueCacheOK=false;
+				child.datastructure=newField;
+				newField.addListener(child);
+				if (!newField.isContainer())
+					newField.setName(oldField.getName());	//take over old name
+				
+				getResultList().reload(child);	//if ds changed->childs may change
+			}
+		}
+		invalidateFollowingChilds(fieldIndex);	//ByteCount has changed of this field (addresses of the following siblings too)
+	}
+
+
+	
+	//Utils///////////////////////////////////////////////
+	private static final Log log = LogFactory.getLog(Result.class);
+
+	private void defineChildNodes(){
+		if (!isLeaf() && childs==null){
+			childs=new LinkedList<Result>();
+			if (datastructure.isContainer()){
+				List<Datastructure> fields = ((Container)datastructure).getFields();
+				for (int i = 0; i < fields.size(); i++) {
+					Result r = new Result(resultList, this, fields.get(i), i);
+					childs.add(r);
+				}
+			}			
+		}
+	}
+	
+	private void removeAllChilds(){
+		childs=null;
+	}
+
+	
+	public boolean isSimpleResult(){
+		return parent.equals(resultList);
+	}
+	
+	
+	//TreeNode///////////////////////////////////////////////
+	private TreeNode parent;	//needs to be reconstructed after loading
+	private List<Result> childs;
+	
+	@Override
+	public boolean isLeaf() {
+		return !datastructure.isContainer();
+	}	
 	
 	@Override
 	public int getChildCount() {
-		if (isCustom()){
-			defineChildNodes();
-			return super.getChildCount();
-		}else{
-			return 0;
-		}
+		defineChildNodes();
+		return childs.size();
 	}
-	
-	private void defineChildNodes(){
-		if (!areChildrenDefined){
-			areChildrenDefined=true;
-			if(isCustom()){
-				if (datastructure==null){
-					log.warn("isCustom but has no datastructure");
-					return;
-				}
-				for (DSField field : datastructure.getFields())
-					add(new Result(resultList, field, datastructure));
-			}
-		}
-	}
-
-	
-	//ListDataListener (for datastructure)//////////////////////////////////////
 	
 	@Override
-	public void contentsChanged(ListDataEvent listdataevent) {
-		//TODO if name changes, no need to refresh the memory value
-		
-		if(isCustom()){	//only custom Results listen to datastructure changes
-			if (isRelative()){
-				log.debug("contentsChanged custom+relative");
-				//special case, with cutoms Results as Children
-				recreateChilds();
-			}else{
-				log.debug("contentsChanged custom");
-				invalidateCache();
-				invalidateChildCache();
-				//no need to recreate children, because they are only modified
-			}
-		}
+	public TreeNode getParent() {
+		return parent;
+	}
+	
+	@Override
+	public boolean getAllowsChildren() {
+		return !datastructure.isContainer();
 	}
 
 	@Override
-	public void intervalAdded(ListDataEvent listdataevent) {
-		if(isCustom())
-			recreateChilds();	//TODO refresh only following childs
+	public Enumeration<Result> children() {
+		return new Enumeration<Result>() {
+			Iterator<Result> iter=childs.iterator();
+			public boolean hasMoreElements() { return iter.hasNext(); }
+			public Result nextElement() { return iter.next(); }
+		};
 	}
 
 	@Override
-	public void intervalRemoved(ListDataEvent listdataevent) {
-		if(isCustom())
-			recreateChilds();	//TODO refresh only following childs
-	}
-	
-	private void recreateChilds(){
-		try{
-			removeAllChildren();
-		}catch (ArrayIndexOutOfBoundsException e){
-			log.warn("removeAllChildren failed");
-			//Ignore "node has no children"
-		}
-		if (isCustom()){
-			if (datastructure==null){
-				log.warn("isCustom but has no datastructure");
-				return;
-			}
-			log.trace("recreate Childs "+this);
-			for (DSField field : datastructure.getFields())
-				add(new Result(resultList, field, datastructure));
-		}
+	public TreeNode getChildAt(int childIndex) {
+		defineChildNodes();
+		return childs.get(childIndex);
 	}
 
+	@Override
+	public int getIndex(TreeNode node) {
+		defineChildNodes();
+		return childs.indexOf(node);
+	}
+
+	
 	//Object//////////////////////////////////////
 	
 	@Override
 	public String toString() {
-		return getAddressString()+" ["+getName()+"] "+(isCustom()?"":getValueString());
+		StringBuilder sb=new StringBuilder();
+		sb.append(getAddressString()).append(' ');
+		sb.append('[').append(getDatastructure().getName()).append("] ");
+		if(!datastructure.isContainer()){
+			sb.append(datastructure.valueToString(getValue()));
+		}else{
+			if (((Container)datastructure).isPointer())
+				sb.append(getPointerString());
+		}		
+		
+		return sb.toString();
 	}
 
+	//Clonable//////////////////////////////////////
+	
 	@Override
 	public Result clone() {
-		Result c = (Result)super.clone();
-		return c;
+		try {
+			return (Result)super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
-
-
-
-
 
 }

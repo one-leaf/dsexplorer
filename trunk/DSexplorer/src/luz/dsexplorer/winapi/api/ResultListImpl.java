@@ -7,16 +7,20 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.swing.tree.MutableTreeNode;
+import javax.swing.event.EventListenerList;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
+import luz.dsexplorer.datastructures.Container;
+import luz.dsexplorer.datastructures.DSList;
+import luz.dsexplorer.datastructures.Datastructure;
 import luz.dsexplorer.exceptions.NoProcessException;
-import luz.dsexplorer.objects.datastructure.DSField;
-import luz.dsexplorer.objects.datastructure.DSList;
-import luz.dsexplorer.objects.datastructure.Datastructure;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Serializer;
@@ -40,11 +44,15 @@ import com.sun.jna.ptr.IntByReference;
 
 
 @Root(name="Results")
-public class ResultListImpl implements MutableTreeNode, ResultList{
+public class ResultListImpl implements ResultList {
 	private static final long serialVersionUID = 2132455546694390451L;
 	private static final Log log = LogFactory.getLog(ResultListImpl.class);
-	@ElementList(inline=true)
+	@Element
+	private static DSList dsList=new DSList();
+	@ElementList(inline=true, name="results")
 	private List<Result> results = new LinkedList<Result>();
+
+	
 	private Process process;
 	
 	public ResultListImpl(){}	
@@ -63,6 +71,9 @@ public class ResultListImpl implements MutableTreeNode, ResultList{
 	
 	public void setProcess(Process process) {
 		this.process=process;
+		for (Result result : results)
+			result.invalidateParentAndChilds();
+		nodeChanged(this);
 	}
 	
 	public Process getProcess() {
@@ -71,7 +82,8 @@ public class ResultListImpl implements MutableTreeNode, ResultList{
 	
 	
 	public void removeAllChildren() {
-		results.clear();		
+		results.clear();
+		reload(this);
 	}
 	
 	
@@ -80,31 +92,37 @@ public class ResultListImpl implements MutableTreeNode, ResultList{
 		
 		Strategy strategy = new CycleStrategy("id", "ref");
 		Serializer serializer = new Persister(strategy);
-		ResultListImpl list = serializer.read(ResultListImpl.class, file);
+		ResultListImpl newList = serializer.read(ResultListImpl.class, file);
 		
 		
-		//Repair links
+		//Repair Result links
 		Result r;
-		Datastructure ds;
-		List<Datastructure> dsset=new LinkedList<Datastructure>();
-		for (int i = 0; i < list.getChildCount(); i++){
-			r=(Result)list.getChildAt(i);
-			r.setResultList(list);	//link list with result
-			ds=r.getDatastructure();
-			if (ds!=null){
-				ds.addListDataListener(r);	//link result with ds
-				
-				if(!dsset.contains(ds)){	//avoid duplicate links	
-					dsset.add(ds);			
-					for (DSField f : ds.getFields()) {
-						f.addListener(ds);	//link ds with field				
-					}	
-				}
-			}
+		for (int i = 0; i < newList.getChildCount(); i++){
+			r=(Result)newList.getChildAt(i);
+			r.setResultList(newList);	//link list with result
+			r.setParent(newList);
+			r.getDatastructure().addListener(r);	//link result with ds
+		}
+		
+		//Repair Datastructure links
+		DSList dsList=newList.getDatastructures();
+		Container ds;
+		for (int i = 0; i < dsList.getSize(); i++) {
+			ds=dsList.getElementAt(i);
+			repairChildsOf(ds);
 		}
 
-		return list;
+		return newList;
 	}
+	
+	private static void repairChildsOf(Container ds){
+		for (Datastructure field : ds.getFields()) {
+			field.setContainer(ds);
+			if (field.isContainer() && !field.equals(ds))	//avoid loops: field == ds
+				repairChildsOf((Container)field);		//recursion root->childs
+		}
+	}
+	
 	
 	
 	public void saveToFile(File file) throws FileNotFoundException{
@@ -120,27 +138,30 @@ public class ResultListImpl implements MutableTreeNode, ResultList{
 	}
 	
 	public DSList getDatastructures(){
-		DSList list=new DSList();
-		Datastructure ds;
-		Result r;
-		for (int i = 0; i < this.getChildCount(); i++) {
-			r=(Result)this.getChildAt(i);
-			ds=r.getDatastructure();
-			if (ds!=null)
-				list.addElement(ds);
-		}
-		
-		return list;		
+		return dsList;		
 	}
 	
 
 	
 	
+	@Override
+	public void add(Result newChild) {
+		newChild.setResultList(this);	//link the result to this object
+		newChild.setParent(this);
+		results.add(newChild);
+		nodeInserted(newChild);
+	}
 	
-
+	
+	@Override
+	public void remove(Result child) {
+		int index=results.indexOf(child);
+		results.remove(child);
+		nodeRemoved(child, index);
+	}
 
 	
-	//MutableTreeNode//////////////////////////////////////
+	//TreeNode//////////////////////////////////////
 	
 	@Override
 	public int getChildCount() {
@@ -152,33 +173,12 @@ public class ResultListImpl implements MutableTreeNode, ResultList{
 		return false;
 	}	
 	
+	@Override
+	public TreeNode getParent() {
+		// Has no parent
+		return null;
+	}
 	
-	@Override
-	public void add(MutableTreeNode newChild) {
-		Result r = (Result)newChild;
-		r.setResultList(this);	//link the result to this object
-		results.add(r);
-	}
-		
-	@Override
-	public void insert(MutableTreeNode child, int index) {
-		Result r = (Result)child;
-		r.setResultList(this);	//link the result to this object
-		results.add(index, r);
-		
-	}
-
-	@Override
-	public void remove(int index) {
-		results.remove(index);
-		
-	}
-
-	@Override
-	public void remove(MutableTreeNode node) {
-		results.remove(node);
-		
-	}
 
 	@Override
 	public Enumeration<Result> children() {
@@ -212,27 +212,6 @@ public class ResultListImpl implements MutableTreeNode, ResultList{
 	public int getIndex(TreeNode node) {
 		return results.indexOf(node);
 	}
-	
-	@Override
-	public void removeFromParent() {
-		//Has no parent		
-	}
-
-	@Override
-	public void setParent(MutableTreeNode newParent) {
-		//Has no parent		
-	}
-
-	@Override
-	public void setUserObject(Object object) {
-		// Has no object		
-	}
-
-	@Override
-	public TreeNode getParent() {
-		// Has no parent
-		return null;
-	}
 
 
 	//Object//////////////////////////////////////
@@ -245,6 +224,186 @@ public class ResultListImpl implements MutableTreeNode, ResultList{
 		return process.getSzExeFile();
 	}
 
+	
+	//TreeModel//////////////////////////////////////
+	
+    protected EventListenerList listenerList = new EventListenerList();
+	
+    @Override
+	public void addTreeModelListener(TreeModelListener l) {
+        listenerList.add(TreeModelListener.class, l);
+	}
+	
+	@Override
+	public void removeTreeModelListener(TreeModelListener l) {
+        listenerList.remove(TreeModelListener.class, l);
+	}
+	
+	@Override
+	public Object getChild(Object parent, int index) {
+		return ((TreeNode)parent).getChildAt(index);
+	}
+
+	@Override
+	public int getChildCount(Object parent) {
+		return ((TreeNode)parent).getChildCount();
+	}
+
+	@Override
+	public int getIndexOfChild(Object parent, Object child) {
+		return ((TreeNode)parent).getIndex((Result)child);
+	}
+
+	@Override
+	public Object getRoot() {
+		return this;
+	}
+
+	@Override
+	public boolean isLeaf(Object node) {
+		return ((TreeNode)node).isLeaf();
+	}
+
+
+	@Override
+	public void valueForPathChanged(TreePath path, Object newValue) {
+		// TODO what do to here?
+		
+	}
+	
+	
+	//TreeModel-Utils//////////////////////////////////////
+	
+	
+    public TreeNode[] getPathToRoot(TreeNode aNode) {
+        return getPathToRoot(aNode, 0);
+    }
+
+    protected TreeNode[] getPathToRoot(TreeNode aNode, int depth) {
+        TreeNode[] retNodes;
+        if(aNode == null) {
+            if(depth == 0)
+                return null;
+            else
+                retNodes = new TreeNode[depth];
+        } else {
+            depth++;
+            if(aNode == this)
+                retNodes = new TreeNode[depth];
+            else
+                retNodes = getPathToRoot(aNode.getParent(), depth);
+            retNodes[retNodes.length - depth] = aNode;
+        }
+        return retNodes;
+    }
+	
+
+    
+    public void nodeChanged(TreeNode node) {
+        if(listenerList != null && node != null) {
+            TreeNode parent = node.getParent();
+            if(parent != null) {
+                int anIndex = parent.getIndex(node);
+                if(anIndex != -1) {
+                    int[] cIndexs = new int[1];
+                    cIndexs[0] = anIndex;
+                    nodesChanged(parent, cIndexs);
+                }
+            }
+		    else if (node == getRoot()) {
+		    	nodesChanged(node, null);
+		    }
+        }
+    }
+    
+    public void nodesChanged(TreeNode node, int[] childIndices) {
+        if(node != null) {
+		    if (childIndices != null) {
+				int cCount = childIndices.length;
+				if(cCount > 0) {
+				    Object[] cChildren = new Object[cCount];
+				    for(int counter = 0; counter < cCount; counter++)
+					cChildren[counter] = node.getChildAt (childIndices[counter]);
+				    fireTreeNodesChanged(this, getPathToRoot(node), childIndices, cChildren);
+				}
+		    }
+		    else if (node == getRoot()) {
+		    	fireTreeNodesChanged(this, getPathToRoot(node), null, null);
+		    }
+        }
+    }
+    
+    public void reload(TreeNode node) {
+        if(node != null) {
+            fireTreeStructureChanged(this, getPathToRoot(node), null, null);
+        }
+    }
+    
+    public void nodeInserted(TreeNode node) {
+        if(node != null) {
+        	TreeNode parent=node.getParent();
+        	int[] childIndices=new int[]{parent.getIndex(node)};
+        	Object[] children= new Object[]{node};
+            fireTreeNodesInserted(this, getPathToRoot(parent), childIndices, children);
+        }
+    }
+
+    public void nodeRemoved(TreeNode node, int index) {
+        if(node != null) {
+        	TreeNode parent=node.getParent();
+        	int[] childIndices=new int[]{index};
+        	Object[] children= new Object[]{node};        	
+            fireTreeNodesRemoved(this, getPathToRoot(parent), childIndices, children);
+        }
+    }
+    
+    protected void fireTreeStructureChanged(Object source, Object[] path, int[] childIndices, Object[] children) {
+		Object[] listeners = listenerList.getListenerList();
+		TreeModelEvent e = null;
+		for (int i = listeners.length-2; i>=0; i-=2) {
+			if (listeners[i]==TreeModelListener.class) {
+				if (e == null)
+					e = new TreeModelEvent(source, path,  childIndices, children);
+				((TreeModelListener)listeners[i+1]).treeStructureChanged(e);
+			}          
+		}
+	}
+
+    protected void fireTreeNodesInserted(Object source, Object[] path, int[] childIndices, Object[] children) {
+		Object[] listeners = listenerList.getListenerList();
+		TreeModelEvent e = null;
+		for (int i = listeners.length-2; i>=0; i-=2) {
+			if (listeners[i]==TreeModelListener.class) {
+				if (e == null)
+					e = new TreeModelEvent(source, path,  childIndices, children);
+				((TreeModelListener)listeners[i+1]).treeNodesInserted(e);
+			}          
+		}
+	}
+    
+    protected void fireTreeNodesRemoved(Object source, Object[] path, int[] childIndices, Object[] children) {
+		Object[] listeners = listenerList.getListenerList();
+		TreeModelEvent e = null;
+		for (int i = listeners.length-2; i>=0; i-=2) {
+			if (listeners[i]==TreeModelListener.class) {
+				if (e == null)
+					e = new TreeModelEvent(source, path, childIndices, children);
+				((TreeModelListener)listeners[i+1]).treeNodesRemoved(e);
+			}          
+		}
+	}
+    
+    protected void fireTreeNodesChanged(Object source, Object[] path, int[] childIndices, Object[] children) {
+		Object[] listeners = listenerList.getListenerList();
+		TreeModelEvent e = null;
+		for (int i = listeners.length-2; i>=0; i-=2) {
+			if (listeners[i]==TreeModelListener.class) {
+				if (e == null)
+					e = new TreeModelEvent(source, path, childIndices, children);
+				((TreeModelListener)listeners[i+1]).treeNodesChanged(e);
+			}          
+		}
+	}
 
 
 }

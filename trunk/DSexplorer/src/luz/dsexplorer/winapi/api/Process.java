@@ -1,6 +1,7 @@
 package luz.dsexplorer.winapi.api;
 
-import luz.dsexplorer.objects.datastructure.DSType;
+
+import luz.dsexplorer.datastructures.DSType;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;

@@ -1,6 +1,7 @@
 package luz.dsexplorer.winapi.api;
 
-import luz.dsexplorer.objects.datastructure.DSType;
+import luz.dsexplorer.datastructures.DSType;
+import luz.dsexplorer.datastructures.Datastructure;
 
 import com.sun.jna.Memory;
 
@@ -19,8 +20,12 @@ public abstract class MemoryListener {
 		return value;
 	}
 	
-	public DSType getType() {
-		return type;
+	public Datastructure getType() {
+		return type.getInstance();
+	}
+	
+	public ResultList getResultList() {
+		return results;
 	}
 	
 	/**
