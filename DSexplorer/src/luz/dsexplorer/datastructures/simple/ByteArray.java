@@ -26,6 +26,8 @@ public class ByteArray extends DefaultDatastructure{
 
 	@Override
 	public String valueToString(Object value){
+		if (value==null)
+			return null;
 		byte[] array = (byte[])value;
 		StringBuilder sb = new StringBuilder();
 		for (byte b : array)

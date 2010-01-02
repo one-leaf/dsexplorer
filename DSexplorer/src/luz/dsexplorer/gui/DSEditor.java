@@ -1,5 +1,6 @@
 package luz.dsexplorer.gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -26,8 +27,20 @@ import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.datastructures.Datastructure;
 import luz.dsexplorer.datastructures.simple.Byte4;
 import luz.dsexplorer.winapi.api.Result;
+import org.fife.ui.hex.swing.HexEditor;
 
-
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 public class DSEditor extends javax.swing.JPanel {
 	private static final long serialVersionUID = -6928391243482994782L;
 	private JTextField txtValue;
@@ -44,6 +57,7 @@ public class DSEditor extends javax.swing.JPanel {
 	private JComboBox cbDSselector;
 	private JSeparator jSeparator1;
 	private JTextField txtName;
+	private HexEditor hexEditor;
 	private JButton btnAddField;
 	private Result result;
 	private DSList dsList;
@@ -72,7 +86,7 @@ public class DSEditor extends javax.swing.JPanel {
 		try {
 			GroupLayout thisLayout = new GroupLayout((JComponent)this);
 			this.setLayout(thisLayout);
-			setPreferredSize(new Dimension(400, 300));
+			setPreferredSize(new Dimension(532, 440));
 			{
 				txtValue = new JTextField();
 				txtValue.setFont(font);
@@ -103,6 +117,9 @@ public class DSEditor extends javax.swing.JPanel {
 						btnAddFieldActionPerformed();
 					}
 				});
+			}
+			{
+				hexEditor = new HexEditor();
 			}
 			{
 				txtPointer = new JTextField();
@@ -181,67 +198,68 @@ public class DSEditor extends javax.swing.JPanel {
 			}
 			thisLayout.setVerticalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
-				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				    .addComponent(txtName, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblName, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				    .addComponent(txtName,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblName,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				    .addComponent(txtAddress, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblAddress, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				    .addComponent(chbPointer,    GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(txtPointer,    GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(txtAddress,    GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblAddress,    GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				    .addComponent(chbPointer, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(txtPointer, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				    .addComponent(cbDSselector,  GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblDSselector, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(btnAddDS,      GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(cbValue,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblType,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				    .addComponent(txtValue, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblValue, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				    .addComponent(txtSize,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblSize,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(btnAddField,   GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				    .addComponent(cbValue, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblType, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				    .addComponent(txtValue,      GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblValue,      GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				    .addComponent(txtSize, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblSize, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addComponent(jSeparator1,       GroupLayout.PREFERRED_SIZE, 2, GroupLayout.PREFERRED_SIZE)
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				    .addComponent(cbDSselector, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblDSselector, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(btnAddDS, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(btnAddField, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				.addContainerGap(57, Short.MAX_VALUE));
+				.addComponent(hexEditor, 0,      GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+				.addContainerGap());
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
 				.addGroup(thisLayout.createParallelGroup()
 				    .addGroup(thisLayout.createSequentialGroup()
 				        .addGroup(thisLayout.createParallelGroup()
-				            .addComponent(lblDSselector, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(lblSize, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(lblType, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(lblValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(chbPointer, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(lblAddress, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(lblName, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
+				        	.addComponent(lblName,              GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblAddress,           GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblType,              GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblSize,              GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblValue,             GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
 				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				        .addGroup(thisLayout.createParallelGroup()
+				            .addComponent(txtValue,             GroupLayout.Alignment.LEADING, 0, 431, Short.MAX_VALUE)
 				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				                .addGroup(thisLayout.createParallelGroup()
-				                    .addComponent(cbDSselector, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                    .addComponent(txtSize, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                    .addComponent(cbValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                    .addComponent(txtPointer, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                    .addComponent(txtAddress, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                    .addComponent(txtName, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                    .addComponent(btnAddField, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE))
+				                	.addComponent(txtName,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				                	.addComponent(txtAddress,    GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				                	.addComponent(cbValue,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				                	.addComponent(txtSize,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE))
 				                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				                .addComponent(btnAddDS, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                .addGap(0, 87, Short.MAX_VALUE))
-				            .addComponent(txtValue, GroupLayout.Alignment.LEADING, 0, 295, Short.MAX_VALUE)))
-				    .addComponent(jSeparator1, GroupLayout.Alignment.LEADING, 0, 380, Short.MAX_VALUE))
+				                .addGroup(thisLayout.createParallelGroup()
+				                    .addComponent(lblDSselector, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+				                    .addComponent(chbPointer,    GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
+				                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				                .addGroup(thisLayout.createParallelGroup()
+				                    .addComponent(btnAddField,   GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				                    .addComponent(cbDSselector,  GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+				                    .addComponent(txtPointer,    GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE))
+				                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				                .addComponent(btnAddDS,          GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE))))
+				    .addComponent(jSeparator1,                   GroupLayout.Alignment.LEADING, 0, 510, Short.MAX_VALUE)
+				    .addComponent(hexEditor,                     GroupLayout.Alignment.LEADING, 0, 510, Short.MAX_VALUE))
 				.addContainerGap());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -253,6 +271,12 @@ public class DSEditor extends javax.swing.JPanel {
 		this.result=result;
 		Datastructure ds = result.getDatastructure();
 		
+		Long address=result.getAddress();
+		if (address!=null){
+			hexEditor.open(result.getMemoryBytes(-512, 512), result.getAddress()-512);
+			hexEditor.setHighlightHexPos(512);
+			hexEditor.setHighlightHexSize(result.getDatastructure().getByteCount());
+		}
 		
 		txtAddress.setText(result.getAddressString());
 		txtAddress.setEditable(result.isSimpleResult());
@@ -289,8 +313,14 @@ public class DSEditor extends javax.swing.JPanel {
 	
 	private void txtAddressActionPerformed() {
 		try{
-			result.setAddress(Long.parseLong(txtAddress.getText(),16));
+			long address = Long.parseLong(txtAddress.getText(),16);
+			result.setAddress(address);
 			txtValue.setText(result.getValueString());
+
+			hexEditor.open(result.getMemoryBytes(-512, 512), address-512);
+			hexEditor.setHighlightHexPos(512);
+			hexEditor.setHighlightHexSize(result.getDatastructure().getByteCount());
+		
 		}catch(NumberFormatException e){};		
 	}
 	
@@ -318,7 +348,7 @@ public class DSEditor extends javax.swing.JPanel {
 				chbPointer.setSelected(c.isPointer());
 			}
 
-
+			hexEditor.setHighlightHexSize(ds.getByteCount());
 			txtSize.setText(""+ds.getByteCount());
 			txtSize.setEditable(!ds.isByteCountFix());
 			txtName.setText(ds.getName());
@@ -338,7 +368,9 @@ public class DSEditor extends javax.swing.JPanel {
 		if (result.getDatastructure()!=ds){	//Avoid unecessairy changes
 			result.setDatastructure(ds);
 			
-			txtName.setText(result.getDatastructure().getName());
+			hexEditor.setHighlightHexSize(ds.getByteCount());
+			txtSize.setText(""+ds.getByteCount());
+			txtName.setText(ds.getName());
 		}
 	}
 	
@@ -346,6 +378,7 @@ public class DSEditor extends javax.swing.JPanel {
 		try{
 			result.getDatastructure().setByteCount(Integer.parseInt(txtSize.getText()));
 			txtValue.setText(result.getValueString());
+			hexEditor.setHighlightHexSize(result.getDatastructure().getByteCount());
 		}catch(NumberFormatException e){};	
 	}
 	
@@ -357,7 +390,7 @@ public class DSEditor extends javax.swing.JPanel {
 		Datastructure ds = result.getDatastructure();
 		((Container)ds).addField(new Byte4());
 		txtSize.setText(""+ds.getByteCount());
-
+		hexEditor.setHighlightHexSize(result.getDatastructure().getByteCount());
 	}
 	
 	private void btnAddDSActionPerformed(){
@@ -371,6 +404,7 @@ public class DSEditor extends javax.swing.JPanel {
 			c.setPointer(chbPointer.isSelected());
 			txtPointer.setText(isPointer?result.getPointerString():null);
 			txtSize.setText(""+c.getByteCount());
+			hexEditor.setHighlightHexSize(result.getDatastructure().getByteCount());
 		}
 	}
 

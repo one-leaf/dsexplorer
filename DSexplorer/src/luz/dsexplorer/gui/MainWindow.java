@@ -50,7 +50,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private JMenuBar jMenuBar;
 	private JMenu mFile;
 	private JMenuItem miNew;
-	private JScrollPane jScrollPane1;
+	private JScrollPane scrTree;
 	private JSeparator jSeparator1;
 	private JSeparator jSeparator2;
 	private JSeparator jSeparator3;
@@ -68,15 +68,15 @@ public class MainWindow extends javax.swing.JFrame {
 	private JMenu mHelp;
 	private JMenuItem miHelp;
 	private JMenuItem miAbout;
-	private JSplitPane jSplitPane1;
+	private JSplitPane splMain;
 	private ProcessTree tree;
-	private JPanel jPanel1;
+	private JPanel rightPanel;
 	private ProcessDialog pd;
 	private MemorySearch ms;
 	private DSEditor dse;
 	private JFileChooser fc;
 	private ResultListImpl rl = new ResultListImpl();
-	private String version="0.5";
+	private String version="0.6";
 	
 	/**
 	* Auto-generated main method to display this JFrame
@@ -155,16 +155,16 @@ public class MainWindow extends javax.swing.JFrame {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setTitle("DSExplorer v"+version);
 			{
-				jSplitPane1 = new JSplitPane();
-				getContentPane().add(jSplitPane1, BorderLayout.CENTER);
+				splMain = new JSplitPane();
+				getContentPane().add(splMain, BorderLayout.CENTER);
 				{
-					jScrollPane1 = new JScrollPane();
-					jSplitPane1.add(jScrollPane1, JSplitPane.LEFT);
-					jScrollPane1.setPreferredSize(new Dimension(250, 550));
-					jScrollPane1.setMinimumSize(new Dimension(100, 350));
+					scrTree = new JScrollPane();
+					splMain.add(scrTree, JSplitPane.LEFT);
+					scrTree.setPreferredSize(new Dimension(250, 550));
+					scrTree.setMinimumSize(new Dimension(100, 350));
 					{
 						tree = new ProcessTree();
-						jScrollPane1.setViewportView(tree);
+						scrTree.setViewportView(tree);
 						tree.setResultList(rl);
 						tree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 							public void valueChanged(TreeSelectionEvent evt) {
@@ -174,12 +174,12 @@ public class MainWindow extends javax.swing.JFrame {
 					}
 				}
 				{
-					jPanel1 = new JPanel();
-					jSplitPane1.add(jPanel1, JSplitPane.RIGHT);
+					rightPanel = new JPanel();
+					splMain.add(rightPanel, JSplitPane.RIGHT);
 					BorderLayout jPanel1Layout = new BorderLayout();
-					jPanel1.setLayout(jPanel1Layout);
-					jPanel1.setPreferredSize(new Dimension(350, 550));
-					jPanel1.setMinimumSize(new Dimension(250, 350));
+					rightPanel.setLayout(jPanel1Layout);
+					rightPanel.setPreferredSize(new Dimension(531, 550));
+					rightPanel.setMinimumSize(new Dimension(531, 350));
 				}
 			}
 			{
@@ -331,17 +331,17 @@ public class MainWindow extends javax.swing.JFrame {
 	private void treeSelectionEvent(TreeSelectionEvent evt) {
 		Object node=evt.getPath().getLastPathComponent();
 		if (node instanceof ResultListImpl){
-			jPanel1.removeAll();
-			jPanel1.add(ms, BorderLayout.CENTER);
-			jPanel1.repaint();
-			jPanel1.validate();			
+			rightPanel.removeAll();
+			rightPanel.add(ms, BorderLayout.CENTER);
+			rightPanel.repaint();
+			rightPanel.validate();			
 		}
 		if (node instanceof Result){
-			jPanel1.removeAll();
+			rightPanel.removeAll();
 			dse.setResult((Result)node);
-			jPanel1.add(dse, BorderLayout.CENTER);
-			jPanel1.repaint();
-			jPanel1.validate();			
+			rightPanel.add(dse, BorderLayout.CENTER);
+			rightPanel.repaint();
+			rightPanel.validate();			
 		}	
 	}
 

@@ -200,6 +200,23 @@ public class Result implements TreeNode, DSListener, Cloneable {
 		}
 	}
 	
+	public byte[] getMemoryBytes(long low, long high) {
+		long size=Math.abs(low)+Math.abs(high);
+		Memory buffer=new Memory(size);
+		
+		byte[] value=null;
+		try {
+			Long address=getAddress();
+			if (address!=null && address!=0){
+				getResultList().ReadProcessMemory(Pointer.createConstant(address+low), buffer, (int)buffer.getSize(), null);
+				value=buffer.getByteArray(0, (int)buffer.getSize());
+			}
+		} catch (NoProcessException e){
+		} catch (Exception e) {
+		}
+		return value;
+	}
+	
 	public void setParent(TreeNode parent) {
 		this.parent=parent;		
 	}
@@ -398,5 +415,7 @@ public class Result implements TreeNode, DSListener, Cloneable {
 			return null;
 		}
 	}
+
+
 
 }
