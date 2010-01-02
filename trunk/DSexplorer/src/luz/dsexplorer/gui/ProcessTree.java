@@ -84,12 +84,14 @@ public class ProcessTree extends JTree {
 
 	public void deleteSelected() {
 		TreePath[] paths = getSelectionPaths();
-		for (TreePath treePath : paths) {
-			Object o = treePath.getLastPathComponent();
-			if (o instanceof Result){
-				log.info("delete");
-				Result r = (Result)o;
-				r.delete();	
+		if (paths!=null){
+			for (TreePath treePath : paths) {
+				Object o = treePath.getLastPathComponent();
+				if (o instanceof Result){
+					log.info("delete");
+					Result r = (Result)o;
+					r.delete();	
+				}
 			}
 		}
 	}
