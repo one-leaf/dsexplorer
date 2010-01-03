@@ -287,6 +287,7 @@ public class Result implements TreeNode, DSListener, Cloneable {
 				for (int i = fieldIndex; i < childs.size(); i++)
 					childs.get(i).fieldIndex--;
 				getResultList().nodeRemoved(child, fieldIndex);
+				invalidateFollowingChilds(fieldIndex-1);				
 			}
 		}			
 	}
