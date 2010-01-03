@@ -130,6 +130,22 @@ public class ResultListImpl implements ResultList {
 		try {
 			Strategy strategy = new CycleStrategy("id", "ref");
 			Serializer serializer = new Persister(strategy);
+			
+			
+//			//Clear empty Datastructures
+//			Datastructure ds;
+//			for (int i = 0; i < dsList.getSize(); i++) {
+//				ds=dsList.getElementAt(i);
+//				if (ds.isContainer()){
+//					Container c = (Container)ds;
+//					if (c.getFields()==null || c.getFields().size()==0){
+//						dsList.removeElementAt(i);
+//						i--;
+//					}
+//				}
+//			}
+			
+			
 			serializer.write(this, file);
 		} catch (Exception e) {
 			e.printStackTrace();

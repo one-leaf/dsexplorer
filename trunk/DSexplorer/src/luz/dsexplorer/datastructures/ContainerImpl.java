@@ -17,7 +17,7 @@ import com.sun.jna.Memory;
 public class ContainerImpl extends AbstractListModel implements Container{
 	private static final Log log = LogFactory.getLog(ContainerImpl.class);
 	private static final long serialVersionUID = -7295827399382661392L;
-	@ElementList(inline=true)
+	@ElementList(inline=true, required=false)
 	private List<Datastructure> fields=new LinkedList<Datastructure>();
 	@Attribute
 	private String name="composed";

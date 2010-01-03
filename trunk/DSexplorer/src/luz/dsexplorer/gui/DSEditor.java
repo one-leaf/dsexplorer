@@ -371,6 +371,11 @@ public class DSEditor extends javax.swing.JPanel {
 			hexEditor.setHighlightHexSize(ds.getByteCount());
 			txtSize.setText(""+ds.getByteCount());
 			txtName.setText(ds.getName());
+			boolean container=ds.isContainer();
+			if (container){
+				Container c = (Container)ds;				
+				chbPointer.setSelected(c.isPointer());
+			}
 		}
 	}
 	
