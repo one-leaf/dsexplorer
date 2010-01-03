@@ -67,7 +67,17 @@ public class ResultListImpl implements ResultList {
 		else{
 			throw new NoProcessException();
 		}
-	}	
+	}
+	
+
+
+	@Override
+	public String getStatic(Long address) {
+		if (process!=null){
+			return process.getStatic(address);
+		}
+		return null;
+	}
 	
 	public void setProcess(Process process) {
 		this.process=process;
@@ -420,6 +430,7 @@ public class ResultListImpl implements ResultList {
 			}          
 		}
 	}
+
 
 
 }

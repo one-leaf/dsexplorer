@@ -280,6 +280,8 @@ public class DSEditor extends javax.swing.JPanel {
 		
 		txtAddress.setText(result.getAddressString());
 		txtAddress.setEditable(result.isSimpleResult());
+		//TODO static display
+		System.out.println(result.getStatic());
 		cbValue.setSelectedItem(ds.getType());
 		
 

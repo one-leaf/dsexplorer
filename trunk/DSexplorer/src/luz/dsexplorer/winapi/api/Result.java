@@ -104,6 +104,12 @@ public class Result implements TreeNode, DSListener, Cloneable {
 		}
 	}
 	
+
+	public String getStatic() {
+		return getResultList().getStatic(getAddress());
+	}
+	
+	
 	public Long getAddress() {
 		if (isSimpleResult()){	//simple result
 			return address;
