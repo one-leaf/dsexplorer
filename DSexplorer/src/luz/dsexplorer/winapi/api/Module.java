@@ -7,7 +7,7 @@ import com.sun.jna.Pointer;
 public class Module {
 	private Pointer hProcess;
 	private Pointer hModule;
-	private Pointer lpBaseOfDll=null;
+	private int lpBaseOfDll;
 	private int  SizeOfImage=0;
 	private Pointer EntryPoint=null;
 	
@@ -31,7 +31,7 @@ public class Module {
 	
 	
 	private void GetModuleInformation(){
-		if(lpBaseOfDll==null){
+		if(EntryPoint==null){
 			try {
 				LPMODULEINFO x = winAPI.GetModuleInformation(hProcess, hModule);
 				lpBaseOfDll=x.lpBaseOfDll;
@@ -43,7 +43,7 @@ public class Module {
 		}
 	}
 	
-	public Pointer getLpBaseOfDll(){
+	public int getLpBaseOfDll(){
 		GetModuleInformation();
 		return lpBaseOfDll;
 	}

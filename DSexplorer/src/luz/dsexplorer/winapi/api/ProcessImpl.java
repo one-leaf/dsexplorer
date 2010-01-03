@@ -1,5 +1,6 @@
 package luz.dsexplorer.winapi.api;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
@@ -296,12 +297,27 @@ public class ProcessImpl implements Process {
 		return moduleCache;
 	}
 	
-	public Pointer getBase() {
+	@Override
+	public String getStatic(Long address) {
+		List<Module> modules = getModules();
+		int begin, end;
+		for (Module module : modules) {
+			begin = module.getLpBaseOfDll();
+			end= begin+module.getSizeOfImage();
+			if (begin<=address && address<=end){
+				File f = new File(module.getFileName());
+				return  f.getName()+ "+" +String.format("%08X", address-begin);
+			}
+		}		
+		return null;
+	}
+	
+	public int getBase() {
 		Module module = getModule();
 		if (module!=null)
 			return module.getLpBaseOfDll();
 		else
-			return null;
+			return -1;
 	}
 	
 	public int getSize() {
@@ -444,6 +460,9 @@ public class ProcessImpl implements Process {
 		log.debug("timer "+(System.currentTimeMillis()-timer));
 		return results;
 	}
+
+
+
 	
 	//TODO stop search function
 	//TODO search function progess

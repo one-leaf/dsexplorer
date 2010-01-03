@@ -31,7 +31,7 @@ public interface Psapi extends StdCallLibrary{
 	 * http://msdn.microsoft.com/en-us/library/ms684229(VS.85).aspx
 	 */
     public static class LPMODULEINFO extends Structure {
-		public Pointer lpBaseOfDll;
+		public int lpBaseOfDll;	//FIXME Pointer
 		public int  SizeOfImage;
 		public Pointer EntryPoint;
     }
