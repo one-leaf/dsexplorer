@@ -172,6 +172,7 @@ public class ResultListImpl implements ResultList {
 	
 	@Override
 	public void add(Result newChild) {
+		log.debug("add Result "+newChild.hashCode());
 		newChild.setResultList(this);	//link the result to this object
 		newChild.setParent(this);
 		results.add(newChild);

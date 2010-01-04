@@ -1,12 +1,16 @@
 package luz.dsexplorer.gui;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.List;
 
+import javax.swing.DefaultCellEditor;
 import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -25,6 +29,7 @@ public class ProcessTree extends JTree {
 
 	
 	public ProcessTree() {
+		this.setCellRenderer(new CellRenderer());
 		this.setModel(null);
 		this.setFont(new Font("Lucida Console", Font.PLAIN, 11));
 		this.addKeyListener(new KeyListener() {
@@ -94,6 +99,26 @@ public class ProcessTree extends JTree {
 				}
 			}
 		}
+	}
+	
+	private static class CellRenderer extends DefaultTreeCellRenderer{
+		private static final long serialVersionUID = 1997910950484074510L;
+		
+		@Override
+		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
+				boolean leaf, int row, boolean hasFocus) {
+			Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+			
+			//Mark static variables
+			if (value instanceof Result){
+				Result r = (Result)value;
+				if (r.getStatic()!=null)
+					c.setForeground(Color.BLUE);
+				
+			}
+			return c;
+		}
+		
 	}
 
 
