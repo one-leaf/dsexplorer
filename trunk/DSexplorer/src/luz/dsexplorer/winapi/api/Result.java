@@ -36,6 +36,9 @@ public class Result implements TreeNode, DSListener, Cloneable {
 	private Long pointerCache=null;
 	private boolean pointerCacheOK=false;
 	
+	private String staticAddr=null;
+	private boolean staticAddrCacheOK=false;
+	
 	protected Result(){}
 	
 	//used from Process to create results 
@@ -90,6 +93,7 @@ public class Result implements TreeNode, DSListener, Cloneable {
 	}
 
 	public void setResultList(ResultList resultList) {
+		log.debug("set resultList "+resultList+" on "+this.hashCode());
 		this.resultList = resultList;
 	}
 
@@ -106,7 +110,13 @@ public class Result implements TreeNode, DSListener, Cloneable {
 	
 
 	public String getStatic() {
-		return getResultList().getStatic(getAddress());
+		if (!staticAddrCacheOK){
+			Long addr=getAddress();
+			if (addr!=null)
+				staticAddr=getResultList().getStatic(addr);
+			staticAddrCacheOK=true;
+		}
+		return staticAddr;
 	}
 	
 	
@@ -230,6 +240,7 @@ public class Result implements TreeNode, DSListener, Cloneable {
 	public void invalidateParentAndChilds(){
 		valueCacheOK=false;
 		pointerCacheOK=false;
+		staticAddrCacheOK=false;
 		getResultList().nodeChanged(this);
 		if (childs!=null)
 			for (Result r : childs)
@@ -258,6 +269,8 @@ public class Result implements TreeNode, DSListener, Cloneable {
 	@Override
 	public void hasChanged() {
 		valueCacheOK=false;
+		staticAddrCacheOK=false;
+		//log.trace("resultlist is "+getResultList()+" on "+this.hashCode());
 		getResultList().nodeChanged(this);
 	}
 
@@ -416,7 +429,13 @@ public class Result implements TreeNode, DSListener, Cloneable {
 	@Override
 	public Result clone() {
 		try {
-			return (Result)super.clone();
+			Result clone=(Result)super.clone();
+			//FIXME its Datastructure only notifies the original Result
+			this.getDatastructure().removeListener(this);
+			this.getDatastructure().addListener(clone);
+			//Now its Datastructure only notifies the clone Result
+			return clone;
+			
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 			return null;
