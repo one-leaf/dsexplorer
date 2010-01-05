@@ -189,7 +189,6 @@ public class Result implements TreeNode, DSListener, Cloneable {
 				log.trace("Read: "+getAddressString());
 				getResultList().ReadProcessMemory(Pointer.createConstant(address), buffer, (int)buffer.getSize(), null);
 				valueCache=datastructure.eval(buffer);
-				valueCacheOK=true;
 			}else{
 				valueCache=null;
 			}
@@ -199,6 +198,7 @@ public class Result implements TreeNode, DSListener, Cloneable {
 			log.warn("Cannot Read: "+getAddressString());
 			valueCache=null;
 		}
+		valueCacheOK=true;
 		return valueCache;
 	}
 	
@@ -217,16 +217,11 @@ public class Result implements TreeNode, DSListener, Cloneable {
 	}
 	
 	public byte[] getMemoryBytes(long low, long high) {
-		long size=Math.abs(low)+Math.abs(high);
-		Memory buffer=new Memory(size);
-		
+		Memory buffer=new Memory(high-low);		
 		byte[] value=null;
 		try {
-			Long address=getAddress();
-			if (address!=null && address!=0){
-				getResultList().ReadProcessMemory(Pointer.createConstant(address+low), buffer, (int)buffer.getSize(), null);
-				value=buffer.getByteArray(0, (int)buffer.getSize());
-			}
+			getResultList().ReadProcessMemory(Pointer.createConstant(low), buffer, (int)buffer.getSize(), null);
+			value=buffer.getByteArray(0, (int)buffer.getSize());
 		} catch (NoProcessException e){
 		} catch (Exception e) {
 		}
