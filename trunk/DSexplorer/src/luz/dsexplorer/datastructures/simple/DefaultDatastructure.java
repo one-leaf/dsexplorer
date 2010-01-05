@@ -3,12 +3,12 @@ package luz.dsexplorer.datastructures.simple;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Root;
-
 import luz.dsexplorer.datastructures.DSListener;
 import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.datastructures.Datastructure;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Root;
 
 import com.sun.jna.Memory;
 

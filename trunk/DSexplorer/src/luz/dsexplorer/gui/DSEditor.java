@@ -1,6 +1,5 @@
 package luz.dsexplorer.gui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -27,6 +26,7 @@ import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.datastructures.Datastructure;
 import luz.dsexplorer.datastructures.simple.Byte4;
 import luz.dsexplorer.winapi.api.Result;
+
 import org.fife.ui.hex.swing.HexEditor;
 
 /**
@@ -57,6 +57,8 @@ public class DSEditor extends javax.swing.JPanel {
 	private JComboBox cbDSselector;
 	private JSeparator jSeparator1;
 	private JTextField txtName;
+	private JTextField txtStatic;
+	private JLabel lblStatic;
 	private HexEditor hexEditor;
 	private JButton btnAddField;
 	private Result result;
@@ -120,6 +122,15 @@ public class DSEditor extends javax.swing.JPanel {
 			}
 			{
 				hexEditor = new HexEditor();
+			}
+			{
+				txtStatic = new JTextField();
+				txtStatic.setFont(font);
+				txtStatic.setEditable(false);
+			}
+			{
+				lblStatic = new JLabel();
+				lblStatic.setText("is Static");
 			}
 			{
 				txtPointer = new JTextField();
@@ -199,67 +210,72 @@ public class DSEditor extends javax.swing.JPanel {
 			thisLayout.setVerticalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				    .addComponent(txtName,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblName,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+				    .addComponent(txtName, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblName, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				    .addComponent(chbPointer,    GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(txtPointer,    GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(txtAddress,    GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblAddress,    GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+				    .addComponent(chbPointer, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(txtPointer, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(txtAddress, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblAddress, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				    .addComponent(cbDSselector,  GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblDSselector, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(btnAddDS,      GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(cbValue,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblType,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+				    .addComponent(lblStatic, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(txtStatic, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(cbDSselector, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblDSselector, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				    .addComponent(txtSize,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblSize,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(btnAddField,   GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+				    .addComponent(cbValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblType, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(btnAddDS, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				    .addComponent(txtValue,      GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblValue,      GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+				    .addComponent(txtSize, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblSize, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(btnAddField, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(jSeparator1,       GroupLayout.PREFERRED_SIZE, 2, GroupLayout.PREFERRED_SIZE)
+				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				    .addComponent(lblValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(txtValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(hexEditor, 0,      GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+				.addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 3, GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				.addComponent(hexEditor, 0, 236, Short.MAX_VALUE)
 				.addContainerGap());
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
 				.addGroup(thisLayout.createParallelGroup()
 				    .addGroup(thisLayout.createSequentialGroup()
 				        .addGroup(thisLayout.createParallelGroup()
-				        	.addComponent(lblName,              GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(lblAddress,           GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(lblType,              GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(lblSize,              GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(lblValue,             GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
+				            .addComponent(lblValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblSize, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblType, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblStatic, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblAddress, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblName, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
 				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				        .addGroup(thisLayout.createParallelGroup()
-				            .addComponent(txtValue,             GroupLayout.Alignment.LEADING, 0, 431, Short.MAX_VALUE)
-				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				            .addComponent(txtValue, GroupLayout.Alignment.LEADING, 0, 433, Short.MAX_VALUE)
+				            .addGroup(thisLayout.createSequentialGroup()
 				                .addGroup(thisLayout.createParallelGroup()
-				                	.addComponent(txtName,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                	.addComponent(txtAddress,    GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                	.addComponent(cbValue,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                	.addComponent(txtSize,       GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE))
+				                    .addComponent(txtSize, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+				                    .addComponent(cbValue, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+				                    .addComponent(txtStatic, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+				                    .addComponent(txtAddress, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+				                    .addComponent(txtName, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE))
 				                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				                .addGroup(thisLayout.createParallelGroup()
-				                    .addComponent(lblDSselector, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				                    .addComponent(chbPointer,    GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
+				                    .addComponent(lblDSselector, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+				                    .addComponent(chbPointer, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
 				                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				                .addGroup(thisLayout.createParallelGroup()
-				                    .addComponent(btnAddField,   GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                    .addComponent(cbDSselector,  GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-				                    .addComponent(txtPointer,    GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE))
-				                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				                .addComponent(btnAddDS,          GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE))))
-				    .addComponent(jSeparator1,                   GroupLayout.Alignment.LEADING, 0, 510, Short.MAX_VALUE)
-				    .addComponent(hexEditor,                     GroupLayout.Alignment.LEADING, 0, 510, Short.MAX_VALUE))
+				                .addGroup(thisLayout.createParallelGroup()				                    
+				                    .addComponent(btnAddField, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+			                        .addComponent(btnAddDS, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+			                        .addComponent(cbDSselector, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+			                        .addComponent(txtPointer, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)))))
+				    .addComponent(jSeparator1, GroupLayout.Alignment.LEADING, 0, 512, Short.MAX_VALUE)
+				    .addComponent(hexEditor, GroupLayout.Alignment.LEADING, 0, 512, Short.MAX_VALUE))
 				.addContainerGap());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -280,8 +296,8 @@ public class DSEditor extends javax.swing.JPanel {
 		
 		txtAddress.setText(result.getAddressString());
 		txtAddress.setEditable(result.isSimpleResult());
-		//TODO static display
-		System.out.println(result.getStatic());
+		String isStatic = result.getStatic();
+		txtStatic.setText(isStatic==null?"No":isStatic);
 		cbValue.setSelectedItem(ds.getType());
 		
 
@@ -318,7 +334,8 @@ public class DSEditor extends javax.swing.JPanel {
 			long address = Long.parseLong(txtAddress.getText(),16);
 			result.setAddress(address);
 			txtValue.setText(result.getValueString());
-
+			String isStatic = result.getStatic();
+			txtStatic.setText(isStatic==null?"No":isStatic);
 			hexEditor.open(result.getMemoryBytes(-512, 512), address-512);
 			hexEditor.setHighlightHexPos(512);
 			hexEditor.setHighlightHexSize(result.getDatastructure().getByteCount());

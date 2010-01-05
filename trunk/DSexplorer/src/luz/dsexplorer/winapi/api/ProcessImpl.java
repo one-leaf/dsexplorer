@@ -274,6 +274,7 @@ public class ProcessImpl implements Process {
 	}
 
 	public List<Module> getModules(){
+		//TODO add modules cache?
 		try {
 			List<Pointer> pointers = winAPI.EnumProcessModules(getHandle());
 			List<Module> modules = new LinkedList<Module>();
@@ -299,11 +300,14 @@ public class ProcessImpl implements Process {
 	
 	@Override
 	public String getStatic(Long address) {
+		if (address==null)
+			return null;
 		List<Module> modules = getModules();
 		int begin, end;
 		for (Module module : modules) {
 			begin = module.getLpBaseOfDll();
 			end= begin+module.getSizeOfImage();
+			//log.trace("module "+begin+" "+end+" "+module.getFileName());
 			if (begin<=address && address<=end){
 				File f = new File(module.getFileName());
 				return  f.getName()+ "+" +String.format("%08X", address-begin);

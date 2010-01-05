@@ -125,7 +125,7 @@ public class HexEditor extends JScrollPane {
 		setAlternateRowBG(false);
 		setAlternateColumnBG(false);
 		setHighlightSelectionInAsciiDump(true);
-		setHighlightSelectionInAsciiDumpColor(new Color(255,255,192));
+		setHighlightSelectionInAsciiDumpColor(UIManager.getColor("Table.selectionBackground"));
 		setHighlightHexColor(Color.YELLOW);
 		
 		setTransferHandler(DEFAULT_TRANSFER_HANDLER);
