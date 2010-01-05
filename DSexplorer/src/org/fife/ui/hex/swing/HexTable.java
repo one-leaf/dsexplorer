@@ -667,7 +667,7 @@ class HexTable extends JTable {
 		    	g.setColor(hexEditor.getHighlightSelectionInAsciiDumpColor());
 		    	
 		    	int begin=highlight.x;
-		    	int end  =highlight.y+1;
+		    	int end  =Math.min(highlight.y+1, getText().length());
 		    	int x1   =1+getInsets().left + begin*w;
 		    	int x2   =1+getInsets().left + end*w;
 		    	g.fillRect(x1, 0, getInsets().left + (end-begin)*w, getRowHeight());
