@@ -287,12 +287,7 @@ public class DSEditor extends javax.swing.JPanel {
 		this.result=result;
 		Datastructure ds = result.getDatastructure();
 		
-		Long address=result.getAddress();
-		if (address!=null){
-			hexEditor.open(result.getMemoryBytes(-512, 512), result.getAddress()-512);
-			hexEditor.setHighlightHexPos(512);
-			hexEditor.setHighlightHexSize(result.getDatastructure().getByteCount());
-		}
+		setHexeditor(result);
 		
 		txtAddress.setText(result.getAddressString());
 		txtAddress.setEditable(result.isSimpleResult());
@@ -336,11 +331,21 @@ public class DSEditor extends javax.swing.JPanel {
 			txtValue.setText(result.getValueString());
 			String isStatic = result.getStatic();
 			txtStatic.setText(isStatic==null?"No":isStatic);
-			hexEditor.open(result.getMemoryBytes(-512, 512), address-512);
-			hexEditor.setHighlightHexPos(512);
-			hexEditor.setHighlightHexSize(result.getDatastructure().getByteCount());
+			setHexeditor(result);
+			txtPointer.setText(result.getPointerString());
 		
 		}catch(NumberFormatException e){};		
+	}
+	
+	private void setHexeditor(Result result){
+		Long address=result.getAddress();
+		if (address!=null){
+			long low=Math.max(address-512, 0);
+			long high=address+512;
+			hexEditor.open(result.getMemoryBytes(low, high), low);		
+			hexEditor.setHighlightHexPos((int)((high-low)/2));
+			hexEditor.setHighlightHexSize(result.getDatastructure().getByteCount());
+		}
 	}
 	
 	private void cbValueActionPerformed() {

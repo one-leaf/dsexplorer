@@ -47,7 +47,7 @@ public class DSList  extends AbstractListModel implements MutableComboBoxModel {
 
 	@Override
 	public void addElement(Object obj) {
-		System.out.println(obj.hashCode());
+		//System.out.println(obj.hashCode());
 		
 		if (datastructures.contains(obj))
 			return;		//Avoid duplicates
