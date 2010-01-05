@@ -2,11 +2,6 @@ package test;
 
 import java.io.FileOutputStream;
 
-import luz.dsexplorer.datastructures.simple.Byte4;
-import luz.dsexplorer.winapi.api.Result;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;

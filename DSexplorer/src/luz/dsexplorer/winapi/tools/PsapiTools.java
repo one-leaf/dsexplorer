@@ -44,7 +44,7 @@ public class PsapiTools {
 	public List<Pointer> EnumProcessModules(Pointer hProcess) throws Exception{
 		List<Pointer> list = new LinkedList<Pointer>();
 		
-		Pointer[] lphModule = new Pointer[256];
+		Pointer[] lphModule = new Pointer[100*4];
 		IntByReference lpcbNeededs= new IntByReference();
 		boolean success = psapi.EnumProcessModules(hProcess, lphModule,lphModule.length, lpcbNeededs);
 		if (!success){

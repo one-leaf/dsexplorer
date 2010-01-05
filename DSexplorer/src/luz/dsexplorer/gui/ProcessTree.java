@@ -8,7 +8,6 @@ import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.List;
 
-import javax.swing.DefaultCellEditor;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;

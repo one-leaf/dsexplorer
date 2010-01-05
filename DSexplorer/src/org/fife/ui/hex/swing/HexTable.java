@@ -661,16 +661,32 @@ class HexTable extends JTable {
 		protected void paintComponent(Graphics g) {
 			g.setColor(getBackground());
 		    g.fillRect(0, 0, getWidth(),getHeight());
-		    //TODO optimize ascii selected foreground
+
 		    if (highlight.x>-1) {
 		    	int w = getFontMetrics(getFont()).charWidth('w');
 		    	g.setColor(hexEditor.getHighlightSelectionInAsciiDumpColor());
-		    	int x = getInsets().left + highlight.x*w;
-		    	g.fillRect(x, 0, (highlight.y-highlight.x+1)*w, getRowHeight());
-		    	//g.setColor(UIManager.getColor("Table.selectionForeground"));
+		    	
+		    	int begin=highlight.x;
+		    	int end  =highlight.y+1;
+		    	int x1   =1+getInsets().left + begin*w;
+		    	int x2   =1+getInsets().left + end*w;
+		    	g.fillRect(x1, 0, getInsets().left + (end-begin)*w, getRowHeight());
+		    	
+		    	//System.out.println(begin+" "+end);
+		    	if (begin>0){	//begin of selection
+			    	g.setColor(getForeground());
+			    	SwingUtilities2.drawString(this, g, getText().substring(0    ,begin), 2 , 11);
+		    	}				//middle of selection
+		    		g.setColor(UIManager.getColor("Table.selectionForeground"));
+			    	SwingUtilities2.drawString(this, g, getText().substring(begin, end ), x1, 11);
+		    	if(end<16){		//end of selection
+		    		g.setColor(getForeground());
+			    	SwingUtilities2.drawString(this, g, getText().substring(end        ), x2, 11);
+		    	}
+		    }else{
+		    	g.setColor(getForeground());
+				SwingUtilities2.drawString(this, g, getText(), 2, 11);
 		    }
-	    	g.setColor(getForeground());
-			SwingUtilities2.drawString(this, g, getText(), 2, 11);
 		}
 	}
 
