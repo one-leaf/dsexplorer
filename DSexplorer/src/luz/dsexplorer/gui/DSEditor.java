@@ -57,6 +57,7 @@ public class DSEditor extends javax.swing.JPanel {
 	private JComboBox cbDSselector;
 	private JSeparator jSeparator1;
 	private JTextField txtName;
+	private JButton btnRefresh;
 	private JTextField txtStatic;
 	private JLabel lblStatic;
 	private HexEditor hexEditor;
@@ -122,6 +123,15 @@ public class DSEditor extends javax.swing.JPanel {
 			}
 			{
 				hexEditor = new HexEditor();
+			}
+			{
+				btnRefresh = new JButton();
+				btnRefresh.setText("Refresh");
+				btnRefresh.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnRefreshActionPerformed(evt);
+					}
+				});
 			}
 			{
 				txtStatic = new JTextField();
@@ -211,7 +221,8 @@ public class DSEditor extends javax.swing.JPanel {
 				.addContainerGap()
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				    .addComponent(txtName, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblName, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+				    .addComponent(lblName, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+			        .addComponent(btnRefresh, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				    .addComponent(chbPointer, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
@@ -241,7 +252,7 @@ public class DSEditor extends javax.swing.JPanel {
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 3, GroupLayout.PREFERRED_SIZE)
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(hexEditor, 0, 236, Short.MAX_VALUE)
+				.addComponent(hexEditor, GroupLayout.PREFERRED_SIZE, 236, GroupLayout.PREFERRED_SIZE)
 				.addContainerGap());
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
@@ -256,7 +267,7 @@ public class DSEditor extends javax.swing.JPanel {
 				            .addComponent(lblName, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
 				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				        .addGroup(thisLayout.createParallelGroup()
-				            .addComponent(txtValue, GroupLayout.Alignment.LEADING, 0, 433, Short.MAX_VALUE)
+				            .addComponent(txtValue, GroupLayout.Alignment.LEADING, 0, 438, Short.MAX_VALUE)
 				            .addGroup(thisLayout.createSequentialGroup()
 				                .addGroup(thisLayout.createParallelGroup()
 				                    .addComponent(txtSize, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
@@ -266,14 +277,16 @@ public class DSEditor extends javax.swing.JPanel {
 				                    .addComponent(txtName, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE))
 				                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				                .addGroup(thisLayout.createParallelGroup()
+				                	.addGap(74)
 				                    .addComponent(lblDSselector, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
 				                    .addComponent(chbPointer, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
 				                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				                .addGroup(thisLayout.createParallelGroup()				                    
-				                    .addComponent(btnAddField, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
-			                        .addComponent(btnAddDS, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
-			                        .addComponent(cbDSselector, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
-			                        .addComponent(txtPointer, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)))))
+				                .addGroup(thisLayout.createParallelGroup()
+				                        .addComponent(btnAddField, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+				                        .addComponent(btnAddDS, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+				                        .addComponent(cbDSselector, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+				                        .addComponent(txtPointer, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+				                        .addComponent(btnRefresh, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)))))
 				    .addComponent(jSeparator1, GroupLayout.Alignment.LEADING, 0, 512, Short.MAX_VALUE)
 				    .addComponent(hexEditor, GroupLayout.Alignment.LEADING, 0, 512, Short.MAX_VALUE))
 				.addContainerGap());
@@ -281,6 +294,8 @@ public class DSEditor extends javax.swing.JPanel {
 			e.printStackTrace();
 		}
 	}
+	
+
 
 	//$hide>>$
 	public void setResult(Result result) {
@@ -424,7 +439,12 @@ public class DSEditor extends javax.swing.JPanel {
 	
 	private void btnAddDSActionPerformed(){
 		dsList.addElement(new ContainerImpl());
-	}	
+	}
+	
+	private void btnRefreshActionPerformed(ActionEvent evt) {
+		this.result.invalidateParentAndChilds();
+		setResult(result);
+	}
 	
 	private void chbPointerActionPerformed() {
 		boolean isPointer=chbPointer.isSelected();
