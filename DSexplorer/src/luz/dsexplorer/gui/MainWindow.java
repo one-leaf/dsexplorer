@@ -155,6 +155,7 @@ public class MainWindow extends javax.swing.JFrame {
 			this.setTitle("DSExplorer v"+version);
 			{
 				splMain = new JSplitPane();
+				splMain.setResizeWeight(1);
 				getContentPane().add(splMain, BorderLayout.CENTER);
 				{
 					scrTree = new JScrollPane();
