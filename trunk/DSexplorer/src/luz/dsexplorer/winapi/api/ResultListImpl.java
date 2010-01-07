@@ -117,19 +117,23 @@ public class ResultListImpl implements ResultList {
 		//Repair Datastructure links
 		DSList dsList=newList.getDatastructures();
 		Container ds;
+		List<Datastructure> doneList = new LinkedList<Datastructure>();
 		for (int i = 0; i < dsList.getSize(); i++) {
 			ds=dsList.getElementAt(i);
-			repairChildsOf(ds);
+			repairChildsOf(doneList, ds);
 		}
 
 		return newList;
 	}
 	
-	private static void repairChildsOf(Container ds){
+	private static void repairChildsOf(List<Datastructure> doneList, Container ds){
 		for (Datastructure field : ds.getFields()) {
-			field.setContainer(ds);
-			if (field.isContainer() && !field.equals(ds))	//avoid loops: field == ds
-				repairChildsOf((Container)field);		//recursion root->childs
+			if (!doneList.contains(field)){	//avoid infinite loops
+				doneList.add(field);
+				field.setContainer(ds);
+				if (field.isContainer())	
+					repairChildsOf(doneList, (Container)field);		//recursion root->childs
+			}
 		}
 	}
 	
