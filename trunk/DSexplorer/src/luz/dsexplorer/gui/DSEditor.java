@@ -252,7 +252,7 @@ public class DSEditor extends javax.swing.JPanel {
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 3, GroupLayout.PREFERRED_SIZE)
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(hexEditor, GroupLayout.PREFERRED_SIZE, 236, GroupLayout.PREFERRED_SIZE)
+				.addComponent(hexEditor, 0, 236, Short.MAX_VALUE)
 				.addContainerGap());
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
