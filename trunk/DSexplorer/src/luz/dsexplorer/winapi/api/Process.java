@@ -1,8 +1,6 @@
 package luz.dsexplorer.winapi.api;
 
 
-import java.util.List;
-
 import luz.dsexplorer.datastructures.DSType;
 
 import com.sun.jna.Pointer;
@@ -17,6 +15,5 @@ public interface Process {
 	public void addHwnd(Pointer hWnd);
 	public Object getIcon();
 	public ResultList search(long from, long to, final String value, final DSType type) throws Exception;
-	public List<Module> getModules();
 	public String getStatic(Long address);
 }
