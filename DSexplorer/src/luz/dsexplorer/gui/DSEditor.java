@@ -404,7 +404,7 @@ public class DSEditor extends javax.swing.JPanel {
 	
 	private void cbDSselectorActionPerformed(){
 		Datastructure ds = (Datastructure)cbDSselector.getSelectedItem();
-		if (result.getDatastructure()!=ds){	//Avoid unecessairy changes
+		if (!result.getDatastructure().equals(ds)){	//Avoid unecessairy changes
 			result.setDatastructure(ds);
 			
 			hexEditor.setHighlightHexSize(ds.getByteCount());
