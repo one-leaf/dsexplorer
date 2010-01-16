@@ -83,8 +83,11 @@ public class ContainerImpl extends AbstractListModel implements Container{
 
 	@Override
 	public int getOffset(int fieldIndex){
-//		if (fields.size()<=fieldIndex)
-//			log.warn("fieldIndex too big"+ fieldIndex);
+		if (fieldIndex>=fields.size()){
+			fieldIndex=fields.size();
+			log.warn("fieldIndex("+fieldIndex+") >= Field list size ("+ fieldIndex+")");
+			//FIXME fieldIndex >= Field list size
+		}
 		
 		int bytes=0;
 		for (int i = 0; i < fieldIndex; i++)
