@@ -102,7 +102,7 @@ public class MainWindow extends javax.swing.JFrame {
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
 				.addGroup(thisLayout.createParallelGroup()
-				    .addComponent(jScrollPane1, GroupLayout.Alignment.LEADING, 0, 900, Short.MAX_VALUE)
+				    .addComponent(jScrollPane1, GroupLayout.Alignment.LEADING, 0, 950, Short.MAX_VALUE)
 				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				        .addComponent(btnRead, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
 				        .addGap(0, 725, Short.MAX_VALUE)))

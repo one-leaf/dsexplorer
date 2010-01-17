@@ -8,6 +8,7 @@ import luz.dsexplorer.winapi.api.Process;
 import luz.dsexplorer.winapi.api.ProcessList;
 import luz.dsexplorer.winapi.api.WinAPI;
 import luz.dsexplorer.winapi.api.WinAPIImpl;
+import luz.eveMonitor.datastructure.Dict;
 import luz.eveMonitor.datastructure.MarketRow;
 
 import org.apache.log4j.Level;
@@ -52,7 +53,7 @@ public class Reader {
 		findProcess();
 		System.out.println(process==null?"Eve not found":"Found Eve: "+process.getSzExeFile());
 
-		findTypePtr( "blue.DBRow");
+		findTypePtr("blue.DBRow");
 		System.out.println("Found type: "+String.format("%08X", objTypePtr));
 
 		rowDrescrPtr=new LinkedList<Integer>();
@@ -104,14 +105,18 @@ public class Reader {
 //	}
 	
 	
-	private String getTypeString(int typeAddr) throws Exception{
-		//Pointer
-		process.ReadProcessMemory(Pointer.createConstant(typeAddr), buf2, (int)buf2.getSize(), null);
-		int nameAddr=buf2.getInt(12);
-		//System.out.println("name "+String.format("%08X", nameAddr));
-		//Object
-		process.ReadProcessMemory(Pointer.createConstant(nameAddr), buf2, (int)buf2.getSize(), null);
-		return buf2.getString(0);	
+	private String getTypeString(int typeAddr) {
+		String type=null;
+		try{
+			//Pointer
+			process.ReadProcessMemory(Pointer.createConstant(typeAddr), buf2, (int)buf2.getSize(), null);
+			int nameAddr=buf2.getInt(12);
+			//System.out.println("name "+String.format("%08X", nameAddr));
+			//Object
+			process.ReadProcessMemory(Pointer.createConstant(nameAddr), buf2, (int)buf2.getSize(), null);
+			type=buf2.getString(0);
+		}catch (Exception e){}
+		return type;	
 	}
 	
 	private String getRowDescr(int rowDrescrPtr) throws Exception{
@@ -129,17 +134,17 @@ public class Reader {
 		long timer=System.currentTimeMillis();
 		int addr=rootAddr;
 		int count=0;
-		List<MarketRow> list = new LinkedList<MarketRow>();
-		
+		List<MarketRow> list = new LinkedList<MarketRow>();		
 		do {
 			count++;
-			MarketRow marketRow = new MarketRow();
 			//Pointer
 			process.ReadProcessMemory(Pointer.createConstant(addr), buf, (int)buf.getSize(), null);
 			addr=buf.getInt(0);
 			//System.out.println("next "+String.format("%08X", addr));
 			//Object
+			MarketRow marketRow = new MarketRow(addr);
 			process.ReadProcessMemory(Pointer.createConstant(addr), marketRow, (int)marketRow.getSize(), null);
+
 			if (marketRow.getTypePtr()==objTypePtr)	{		
 				if (rowDrescrPtr.contains(marketRow.getRowDescrPtr())){
 					list.add(marketRow);
@@ -157,6 +162,31 @@ public class Reader {
 		return list;
 	}
 
+	public List<Dict> getDicts() throws Exception{
+		long timer=System.currentTimeMillis();
+		int addr=rootAddr;
+		int count=0;
+		List<Dict> list = new LinkedList<Dict>();		
+		do {
+			count++;
+			//Pointer
+			process.ReadProcessMemory(Pointer.createConstant(addr), buf, (int)buf.getSize(), null);
+			addr=buf.getInt(0);
+			//System.out.println("next "+String.format("%08X", addr));
+			//Object
+			Dict dict= new Dict(addr);
+			process.ReadProcessMemory(Pointer.createConstant(addr), dict, (int)dict.getSize(), null);
+
+			int type=dict.getTypePtr();
+			if ("dict".equals(getTypeString(type)))	{
+				list.add(dict);		
+			}
+		}while (rootAddr!=addr);
+		timer=System.currentTimeMillis()-timer;
+		System.out.println("loop size: "+count+" timer "+timer+"ms");
+		return list;
+	}
+	
 	
 //	public static class DBRow extends Structure{
 //		public Pointer	next;
