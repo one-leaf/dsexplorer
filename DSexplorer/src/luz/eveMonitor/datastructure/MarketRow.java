@@ -6,9 +6,15 @@ import java.util.Date;
 import com.sun.jna.Memory;
 
 public class MarketRow extends Memory {
-	public MarketRow() {
+	private int address;
+
+	public MarketRow(int addr) {
 		super(100);
+		this.address=addr;
 	}
+	public int		getAddress    (){return address;}
+	
+	public int		getRefCount	  (){return super.getInt   (16);}	
 	public int		getTypePtr	  (){return super.getInt   (20);}
 	public int		getRowDescrPtr(){return super.getInt   (24);}
 	public double	getPrice	  (){
@@ -32,4 +38,5 @@ public class MarketRow extends Memory {
 	public short	getRange      (){return super.getShort (86);}
 	public short	getDuration   (){return super.getShort (88);}
 	public byte	getBid        (){return super.getByte  (90);}
+
 }

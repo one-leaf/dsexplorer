@@ -83,7 +83,8 @@ public class Result implements TreeNode, DSListener, Cloneable {
 			getResultList().reload(this);	//if ds changed->childs may change
 		}else{
 			log.debug("change field");
-			Container dsParent = (Container)oldDS.getContainer();
+			//Container dsParent = (Container)oldDS.getContainer();	//TODO why is there a difference (if it not a pointer)
+			Container dsParent = (Container)((Result)parent).getDatastructure();
 			dsParent.replaceField(oldDS, newDS, fieldIndex);
 		}
 	}
@@ -125,7 +126,8 @@ public class Result implements TreeNode, DSListener, Cloneable {
 			return address;
 		}else{
 
-			Container dsParent=(Container)datastructure.getContainer();
+			//Container dsParent=(Container)datastructure.getContainer();	//TODO why is there a difference (if it not a pointer)
+			Container dsParent=(Container)((Result)parent).getDatastructure();
 			Long address;
 			if (dsParent.isPointer())
 				address=((Result)parent).getPointer();	//warning, recursion, down to the root
@@ -208,10 +210,11 @@ public class Result implements TreeNode, DSListener, Cloneable {
 	}
 		
 	public void delete() {
-		Container dsParent=(Container)datastructure.getContainer();
 		if (isSimpleResult()){	//simple Result
 			getResultList().remove(this);
 		}else{
+			//Container dsParent=(Container)datastructure.getContainer();//TODO why is there a difference (if it not a pointer)
+			Container dsParent=(Container)((Result)parent).getDatastructure();
 			dsParent.removeField(fieldIndex);
 		}
 	}
