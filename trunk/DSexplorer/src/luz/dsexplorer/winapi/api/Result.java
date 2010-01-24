@@ -24,7 +24,7 @@ import com.sun.jna.Pointer;
 @Root
 public class Result implements TreeNode, DSListener, Cloneable {
 	private ResultList resultList;	//needs to be reconstructed after loading
-	@Attribute
+	@Attribute(required=false)
 	private Long address;
 	@Element
 	private Datastructure datastructure;

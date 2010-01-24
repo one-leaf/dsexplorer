@@ -21,7 +21,7 @@ public class Reader {
 	static Memory buf = new Memory(100);
 	static Memory buf2 = new Memory(32);
 	static SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-	private static int rootAddr=0x00666D38;
+	private static int rootAddr=0x00666D50;
 	private WinAPI winApi;
 	private int objTypePtr;
 	private List<Integer> rowDrescrPtr=new LinkedList<Integer>();
@@ -152,8 +152,7 @@ public class Reader {
 					if ("price".equals(getRowDescr(marketRow.getRowDescrPtr()))){
 						rowDrescrPtr.add(marketRow.getRowDescrPtr());
 						list.add(marketRow);
-					}
-					
+					}					
 				}
 			}
 		}while (rootAddr!=addr);
@@ -187,7 +186,25 @@ public class Reader {
 		return list;
 	}
 	
-	
+	public long findRootAddr(long priceAddr){
+		long addr=priceAddr-(7*4);
+		String staticAddr=null;
+		int count=0;
+		
+		try {
+			while(staticAddr==null){
+				count++;
+				//Pointer
+				process.ReadProcessMemory(Pointer.createConstant(addr), buf, (int)buf.getSize(), null);
+				addr=buf.getInt(0);
+				staticAddr=process.getStatic(addr);
+				System.out.println(count+" Addr "+String.format("%08X", addr)+" static "+staticAddr);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		return addr;
+	}
 //	public static class DBRow extends Structure{
 //		public Pointer	next;
 //		public Pointer	prev;
