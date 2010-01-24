@@ -12,7 +12,7 @@ import org.simpleframework.xml.Root;
 @Root
 public class DSList  extends AbstractListModel implements MutableComboBoxModel {
 	private static final long serialVersionUID = 4670423301077836254L;
-	@ElementList(inline=true)
+	@ElementList(inline=true, required=false)
 	List<Container> datastructures = new LinkedList<Container>();
 	Container selected=null;
 	
