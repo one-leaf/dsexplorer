@@ -29,7 +29,7 @@ public class EveTest2 {
 	
 	}
 	private static void showDicts(Reader r) throws Exception {
-		List<Dict> dicts = r.getDicts();
+		List<Dict> dicts = r.findDict();
 		StringBuilder sb=new StringBuilder();
 		int rows=0;
 		for (Dict dict : dicts) {
