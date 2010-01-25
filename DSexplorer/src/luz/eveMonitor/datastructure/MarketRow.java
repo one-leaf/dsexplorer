@@ -3,20 +3,37 @@ package luz.eveMonitor.datastructure;
 import java.util.Calendar;
 import java.util.Date;
 
+import luz.dsexplorer.winapi.api.Process;
+
 import com.sun.jna.Memory;
+import com.sun.jna.Pointer;
 
-public class MarketRow extends Memory {
-	private int address;
+public class MarketRow extends PyObject {
 
-	public MarketRow(int addr) {
-		super(100);
-		this.address=addr;
+	public MarketRow(long addr, Process process) {
+		super(addr, process);
 	}
-	public int		getAddress    (){return address;}
-	
-	public int		getRefCount	  (){return super.getInt   (16);}	
-	public int		getTypePtr	  (){return super.getInt   (20);}
+
 	public int		getRowDescrPtr(){return super.getInt   (24);}
+	public String getRowDescr(){
+		Memory buf2 = new Memory(32);
+		//Pointer
+		try {
+			process.ReadProcessMemory(Pointer.createConstant(getRowDescrPtr()), buf2, (int)buf2.getSize(), null);
+			int columnPtr=buf2.getInt(12);
+
+			//Object
+			process.ReadProcessMemory(Pointer.createConstant(columnPtr), buf2, (int)buf2.getSize(), null);
+			//System.out.println(String.format("%08X", columnPtr)+" "+buf2.getString(4));
+			return buf2.getString(4);	
+		} catch (Exception e) {
+			System.out.println("cannot get RowDescr");
+			return null;
+		}	
+	}
+	
+	
+	
 	public double	getPrice	  (){
 		long p = super.getLong  (32);
 		return (double)p/10000d;

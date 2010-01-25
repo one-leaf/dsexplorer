@@ -142,14 +142,14 @@ public class Reader {
 			addr=buf.getInt(0);
 			//System.out.println("next "+String.format("%08X", addr));
 			//Object
-			MarketRow marketRow = new MarketRow(addr);
+			MarketRow marketRow = new MarketRow(addr, process);
 			process.ReadProcessMemory(Pointer.createConstant(addr), marketRow, (int)marketRow.getSize(), null);
 
 			if (marketRow.getTypePtr()==objTypePtr)	{		
 				if (rowDrescrPtr.contains(marketRow.getRowDescrPtr())){
 					list.add(marketRow);
 				}else{
-					if ("price".equals(getRowDescr(marketRow.getRowDescrPtr()))){
+					if ("price".equals(marketRow.getRowDescr())){
 						rowDrescrPtr.add(marketRow.getRowDescrPtr());
 						list.add(marketRow);
 					}					
@@ -161,31 +161,6 @@ public class Reader {
 		return list;
 	}
 
-	public List<Dict> getDicts() throws Exception{
-		long timer=System.currentTimeMillis();
-		int addr=rootAddr;
-		int count=0;
-		List<Dict> list = new LinkedList<Dict>();		
-		do {
-			count++;
-			//Pointer
-			process.ReadProcessMemory(Pointer.createConstant(addr), buf, (int)buf.getSize(), null);
-			addr=buf.getInt(0);
-			//System.out.println("next "+String.format("%08X", addr));
-			//Object
-			Dict dict= new Dict(addr);
-			process.ReadProcessMemory(Pointer.createConstant(addr), dict, (int)dict.getSize(), null);
-
-			int type=dict.getTypePtr();
-			if ("dict".equals(getTypeString(type)))	{
-				list.add(dict);		
-			}
-		}while (rootAddr!=addr);
-		timer=System.currentTimeMillis()-timer;
-		System.out.println("loop size: "+count+" timer "+timer+"ms");
-		return list;
-	}
-	
 	public long findRootAddr(long priceAddr){
 		long addr=priceAddr-(7*4);
 		String staticAddr=null;
@@ -231,5 +206,37 @@ public class Reader {
 //			super(p);
 //		}	
 //	}
+
+
+	public List<Dict> findDict() throws Exception {
+		long timer=System.currentTimeMillis();
+		
+		List<Dict> list = new LinkedList<Dict>();
+		
+		Memory buf2 = new Memory(4);
+		process.ReadProcessMemory(Pointer.createConstant(rootAddr), buf2, (int)buf2.getSize(), null);
+		int address=buf2.getInt(0);
+		
+		Dict obj = new Dict(address, process);
+		int count=0;
+		int dictCount=0;
+		do {
+			count++;
+			if ("dict".equals(obj.getTypeString())){
+				dictCount++;
+				list.add(obj);
+				System.out.println(count+" "+dictCount+" "+String.format("%08X", obj.getAddress()));
+			}
+		}while ((obj=obj.getNext())!=null && obj.getNextPtr()!=rootAddr);
+		
+		timer=System.currentTimeMillis()-timer;
+		System.out.println("loop size: "+count+" timer "+timer+"ms");
+		return list;
+	}
+
+
+	public Process getProcess() {
+		return process;
+	}
 	
 }
