@@ -37,11 +37,14 @@ public class EveFindDictReverse {
 		List<Long> s5= stage5PyList(s4);
 		List<Long> s6= stage6Dict(s5);
 		List<Long> s7= stage7DictPtr(s6);
-		
+		List<Long> s8= stage8DictofDict(s7);
+		List<Long> s9= stage9DictPtrofDict(s8);
+		List<Long> s10=stage10Instance(s9);
 		
 //		List<Long> test=new LinkedList<Long>();
-//		test.add(0x127C1FB8L);
-//		stage2DBRowArray(test);
+//		test.add(0x18758254L);
+//		stage10Instance(test);
+		
 		
 		timer=System.currentTimeMillis()-timer;
 		System.out.println("Timer "+timer+"ms");
@@ -237,6 +240,75 @@ public class EveFindDictReverse {
 		return list;		
 	}
 
+	public static List<Long> stage8DictofDict(List<Long> addrs){
+		List<Long> list = new LinkedList<Long>();
+		for (Long addr : addrs) {
+			addr=addr-2*4;	//ptr, hash
+			int results=0;
+			Memory buffer=new Memory(4);
+			do{
+				System.out.println(String.format("Stage8-DictofDict-taget: %08X", addr));
+				try {
+					process.ReadProcessMemory(Pointer.createConstant(addr), buffer, (int)buffer.getSize(), null);
+					if (buffer.getInt(0)!=0){	//Hash != 0			
+						ResultList r = process.search(beginAddr, endAddr, ""+addr, DSType.Byte4);
+						results=r.getChildCount();
+						for (int i = 0; i < r.getChildCount(); i++){
+							long res=((Result)r.getChildAt(i)).getAddress();
+							list.add(res-5*4);	//refcount, Type, ma_fill, ma_used, ma_mask
+							System.out.println(String.format("Stage8-DictofDict-result: %08X", res));
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				addr=addr-3*4;	//DictEntry
+			}while(results==0);
+		}		
+		return list;		
+	}
+	
+	public static List<Long> stage9DictPtrofDict(List<Long> addrs){
+		List<Long> list = new LinkedList<Long>();
+		
+		for (Long addr : addrs) {
+			System.out.println(String.format("Stage9-DictPtrofDict-taget: %08X", addr));
+			
+			try {
+				ResultList r = process.search(beginAddr, endAddr, ""+addr, DSType.Byte4);
+				for (int i = 0; i < r.getChildCount(); i++){
+					long res=((Result)r.getChildAt(i)).getAddress();
+					list.add(res-3*4);
+					System.out.println(String.format("Stage9-DictPtrofDict-result: %08X", res));
+				}				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
+
+	public static List<Long> stage10Instance(List<Long> addrs){
+		List<Long> list = new LinkedList<Long>();
+		
+		for (Long addr : addrs) {
+			System.out.println(String.format("Stage10-Instance-taget: %08X", addr));
+			
+			try {
+				ResultList r = process.search(beginAddr, endAddr, ""+addr, DSType.Byte4);
+				for (int i = 0; i < r.getChildCount(); i++){
+					long res=((Result)r.getChildAt(i)).getAddress();
+					list.add(res);
+					System.out.println(String.format("Stage10-Instance-result: %08X", res));
+				}				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
+	
+	
 //	public static List<Long> stage1DBRowDebugPtr(List<Long> addrs){
 //		List<Long> list = new LinkedList<Long>();
 //		for (Long addr : addrs)
