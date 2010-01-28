@@ -17,6 +17,7 @@ public class Dict extends PyObject {
 	public int		getMa_Table   (){return super.getInt   (36);}
 	public int		getMa_Lokup   (){return super.getInt   (40);}
 	public PyDictEntry	getDictEntry(int i){
+		//TODO use Ma_Table to get the Entries
 		int offset=(9*4)+((4*3)*i);
 		return new PyDictEntry(super.getInt(offset+0), super.getInt(offset+4), super.getInt(offset+8), process);
 	}
