@@ -219,6 +219,8 @@ public class User32Tools {
 		}
 
         u32.ReleaseDC(null, hDC);
+        gdi32.DeleteObject( piconinfo.hbmColor);
+        gdi32.DeleteObject( piconinfo.hbmMask);
 	    
 	    return image;
     }

@@ -3,8 +3,8 @@ package test;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import luz.eveMonitor.datastructure.Dict;
-import luz.eveMonitor.datastructure.MarketRow;
+import luz.eveMonitor.datastructure.PyDict;
+import luz.eveMonitor.datastructure.DBRow;
 import luz.eveMonitor.utils.Reader;
 
 import com.sun.jna.Memory;
@@ -29,10 +29,10 @@ public class EveTest2 {
 	
 	}
 	private static void showDicts(Reader r) throws Exception {
-		List<Dict> dicts = r.findDict();
+		List<PyDict> dicts = r.findDict();
 		StringBuilder sb=new StringBuilder();
 		int rows=0;
-		for (Dict dict : dicts) {
+		for (PyDict dict : dicts) {
 			sb.setLength(0);
 			sb.append(dict.getMa_Fill()).append('\t');
 			sb.append(dict.getMa_Used()).append('\t');
@@ -45,10 +45,10 @@ public class EveTest2 {
 	}
 
 	private static void showRows(Reader r) throws Exception {
-		List<MarketRow> list = r.getRows();
+		List<DBRow> list = r.getRows();
 		StringBuilder sb=new StringBuilder();
 		int rows=0;
-		for (MarketRow marketRow : list) {
+		for (DBRow marketRow : list) {
 			sb.setLength(0);
 			sb.append(rows)								.append('\t');
 			sb.append(String.format("%08X", marketRow.getAddress())).append('\t');//sb.append("price     ");
