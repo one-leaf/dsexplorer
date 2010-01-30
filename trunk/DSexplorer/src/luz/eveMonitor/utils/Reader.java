@@ -8,8 +8,10 @@ import luz.dsexplorer.winapi.api.Process;
 import luz.dsexplorer.winapi.api.ProcessList;
 import luz.dsexplorer.winapi.api.WinAPI;
 import luz.dsexplorer.winapi.api.WinAPIImpl;
-import luz.eveMonitor.datastructure.Dict;
-import luz.eveMonitor.datastructure.MarketRow;
+import luz.eveMonitor.datastructure.DBRow;
+import luz.eveMonitor.datastructure.PyDict;
+import luz.eveMonitor.datastructure.PyObject;
+import luz.eveMonitor.datastructure.PyObjectFactory;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -130,11 +132,11 @@ public class Reader {
 		return buf2.getString(4);	
 	}
 	
-	public List<MarketRow> getRows() throws Exception{
+	public List<DBRow> getRows() throws Exception{
 		long timer=System.currentTimeMillis();
 		int addr=rootAddr;
 		int count=0;
-		List<MarketRow> list = new LinkedList<MarketRow>();		
+		List<DBRow> list = new LinkedList<DBRow>();		
 		do {
 			count++;
 			//Pointer
@@ -142,10 +144,10 @@ public class Reader {
 			addr=buf.getInt(0);
 			//System.out.println("next "+String.format("%08X", addr));
 			//Object
-			MarketRow marketRow = new MarketRow(addr, process);
-			process.ReadProcessMemory(Pointer.createConstant(addr), marketRow, (int)marketRow.getSize(), null);
-
-			if (marketRow.getTypePtr()==objTypePtr)	{		
+			
+			PyObject obj = PyObjectFactory.getObject(addr, process,true);
+			if (obj instanceof DBRow)	{	
+				DBRow marketRow=(DBRow)obj;
 				if (rowDrescrPtr.contains(marketRow.getRowDescrPtr())){
 					list.add(marketRow);
 				}else{
@@ -208,23 +210,23 @@ public class Reader {
 //	}
 
 
-	public List<Dict> findDict() throws Exception {
+	public List<PyDict> findDict() throws Exception {
 		long timer=System.currentTimeMillis();
 		
-		List<Dict> list = new LinkedList<Dict>();
+		List<PyDict> list = new LinkedList<PyDict>();
 		
 		Memory buf2 = new Memory(4);
 		process.ReadProcessMemory(Pointer.createConstant(rootAddr), buf2, (int)buf2.getSize(), null);
 		int address=buf2.getInt(0);
 		
-		Dict obj = new Dict(address, process);
+		PyObject obj = PyObjectFactory.getObject(address, process,true);
 		int count=0;
 		int dictCount=0;
 		do {
 			count++;
-			if ("dict".equals(obj.getTypeString())){
+			if (obj instanceof PyDict){
 				dictCount++;
-				list.add(obj);
+				list.add((PyDict)obj);
 				System.out.println(count+" "+dictCount+" "+String.format("%08X", obj.getAddress()));
 			}
 		}while ((obj=obj.getNext())!=null && obj.getNextPtr()!=rootAddr);

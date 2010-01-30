@@ -3,44 +3,30 @@ package luz.eveMonitor.datastructure;
 import luz.dsexplorer.winapi.api.Process;
 
 import com.sun.jna.Memory;
-import com.sun.jna.Pointer;
 
-public class PyDictEntry {
+public class PyDictEntry extends Memory{
 	private Process process;
-	private int hash;
-	private int keyPtr;
-	private int ValuePtr;
 	
-	public PyDictEntry(int hash, int keyPtr, int valuePtr, Process process) {
-		this.hash=hash;
-		this.keyPtr=keyPtr;
-		this.ValuePtr=valuePtr;
+	public PyDictEntry(Process process){
+		super(3*4);
+		this.process=process;
 	}
 	
-	public int getHash(){
-		return hash;
-	}
-	
-	public int getKeyPtr(){
-		return keyPtr;
-	}
-	
-	public int getValuePtr(){
-		return ValuePtr;
-	}
+	public int getHash()		{ return super.getInt(0);}	
+	public int getKeyPtr()		{ return super.getInt(4);}	
+	public int getValuePtr()	{ return super.getInt(8);}
 	
 	public PyObject getValue(){
-		Memory buf2 = new Memory(4);
-		try {
-			process.ReadProcessMemory(Pointer.createConstant(getValuePtr()), buf2, (int)buf2.getSize(), null);
-			int address=buf2.getInt(0);
-			return new PyObject(address, process);
-		} catch (Exception e) {
-			//System.out.println("cannot get Value");
+		if(getValuePtr()!=0)
+			return PyObjectFactory.getObject(getValuePtr(), process, false);
+		else
 			return null;
-		}
-
 	}
-	
-	
+
+	public PyObject getKey() {
+		if(getKeyPtr()!=0)
+			return PyObjectFactory.getObject(getKeyPtr(), process, false);
+		else
+			return null;
+	}
 }

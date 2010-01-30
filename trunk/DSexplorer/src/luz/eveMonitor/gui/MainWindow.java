@@ -15,7 +15,7 @@ import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import luz.eveMonitor.datastructure.MarketRow;
+import luz.eveMonitor.datastructure.DBRow;
 import luz.eveMonitor.utils.Reader;
 
 /**
@@ -201,7 +201,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private void btnReadActionPerformed(ActionEvent evt) {
 		try {
 			r.init();
-			List<MarketRow> list  = r.getRows();
+			List<DBRow> list  = r.getRows();
 			dBRowTable.setItems(list);			
 		} catch (Exception e) {
 			e.printStackTrace();

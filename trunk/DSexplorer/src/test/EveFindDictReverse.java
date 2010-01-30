@@ -9,6 +9,7 @@ import luz.dsexplorer.winapi.api.Result;
 import luz.dsexplorer.winapi.api.ResultList;
 import luz.eveMonitor.datastructure.PyList;
 import luz.eveMonitor.datastructure.PyObject;
+import luz.eveMonitor.datastructure.PyObjectFactory;
 import luz.eveMonitor.utils.Reader;
 
 import com.sun.jna.Memory;
@@ -42,8 +43,8 @@ public class EveFindDictReverse {
 		List<Long> s10=stage10Instance(s9);
 		
 //		List<Long> test=new LinkedList<Long>();
-//		test.add(0x18758254L);
-//		stage10Instance(test);
+//		test.add(0x02DDF034L);
+//		stage8DictofDict(test);
 		
 		
 		timer=System.currentTimeMillis()-timer;
@@ -61,8 +62,8 @@ public class EveFindDictReverse {
 			ResultList r = process.search(beginAddr, endAddr, ""+price, DSType.Byte4);
 			for (int i = 0; i < r.getChildCount(); i++){
 				long res=((Result)r.getChildAt(i)).getAddress();
-				PyObject obj=new PyObject(res-(8*4), process);
-				if (obj.getRefCount()==2){ //check refCount=2 too strict?
+				PyObject obj=PyObjectFactory.getObject(res-(8*4), process, true);
+				if (obj!=null && obj.getRefCount()==2){ //check refCount=2 too strict?
 					list.add(res-(4*4));
 					System.out.println(String.format("Stage0-Price-result: %08X", res-(4*4)));
 				}
@@ -128,8 +129,8 @@ public class EveFindDictReverse {
 		List<Long> list = new LinkedList<Long>();
 		
 		for (Long addr : addrs) {
-			PyObject obj=new PyObject(addr-(7*4), process);
-			if (obj.getU1()==-3){
+			PyObject obj=PyObjectFactory.getObject(addr-(7*4), process, true);
+			if (obj!=null && obj.getU1()==-3){
 				addr=addr-(3*4);
 				System.out.println(String.format("Stage3-DBRowList-taget: %08X", addr));
 				try {
@@ -175,8 +176,8 @@ public class EveFindDictReverse {
 		List<Long> list = new LinkedList<Long>();
 		
 		for (Long addr : addrs) {
-			PyList obj=new PyList(addr-(7*4), process);
-			if (obj.getU1()==-3 && obj.getElements()==3){//check elements = 3 too strict?
+			PyObject obj=PyObjectFactory.getObject(addr-(7*4), process, true);
+			if (obj!=null && obj.getU1()==-3 && ((PyList)obj).getElements()==3){//check elements = 3 too strict?
 				addr=addr-(3*4);
 				System.out.println(String.format("Stage5-PyList-taget: %08X", addr));
 				try {
@@ -245,12 +246,12 @@ public class EveFindDictReverse {
 		for (Long addr : addrs) {
 			addr=addr-2*4;	//ptr, hash
 			int results=0;
-			Memory buffer=new Memory(4);
+//			Memory buffer=new Memory(4);
 			do{
 				System.out.println(String.format("Stage8-DictofDict-taget: %08X", addr));
 				try {
-					process.ReadProcessMemory(Pointer.createConstant(addr), buffer, (int)buffer.getSize(), null);
-					if (buffer.getInt(0)!=0){	//Hash != 0			
+//					process.ReadProcessMemory(Pointer.createConstant(addr), buffer, (int)buffer.getSize(), null);
+//					if (buffer.getInt(0)!=0){	//Hash != 0			
 						ResultList r = process.search(beginAddr, endAddr, ""+addr, DSType.Byte4);
 						results=r.getChildCount();
 						for (int i = 0; i < r.getChildCount(); i++){
@@ -258,7 +259,7 @@ public class EveFindDictReverse {
 							list.add(res-5*4);	//refcount, Type, ma_fill, ma_used, ma_mask
 							System.out.println(String.format("Stage8-DictofDict-result: %08X", res));
 						}
-					}
+//					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

@@ -2,7 +2,6 @@ package luz.eveMonitor.gui;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
@@ -11,7 +10,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 
-import luz.eveMonitor.datastructure.MarketRow;
+import luz.eveMonitor.datastructure.DBRow;
 
 
 public class DBRowTable extends JTable{
@@ -48,7 +47,7 @@ public class DBRowTable extends JTable{
 		model.refresh();		
 	}
 	
-	public MarketRow getSelectedItem(){		
+	public DBRow getSelectedItem(){		
 		int rowSorted = this.getSelectedRow();
 		if (rowSorted!=-1){
 			int rowReal =getRowSorter().convertRowIndexToModel(rowSorted);
@@ -78,12 +77,12 @@ public class DBRowTable extends JTable{
 				{"Bid",			Byte.class}				
 		};
 
-		private List<MarketRow> list=new LinkedList<MarketRow>();
+		private List<DBRow> list=new LinkedList<DBRow>();
 	    public MyTableModel(){
 
 	    }
 	    
-	    public MarketRow getItemAt(int index) {
+	    public DBRow getItemAt(int index) {
 			return list.get(index);
 		}
 
@@ -156,12 +155,12 @@ public class DBRowTable extends JTable{
 			return null;
 	    }
 
-		public void addItem(MarketRow row) {
+		public void addItem(DBRow row) {
 			list.add(row);
 			fireTableDataChanged();	
 		}
 
-		public void setItems(List<MarketRow> list) {
+		public void setItems(List<DBRow> list) {
 			this.list=list;
 			fireTableDataChanged();			
 		}
@@ -174,12 +173,12 @@ public class DBRowTable extends JTable{
 	    }
 	}
 
-	public void addItem(MarketRow row) {
+	public void addItem(DBRow row) {
 		model.addItem(row);
 		
 	}
 
-	public void setItems(List<MarketRow> list) {
+	public void setItems(List<DBRow> list) {
 		model.setItems(list);
 		
 	}
