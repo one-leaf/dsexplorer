@@ -101,7 +101,7 @@ public class Reader {
 	public PyDict findDict(){
 		long beginAddr=0;
 		long endAddr=0x23000000L;
-		int dictHash=0x8FDE2CCC;
+		int dictHash=(int)pyStringHash("orderCache");
 
 		try {
 			ResultList r = process.search(beginAddr, endAddr, ""+dictHash, DSType.Byte4);
@@ -142,6 +142,16 @@ public class Reader {
 			e.printStackTrace();
 		}		
 		return addr;
+	}
+	
+	public static long pyStringHash(String string){
+		int len = string.length();
+		long x = string.charAt(0) << 7;
+		for (int index=0; index < len; index++)
+			x = (1000003*x) ^ string.charAt(index);
+		x ^= len;
+		x = x&0xFFFFFFFFL;	//unsinged int
+		return x;
 	}
 	
 }
