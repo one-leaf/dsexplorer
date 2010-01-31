@@ -3,8 +3,8 @@ package test;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import luz.eveMonitor.datastructure.DBRowMarket;
 import luz.eveMonitor.datastructure.PyDict;
-import luz.eveMonitor.datastructure.DBRow;
 import luz.eveMonitor.utils.Reader;
 
 import com.sun.jna.Memory;
@@ -29,26 +29,24 @@ public class EveTest2 {
 	
 	}
 	private static void showDicts(Reader r) throws Exception {
-		List<PyDict> dicts = r.findDict();
+		PyDict dict = r.findDict();
 		StringBuilder sb=new StringBuilder();
 		int rows=0;
-		for (PyDict dict : dicts) {
-			sb.setLength(0);
-			sb.append(dict.getMa_Fill()).append('\t');
-			sb.append(dict.getMa_Used()).append('\t');
-			sb.append(dict.getMa_Mask()).append('\t');
-			
-			System.out.println(sb.toString());
-			rows++;			
-		}
+		sb.setLength(0);
+		sb.append(dict.getMa_Fill()).append('\t');
+		sb.append(dict.getMa_Used()).append('\t');
+		sb.append(dict.getMa_Mask()).append('\t');
+		
+		System.out.println(sb.toString());
+		rows++;			
 		System.out.println("rows "+rows);
 	}
 
 	private static void showRows(Reader r) throws Exception {
-		List<DBRow> list = r.getRows();
+		List<DBRowMarket> list = r.getRows();
 		StringBuilder sb=new StringBuilder();
 		int rows=0;
-		for (DBRow marketRow : list) {
+		for (DBRowMarket marketRow : list) {
 			sb.setLength(0);
 			sb.append(rows)								.append('\t');
 			sb.append(String.format("%08X", marketRow.getAddress())).append('\t');//sb.append("price     ");

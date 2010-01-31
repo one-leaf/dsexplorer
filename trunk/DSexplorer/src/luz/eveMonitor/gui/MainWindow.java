@@ -15,7 +15,7 @@ import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import luz.eveMonitor.datastructure.DBRow;
+import luz.eveMonitor.datastructure.DBRowMarket;
 import luz.eveMonitor.utils.Reader;
 
 /**
@@ -37,6 +37,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private JMenu jMenu5;
 	private JScrollPane jScrollPane1;
 	private JButton btnRead;
+	private JButton btnInit;
 	private DBRowTable dBRowTable;
 	private JMenuItem deleteMenuItem;
 	private JSeparator jSeparator1;
@@ -93,19 +94,32 @@ public class MainWindow extends javax.swing.JFrame {
 					}
 				});
 			}
+			{
+				btnInit = new JButton();
+				btnInit.setText("Init");
+				btnInit.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnInitActionPerformed(evt);
+					}
+				});
+			}
 			thisLayout.setVerticalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
-				.addComponent(btnRead, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+				    .addComponent(btnInit, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(btnRead, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 				.addComponent(jScrollPane1, 0, 251, Short.MAX_VALUE)
 				.addContainerGap());
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
 				.addGroup(thisLayout.createParallelGroup()
-				    .addComponent(jScrollPane1, GroupLayout.Alignment.LEADING, 0, 950, Short.MAX_VALUE)
 				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				        .addComponent(btnInit, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				        .addComponent(btnRead, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				        .addGap(0, 725, Short.MAX_VALUE)))
+				        .addGap(0, 794, Short.MAX_VALUE))
+				    .addComponent(jScrollPane1, GroupLayout.Alignment.LEADING, 0, 950, Short.MAX_VALUE))
 				.addContainerGap());
 			{
 				jMenuBar1 = new JMenuBar();
@@ -196,13 +210,21 @@ public class MainWindow extends javax.swing.JFrame {
 	}
 	
 	//$hide>>$
-	
-	Reader r = new Reader();
 	private void btnReadActionPerformed(ActionEvent evt) {
 		try {
-			r.init();
-			List<DBRow> list  = r.getRows();
+			List<DBRowMarket> list  = r.getRows();
 			dBRowTable.setItems(list);			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	
+	Reader r = new Reader();
+	private void btnInitActionPerformed(ActionEvent evt) {
+		try {
+			r.init();	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

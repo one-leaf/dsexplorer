@@ -20,31 +20,31 @@ public class PyObjectFactory {
 			return null;
 		}
 		PyObject obj=null;
-		try {
-			String sType=head.getTypeString();
-			if("dict".equals(sType)){
-				obj = new PyDict(head, process);
+		//TODO optimize this string mapping
+		String sType=head.getTypeString();
+		if("dict".equals(sType)){
+			obj = new PyDict(head, process);
+		}else if("str".equals(sType)){
+			obj = new PyStr(head, process);
+		}else if("int".equals(sType)){
+			obj = new PyInt(head, process);
+		}else if("list".equals(sType)){
+			obj = new PyList(head, process);
+		}else if("blue.DBRow".equals(sType)){
+			obj = new DBRow(head, process);
+		}else if("blue.DBRowDescriptor".equals(sType)){
+			obj = new RowDescr(head, process);			
+		}else if("RowList".equals(sType)){
+			obj = new RowList(head, process);
+		}
+		if(obj==null){
+			log.warn("unknown object type "+sType+" @ "+String.format("%08X", address));
+		}else{
+			try {	
 				obj.read();
-			}else if("str".equals(sType)){
-				obj = new PyStr(head, process);
-				obj.read();
-			}else if("int".equals(sType)){
-				obj = new PyInt(head, process);
-				obj.read();
-			}else if("list".equals(sType)){
-				obj = new PyList(head, process);
-				obj.read();
-			}else if("blue.DBRow".equals(sType)){
-				obj = new DBRow(head, process);
-				obj.read();
-			}else if("RowList".equals(sType)){
-				obj = new RowList(head, process);
-				obj.read();
-			}else{
-				log.warn("unknown object type "+sType+" @ "+String.format("%08X", address));
+			} catch (Exception e) {
+				log.warn("cannot read PyObject Data @ "+String.format("%08X", address));
 			}
-		} catch (Exception e) {
-			log.warn("cannot read PyObject Data @ "+String.format("%08X", address));
 		}
 		return obj;
 	}

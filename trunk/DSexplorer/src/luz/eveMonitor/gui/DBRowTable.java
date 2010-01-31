@@ -10,7 +10,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 
-import luz.eveMonitor.datastructure.DBRow;
+import luz.eveMonitor.datastructure.DBRowMarket;
 
 
 public class DBRowTable extends JTable{
@@ -47,7 +47,7 @@ public class DBRowTable extends JTable{
 		model.refresh();		
 	}
 	
-	public DBRow getSelectedItem(){		
+	public DBRowMarket getSelectedItem(){		
 		int rowSorted = this.getSelectedRow();
 		if (rowSorted!=-1){
 			int rowReal =getRowSorter().convertRowIndexToModel(rowSorted);
@@ -77,12 +77,12 @@ public class DBRowTable extends JTable{
 				{"Bid",			Byte.class}				
 		};
 
-		private List<DBRow> list=new LinkedList<DBRow>();
+		private List<DBRowMarket> list=new LinkedList<DBRowMarket>();
 	    public MyTableModel(){
 
 	    }
 	    
-	    public DBRow getItemAt(int index) {
+	    public DBRowMarket getItemAt(int index) {
 			return list.get(index);
 		}
 
@@ -155,12 +155,12 @@ public class DBRowTable extends JTable{
 			return null;
 	    }
 
-		public void addItem(DBRow row) {
+		public void addItem(DBRowMarket row) {
 			list.add(row);
 			fireTableDataChanged();	
 		}
 
-		public void setItems(List<DBRow> list) {
+		public void setItems(List<DBRowMarket> list) {
 			this.list=list;
 			fireTableDataChanged();			
 		}
@@ -173,12 +173,12 @@ public class DBRowTable extends JTable{
 	    }
 	}
 
-	public void addItem(DBRow row) {
+	public void addItem(DBRowMarket row) {
 		model.addItem(row);
 		
 	}
 
-	public void setItems(List<DBRow> list) {
+	public void setItems(List<DBRowMarket> list) {
 		model.setItems(list);
 		
 	}

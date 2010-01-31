@@ -31,7 +31,7 @@ public class PyList extends PyObject{
 		}
 	}
 	
-	public Iterator<PyObject> getDictEntries(){
+	public Iterator<PyObject> getIterator(){
 		return new Iterator<PyObject>() {
 			int index=0;
 			int limit=getElements();
