@@ -22,7 +22,7 @@ public class EveFindDictHash {
 	private static Process process;
 	private static long beginAddr=0;
 	private static long endAddr=0x23000000L;
-	private static int dictHash=0x8FDE2CCC;
+	private static int dictHash=(int)Reader.pyStringHash("orderCache");
 	/**
 	 * @param args
 	 * @throws Exception 
@@ -33,9 +33,9 @@ public class EveFindDictHash {
 		process = r.getProcess();
 		long timer=System.currentTimeMillis();
 		
-//		Integer dictAddr =stage0Hash(dictHash);
-//		System.out.println(String.format("%08X", dictAddr));
-		Integer dictAddr=0x138C8B80;
+		Integer dictAddr =stage0Hash(dictHash);
+		System.out.println(String.format("%08X", dictAddr));
+//		Integer dictAddr=0x138C8B80;
 
 		
 		
@@ -110,7 +110,7 @@ public class EveFindDictHash {
 	
 	
 	public static Integer stage0Hash(int hash){
-		System.out.println("Stage0-Hash-taget: "+hash);
+		System.out.println("Stage0-Hash-taget: "+String.format("%08X", hash));
 		
 		try {
 			ResultList r = process.search(beginAddr, endAddr, ""+hash, DSType.Byte4);
