@@ -1,33 +1,39 @@
 package luz.eveMonitor.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.winapi.api.Process;
 import luz.dsexplorer.winapi.api.ProcessList;
+import luz.dsexplorer.winapi.api.Result;
+import luz.dsexplorer.winapi.api.ResultList;
 import luz.dsexplorer.winapi.api.WinAPI;
 import luz.dsexplorer.winapi.api.WinAPIImpl;
 import luz.eveMonitor.datastructure.DBRow;
+import luz.eveMonitor.datastructure.DBRowMarket;
 import luz.eveMonitor.datastructure.PyDict;
+import luz.eveMonitor.datastructure.PyList;
 import luz.eveMonitor.datastructure.PyObject;
 import luz.eveMonitor.datastructure.PyObjectFactory;
+import luz.eveMonitor.datastructure.RowList;
+import luz.eveMonitor.datastructure.PyDict.PyDictEntry;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
 
 public class Reader {
 	static Memory buf = new Memory(100);
 	static Memory buf2 = new Memory(32);
 	static SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-	private static int rootAddr=0x00666D50;
 	private WinAPI winApi;
-	private int objTypePtr;
-	private List<Integer> rowDrescrPtr=new LinkedList<Integer>();
-	
+	private PyDict dict;
 	
 	//Lazy things
 	private Process process;
@@ -39,7 +45,13 @@ public class Reader {
 		winApi = WinAPIImpl.getInstance();	
 	}
 	
-
+	public void init() throws Exception {
+		findProcess();
+		System.out.println(process==null?"Eve not found":"Found Eve: "+process.getSzExeFile());
+		dict = findDict();
+		System.out.println(dict==null?"orderCache not found":"Found orderCache: "+dict);
+	}
+	
 	public void findProcess(){
 		ProcessList pl = winApi.getProcessList();
 		for (Process p : pl) {
@@ -50,119 +62,68 @@ public class Reader {
 		}	
 	}
 
-	
-	public void init() throws Exception {
-		findProcess();
-		System.out.println(process==null?"Eve not found":"Found Eve: "+process.getSzExeFile());
-
-		findTypePtr("blue.DBRow");
-		System.out.println("Found type: "+String.format("%08X", objTypePtr));
-
-		rowDrescrPtr=new LinkedList<Integer>();
+	public Process getProcess() {
+		return process;
 	}
 	
-
-	
-	public void findTypePtr(String typeString) throws Exception{
-		int addr=rootAddr;
-		int objTypePtr;	
-		do {		
-			//Pointer
-			process.ReadProcessMemory(Pointer.createConstant(addr), buf, (int)buf.getSize(), null);
-			addr=buf.getInt(0);
-			//System.out.println("next "+String.format("%08X", addr));
-			//Object
-			process.ReadProcessMemory(Pointer.createConstant(addr), buf, (int)buf.getSize(), null);
-			objTypePtr=buf.getInt(20);
-			//System.out.println("type "+String.format("%08X", typeAddr));
-			try{
-				if (typeString.equals(getTypeString(objTypePtr))){
-					this.objTypePtr=objTypePtr;
-					break;
-				}
-			}catch (Exception e){}
-		}while (rootAddr!=addr);
-	}
-	
-//	public void findRowDescrPtr(String rowDescr) throws Exception{
-//		int addr=rootAddr;
-//		int rowDrescrPtr;	
-//		do {		
-//			//Pointer
-//			process.ReadProcessMemory(Pointer.createConstant(addr), buf, (int)buf.getSize(), null);
-//			addr=buf.getInt(0);
-//			//System.out.println("next "+String.format("%08X", addr));
-//			//Object
-//			process.ReadProcessMemory(Pointer.createConstant(addr), buf, (int)buf.getSize(), null);
-//			rowDrescrPtr=buf.getInt(24);
-//			//System.out.println("type "+String.format("%08X", typeAddr));
-//
-//			try{
-//				if (rowDescr.equals(getRowDescr(process, rowDrescrPtr))){
-//					this.rowDrescrPtr=rowDrescrPtr;
-//					break;
-//				}
-//			}catch (Exception e){}
-//		}while (rootAddr!=addr);
-//	}
-	
-	
-	private String getTypeString(int typeAddr) {
-		String type=null;
-		try{
-			//Pointer
-			process.ReadProcessMemory(Pointer.createConstant(typeAddr), buf2, (int)buf2.getSize(), null);
-			int nameAddr=buf2.getInt(12);
-			//System.out.println("name "+String.format("%08X", nameAddr));
-			//Object
-			process.ReadProcessMemory(Pointer.createConstant(nameAddr), buf2, (int)buf2.getSize(), null);
-			type=buf2.getString(0);
-		}catch (Exception e){}
-		return type;	
-	}
-	
-	private String getRowDescr(int rowDrescrPtr) throws Exception{
-		//Pointer
-		process.ReadProcessMemory(Pointer.createConstant(rowDrescrPtr), buf2, (int)buf2.getSize(), null);
-		int columnPtr=buf2.getInt(12);
-
-		//Object
-		process.ReadProcessMemory(Pointer.createConstant(columnPtr), buf2, (int)buf2.getSize(), null);
-		//System.out.println(String.format("%08X", columnPtr)+" "+buf2.getString(4));
-		return buf2.getString(4);	
-	}
-	
-	public List<DBRow> getRows() throws Exception{
+	public List<DBRowMarket> getRows() throws Exception{
 		long timer=System.currentTimeMillis();
-		int addr=rootAddr;
-		int count=0;
-		List<DBRow> list = new LinkedList<DBRow>();		
-		do {
-			count++;
-			//Pointer
-			process.ReadProcessMemory(Pointer.createConstant(addr), buf, (int)buf.getSize(), null);
-			addr=buf.getInt(0);
-			//System.out.println("next "+String.format("%08X", addr));
-			//Object
-			
-			PyObject obj = PyObjectFactory.getObject(addr, process,true);
-			if (obj instanceof DBRow)	{	
-				DBRow marketRow=(DBRow)obj;
-				if (rowDrescrPtr.contains(marketRow.getRowDescrPtr())){
-					list.add(marketRow);
-				}else{
-					if ("price".equals(marketRow.getRowDescr())){
-						rowDrescrPtr.add(marketRow.getRowDescrPtr());
-						list.add(marketRow);
-					}					
+		List<DBRowMarket> rows = new LinkedList<DBRowMarket>();
+		
+		Iterator<PyDictEntry> dictIter = dict.getDictEntries();
+		PyDictEntry dictEntry;
+		while(dictIter.hasNext()){
+			dictEntry=dictIter.next();
+			PyObject value = dictEntry.getValue();
+			if (value instanceof PyList){
+				PyList pyList = (PyList)value;
+				Iterator<PyObject> listIter = pyList.getIterator();
+				PyObject listElement;
+				while(listIter.hasNext()){
+					listElement=listIter.next();
+					if (listElement instanceof RowList){
+						RowList rowlist = (RowList)listElement;
+						Iterator<DBRow> rowIter = rowlist.getIterator();
+						DBRow dbRow;
+						while(rowIter.hasNext()){
+							dbRow=rowIter.next();
+							rows.add(new DBRowMarket(dbRow));
+						}
+					}
 				}
 			}
-		}while (rootAddr!=addr);
+		}	
 		timer=System.currentTimeMillis()-timer;
-		System.out.println("loop size: "+count+" timer "+timer+"ms");
-		return list;
+		System.out.println("timer "+timer+"ms");
+		return rows;
 	}
 
+	public PyDict findDict(){
+		long beginAddr=0;
+		long endAddr=0x23000000L;
+		int dictHash=0x8FDE2CCC;
+
+		try {
+			ResultList r = process.search(beginAddr, endAddr, ""+dictHash, DSType.Byte4);
+			for (int i = 0; i < r.getChildCount(); i++){
+				long res=((Result)r.getChildAt(i)).getAddress();
+				res=res+2*4;
+				IntByReference val=new IntByReference();
+				process.ReadProcessMemory(Pointer.createConstant(res), val.getPointer(), 4, null);
+				PyObject obj=PyObjectFactory.getObject(val.getValue(), process, false);
+				if (obj instanceof PyDict){
+					System.out.println(String.format("findDict-result: %08X -> %08X", res, val.getValue()));
+					return (PyDict)PyObjectFactory.getObject(val.getValue(),process, false);					
+				}
+			}			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		return null;		
+	}
+	
+
+	
 	public long findRootAddr(long priceAddr){
 		long addr=priceAddr-(7*4);
 		String staticAddr=null;
@@ -181,64 +142,6 @@ public class Reader {
 			e.printStackTrace();
 		}		
 		return addr;
-	}
-//	public static class DBRow extends Structure{
-//		public Pointer	next;
-//		public Pointer	prev;
-//		public int		u1;
-//		public int		u2;
-//		public int		refCounter;
-//		public Pointer	pyTypeObject;
-//		public long	price;
-//		public double	volRem;
-//		public long	issued;
-//		public int		orderID;
-//		public int		volEnter;
-//		public int		volMin;
-//		public int		stationID;
-//		public int		regionID;
-//		public int		systemID;
-//		public int		jumps;
-//		public short	type;
-//		public short	range;
-//		public short	duration;
-//		public byte	bid;
-//		
-//		public DBRow(Pointer p) {
-//			super(p);
-//		}	
-//	}
-
-
-	public List<PyDict> findDict() throws Exception {
-		long timer=System.currentTimeMillis();
-		
-		List<PyDict> list = new LinkedList<PyDict>();
-		
-		Memory buf2 = new Memory(4);
-		process.ReadProcessMemory(Pointer.createConstant(rootAddr), buf2, (int)buf2.getSize(), null);
-		int address=buf2.getInt(0);
-		
-		PyObject obj = PyObjectFactory.getObject(address, process,true);
-		int count=0;
-		int dictCount=0;
-		do {
-			count++;
-			if (obj instanceof PyDict){
-				dictCount++;
-				list.add((PyDict)obj);
-				System.out.println(count+" "+dictCount+" "+String.format("%08X", obj.getAddress()));
-			}
-		}while ((obj=obj.getNext())!=null && obj.getNextPtr()!=rootAddr);
-		
-		timer=System.currentTimeMillis()-timer;
-		System.out.println("loop size: "+count+" timer "+timer+"ms");
-		return list;
-	}
-
-
-	public Process getProcess() {
-		return process;
 	}
 	
 }
