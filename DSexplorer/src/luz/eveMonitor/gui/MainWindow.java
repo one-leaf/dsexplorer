@@ -1,6 +1,4 @@
 package luz.eveMonitor.gui;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.GroupLayout;
@@ -16,7 +14,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import luz.eveMonitor.datastructure.DBRowMarket;
-import luz.eveMonitor.utils.Reader;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -88,20 +85,10 @@ public class MainWindow extends javax.swing.JFrame {
 			{
 				btnRead = new JButton();
 				btnRead.setText("Read");
-				btnRead.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						btnReadActionPerformed(evt);
-					}
-				});
 			}
 			{
 				btnInit = new JButton();
 				btnInit.setText("Init");
-				btnInit.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						btnInitActionPerformed(evt);
-					}
-				});
 			}
 			thisLayout.setVerticalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
@@ -210,25 +197,17 @@ public class MainWindow extends javax.swing.JFrame {
 	}
 	
 	//$hide>>$
-	private void btnReadActionPerformed(ActionEvent evt) {
-		try {
-			List<DBRowMarket> list  = r.getRows();
-			dBRowTable.setItems(list);			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
+
+
+	public void setRows(List<DBRowMarket> list) {
+		dBRowTable.setItems(list);
 	}
-
-
 	
-	Reader r = new Reader();
-	private void btnInitActionPerformed(ActionEvent evt) {
-		try {
-			r.init();	
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
+	public void addRows(List<DBRowMarket> list) {
+		dBRowTable.addItems(list);
 	}
+	
 	//$hide<<$
 }

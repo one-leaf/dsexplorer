@@ -1,7 +1,7 @@
 package test;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
 
 public class DateTest {
 
@@ -10,29 +10,15 @@ public class DateTest {
 		
 		
 		Long value = 129057172789500000L;
-
-		Calendar cal = Calendar.getInstance();
-		System.out.println(cal.getTimeInMillis());
-		cal.setTimeInMillis((value-116444736000000000L)/10000);	//01.01.1601 00:00:00,000
-
-
-
-		System.out.println(sdf.format(cal.getTime()));
-
-		
+		Date d= new Date((value-116444736000000000L)/10000L);
+		System.out.println(sdf.format(d));
 		
 		
 		
 		
 		Long v2 = 116444736000000000L;
-		cal.setTimeInMillis(-v2/10000L);
-		System.out.println(sdf.format(cal.getTime()));
+		d= new Date(-v2/10000L);
+		System.out.println(sdf.format(d));
 		
-		
-		
-		
-		
-    }
-	
-	
+    }	
 }

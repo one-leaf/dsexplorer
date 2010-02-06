@@ -466,6 +466,19 @@ public class ProcessImpl implements Process {
 	}
 
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj==null)
+			return false;
+		
+		if (!(obj instanceof ProcessImpl))
+			return false;
+		
+		if (this.getPid()!=((ProcessImpl)obj).getPid())
+			return false;
+		
+		return true;
+	}
 
 	
 	//TODO stop search function

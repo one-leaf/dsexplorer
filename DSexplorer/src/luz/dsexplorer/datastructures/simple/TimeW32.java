@@ -1,7 +1,7 @@
 package luz.dsexplorer.datastructures.simple;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
 
 import luz.dsexplorer.datastructures.DSType;
 
@@ -31,10 +31,9 @@ public class TimeW32 extends DefaultDatastructure{
 		if (value==null)
 			return null;
 
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(((Long)value-116444736000000000L)/10000L);	//1601.01.01 00:00:00 GMT+0
+		Date d= new Date(((Long)value-116444736000000000L)/10000L);//1601.01.01 00:00:00 GMT+0
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-		return sdf.format(cal.getTime());
+		return sdf.format(d);
 	}
 
 }
