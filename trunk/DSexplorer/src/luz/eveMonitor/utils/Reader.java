@@ -1,9 +1,11 @@
 package luz.eveMonitor.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.winapi.api.Process;
@@ -15,6 +17,7 @@ import luz.dsexplorer.winapi.api.WinAPIImpl;
 import luz.eveMonitor.datastructure.DBRow;
 import luz.eveMonitor.datastructure.DBRowMarket;
 import luz.eveMonitor.datastructure.PyDict;
+import luz.eveMonitor.datastructure.PyInt;
 import luz.eveMonitor.datastructure.PyList;
 import luz.eveMonitor.datastructure.PyObject;
 import luz.eveMonitor.datastructure.PyObjectFactory;
@@ -29,8 +32,6 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 
 public class Reader {
-	static Memory buf = new Memory(100);
-	static Memory buf2 = new Memory(32);
 	static SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 	private WinAPI winApi;
 	private PyDict dict;
@@ -39,32 +40,43 @@ public class Reader {
 	private Process process;
 	
 	
-	public Reader(){
-		Logger logger = Logger.getRootLogger();
-		logger.setLevel(Level.WARN);		
+	public Reader(){	
 		winApi = WinAPIImpl.getInstance();	
 	}
 	
 	public void init() throws Exception {
+		Logger logger = Logger.getRootLogger();
+		logger.setLevel(Level.WARN);	
 		findProcess();
 		System.out.println(process==null?"Eve not found":"Found Eve: "+process.getSzExeFile());
+		//TODO cache dict address with current pid
 		dict = findDict();
 		System.out.println(dict==null?"orderCache not found":"Found orderCache: "+dict);
 	}
 	
-	public void findProcess(){
+	public void setProcess(Process process){
+		this.process=process;	
+	}
+	
+	public void setDict(PyDict dict) {
+		this.dict=dict;
+	}
+	
+	public Process findProcess(){
 		ProcessList pl = winApi.getProcessList();
 		for (Process p : pl) {
 			if (p.getSzExeFile().endsWith("ExeFile.exe")){
 				process = p;
-				break;
+				return process;
 			}			
-		}	
+		}
+		return null;
 	}
 
 	public Process getProcess() {
 		return process;
 	}
+	
 	
 	public List<DBRowMarket> getRows() throws Exception{
 		long timer=System.currentTimeMillis();
@@ -95,6 +107,43 @@ public class Reader {
 		}	
 		timer=System.currentTimeMillis()-timer;
 		System.out.println("timer "+timer+"ms");
+		return rows;
+	}
+	
+	private Map<Integer, Integer> stamps=new HashMap<Integer, Integer>();
+	public List<DBRowMarket> getNewRows() {
+		long timer=System.currentTimeMillis();
+		List<DBRowMarket> rows = new LinkedList<DBRowMarket>();
+		
+		int typeId;
+		Iterator<PyDictEntry> dictIter = dict.getDictEntries();
+		PyDictEntry dictEntry;
+		while(dictIter.hasNext()){
+			dictEntry=dictIter.next();
+			typeId=dictEntry.getHash();
+			PyObject value = dictEntry.getValue();
+			if (value instanceof PyList){
+				PyList pyList = (PyList)value;
+				
+				Integer stamp =((PyInt)pyList.getElement(2)).getob_ival();
+				Integer stamp2=stamps.get(typeId);
+				if(!stamp.equals(stamp2)){
+					System.out.println("updated row "+stamp+" "+stamp2);
+					stamps.put(typeId, stamp);
+					for(int i=0;i<=1;i++){
+						RowList rowlist = (RowList)pyList.getElement(i);
+						Iterator<DBRow> rowIter = rowlist.getIterator();
+						DBRow dbRow;
+						while(rowIter.hasNext()){
+							dbRow=rowIter.next();
+							rows.add(new DBRowMarket(dbRow));
+						}
+					}
+				}
+			}
+		}
+		timer=System.currentTimeMillis()-timer;
+		System.out.println("timer "+timer+"ms. new rows="+rows.size());
 		return rows;
 	}
 
@@ -133,6 +182,7 @@ public class Reader {
 			while(staticAddr==null){
 				count++;
 				//Pointer
+				Memory buf = new Memory(100);
 				process.ReadProcessMemory(Pointer.createConstant(addr), buf, (int)buf.getSize(), null);
 				addr=buf.getInt(0);
 				staticAddr=process.getStatic(addr);
@@ -150,8 +200,10 @@ public class Reader {
 		for (int index=0; index < len; index++)
 			x = (1000003*x) ^ string.charAt(index);
 		x ^= len;
-		x = x&0xFFFFFFFFL;	//unsinged int
+		x = x&0xFFFFFFFFL;	//unsigned int
 		return x;
 	}
+
+
 	
 }

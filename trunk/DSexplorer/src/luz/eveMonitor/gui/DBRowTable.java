@@ -156,10 +156,19 @@ public class DBRowTable extends JTable{
 	    }
 
 		public void addItem(DBRowMarket row) {
-			list.add(row);
-			fireTableDataChanged();	
+			if(row!=null){
+				this.list.add(row);
+				fireTableDataChanged();
+			}
 		}
 
+		public void addItems(List<DBRowMarket> list) {
+			if (list!=null && list.size()>0){
+				this.list.addAll(list);
+				fireTableDataChanged();
+			}
+		}
+		
 		public void setItems(List<DBRowMarket> list) {
 			this.list=list;
 			fireTableDataChanged();			
@@ -171,6 +180,8 @@ public class DBRowTable extends JTable{
 	    public Class getColumnClass(int col) {
 			return (Class)columns[col][1];
 	    }
+
+
 	}
 
 	public void addItem(DBRowMarket row) {
@@ -179,7 +190,10 @@ public class DBRowTable extends JTable{
 	}
 
 	public void setItems(List<DBRowMarket> list) {
-		model.setItems(list);
-		
+		model.setItems(list);		
+	}
+
+	public void addItems(List<DBRowMarket> list) {
+		model.addItems(list);		
 	}
 }

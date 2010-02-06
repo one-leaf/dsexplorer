@@ -19,6 +19,7 @@ public class PyDict extends PyObject {
 	public int		getMa_Table   (){return super.getInt   (12);}
 	public int		getMa_Lokup   (){return super.getInt   (16);}
 	public PyDictEntry	getDictEntry(int i){
+		//TDODO get entry with hash mod ma_mask = slot
 		PyDictEntry entry=new PyDictEntry(process);
 		try {
 			process.ReadProcessMemory(Pointer.createConstant(getMa_Table()+(4*3)*i), entry, (int)entry.getSize(), null);
@@ -30,6 +31,7 @@ public class PyDict extends PyObject {
 	}
 	
 	public Iterator<PyDictEntry> getDictEntries(){
+		//TODO get all dictentries togeather
 		return new Iterator<PyDictEntry>() {
 			int index=0;
 			int limit=getMa_Mask()+1;
@@ -74,6 +76,20 @@ public class PyDict extends PyObject {
 			else
 				return null;
 		}
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o==null)
+			return false;
+		
+		if (!(o instanceof PyDict))
+			return false;
+		
+		if(((PyDict)o).getAddress()!=this.getAddress())
+			return false;
+		
+		return true;
 	}
 
 }

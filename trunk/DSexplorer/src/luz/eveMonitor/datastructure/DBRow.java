@@ -1,6 +1,6 @@
 package luz.eveMonitor.datastructure;
 
-import java.util.Calendar;
+import java.util.Date;
 
 import luz.dsexplorer.winapi.api.Process;
 import luz.eveMonitor.datastructure.RowDescr.Column;
@@ -33,9 +33,7 @@ public class DBRow extends PyObject {
 		case Double:	return super.getDouble(8+col.getOffset());
 		case String:	return super.getString(8+col.getOffset());
 		case Date:		
-			Calendar c = Calendar.getInstance();
-			c.setTimeInMillis((super.getLong(8+col.getOffset())-116444736000000000L)/10000L);
-			return c.getTime();
+			return new Date((super.getLong(8+col.getOffset())-116444736000000000L)/10000L);
 		default:		return super.getInt   (8+col.getOffset());
 		}
 	}
