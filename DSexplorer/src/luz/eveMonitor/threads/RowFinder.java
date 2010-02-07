@@ -26,7 +26,7 @@ public  class RowFinder extends Thread{
 	public void run() {
 		begin:
 		while(run){
-			//PHASE 1 - wait for eve ///////////////////////////////////////
+			//PHASE 1 - wait for dict ///////////////////////////////////////
 			while(status.getDict()==null){
 				try {
 	                synchronized(status){

@@ -1,14 +1,11 @@
 package luz.dsexplorer.winapi.api;
 
 import java.io.File;
-import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import luz.dsexplorer.datastructures.DSType;
-import luz.dsexplorer.datastructures.Datastructure;
 import luz.dsexplorer.winapi.constants.GAFlags;
 import luz.dsexplorer.winapi.constants.ProcessInformationClass;
 import luz.dsexplorer.winapi.jna.Kernel32.LPPROCESSENTRY32;
@@ -37,17 +34,6 @@ public class ProcessImpl implements Process {
 	private final int pcPriClassBase;
 	
 	private MemoryListener listener;
-	private MemoryListener Byte1Listener;
-	private MemoryListener Byte2Listener;
-	private MemoryListener Byte4Listener;
-	private MemoryListener Byte8Listener;
-	private MemoryListener FloatListener;
-	private MemoryListener DoubleListener;
-	private MemoryListener ByteArrayListener;
-	private MemoryListener AsciiListener;
-	private MemoryListener UnicodeListener;
-	
-
 	
 	public ProcessImpl(LPPROCESSENTRY32 pe32, WinAPI winapi) {
 		this.winAPI=winapi;
@@ -56,160 +42,6 @@ public class ProcessImpl implements Process {
 		this.cntThreads=pe32.cntThreads;
 		this.pcPriClassBase=pe32.pcPriClassBase.intValue();
 		this.th32ParentProcessID=pe32.th32ParentProcessID;
-		
-		Byte1Listener=new MemoryListener() {
-			@Override
-			public void mem(Memory outputBuffer, long address, long size) {
-				byte current;
-				byte target=Byte.parseByte(getValue());
-				for (long pos = 0; pos < size; pos=pos+1) {
-					current=outputBuffer.getByte(pos);
-					if (current==target){
-						add(new Result(getResultList(), getType(), address+pos, current));
-						log.debug("Found:\t"+Long.toHexString(address+pos));
-					}
-				}
-			}
-		};
-		
-		Byte2Listener=new MemoryListener() {
-			@Override
-			public void mem(Memory outputBuffer, long address, long size) {
-				Short current;
-				Short target=Short.parseShort(getValue());
-				for (long pos = 0; pos < size-1; pos=pos+1) {
-					current=outputBuffer.getShort(pos);
-					if (current.equals(target)){
-						add(new Result(getResultList(), getType(), address+pos, current));
-						log.debug("Found:\t"+Long.toHexString(address+pos));
-					}
-				}
-			}
-		};
-		
-		Byte4Listener=new MemoryListener() {
-			@Override
-			public void mem(Memory outputBuffer, long address, long size) {
-				Integer current;
-				Integer target=Integer.parseInt(getValue());
-				for (long pos = 0; pos < size-3; pos=pos+1) {
-					current=outputBuffer.getInt(pos);
-					if (current.equals(target)){
-						add(new Result(getResultList(), getType(), address+pos, current));
-						log.debug("Found:\t"+Long.toHexString(address+pos));
-					}
-				}
-			}
-		};
-		
-		Byte8Listener=new MemoryListener() {
-			@Override
-			public void mem(Memory outputBuffer, long address, long size) {
-				Long current;
-				Long target=Long.parseLong(getValue());
-				for (long pos = 0; pos < size-7; pos=pos+1) {
-					current=outputBuffer.getLong(pos);
-					if (current.equals(target)){
-						add(new Result(getResultList(), getType(), address+pos, current));
-						log.debug("Found:\t"+Long.toHexString(address+pos));
-					}
-				}
-			}
-		};
-		
-		FloatListener=new MemoryListener() {
-			@Override
-			public void mem(Memory outputBuffer, long address, long size) {
-				Float current;
-				Float target=Float.parseFloat(getValue());
-				for (long pos = 0; pos < size-3; pos=pos+1) {
-					current=outputBuffer.getFloat(pos);
-					if (Math.round(current)==Math.round(target)){
-						add(new Result(getResultList(), getType(), address+pos, current));
-						log.debug("Found:\t"+Long.toHexString(address+pos));
-					}
-				}
-			}
-		};
-		
-		DoubleListener=new MemoryListener() {
-			@Override
-			public void mem(Memory outputBuffer, long address, long size) {
-				Double current;
-				Double target=Double.parseDouble(getValue());
-				for (long pos = 0; pos < size-7; pos=pos+1) {
-					current=outputBuffer.getDouble(pos);
-					if (Math.round(current)==Math.round(target)){
-						add(new Result(getResultList(), getType(), address+pos, current));
-						log.debug("Found:\t"+Long.toHexString(address+pos));
-					}
-				}
-			}
-		};
-		
-		ByteArrayListener=new MemoryListener() {
-			@Override
-			public void mem(Memory outputBuffer, long address, long size) {
-				byte[] current;
-				String value=getValue().trim();
-				byte[] target = new byte[value.length()/2];
-				for (int i = 0; i < target.length; i++)
-				   target[i] = (byte) Integer.parseInt(value.substring(2*i, 2*i+2), 16);
-				int targetSize=target.length;
-				boolean equal;
-				for (long pos = 0; pos < size-targetSize; pos=pos+1) {
-					current = outputBuffer.getByteArray(pos, targetSize);
-					equal=true;
-					for (int i = 0; i < target.length; i++)
-						if (current[i]!=target[i]) equal=false;		
-					if (equal){
-						Datastructure ds = getType();
-						ds.setByteCount(targetSize);
-						add(new Result(getResultList(), ds, address+pos, current));
-						log.debug("Found:\t"+Long.toHexString(address+pos));
-					}
-				}
-			}
-		};
-		
-		AsciiListener=new MemoryListener() {
-			Charset ascii=Charset.forName("US-ASCII");
-			@Override
-			public void mem(Memory outputBuffer, long address, long size) {
-				String current;
-				String target=getValue();
-				int targetSize=target.length();
-				for (long pos = 0; pos < size-targetSize; pos=pos+1) {
-					current = new String(outputBuffer.getByteArray(pos, targetSize), ascii);
-					if (current.equalsIgnoreCase(target)){
-						Datastructure ds = getType();
-						ds.setByteCount(targetSize);
-						add(new Result(getResultList(), ds, address+pos, current));
-						log.debug("Found:\t"+Long.toHexString(address+pos));
-					}
-				}
-			}
-		};
-		
-		UnicodeListener=new MemoryListener() {
-			Charset utf16=Charset.forName("UTF-16");
-			@Override
-			public void mem(Memory outputBuffer, long address, long size) {
-				String current;
-				String target=getValue();
-				int targetSize=target.length()*2;	//Assume utf16 = 2 bytes
-				for (long pos = 0; pos < size-targetSize; pos=pos+1) {
-					current = new String(outputBuffer.getByteArray(pos, targetSize), utf16);
-					if (current.equalsIgnoreCase(target)){
-						Datastructure ds = getType();
-						ds.setByteCount(targetSize);
-						add(new Result(getResultList(), ds, address+pos, current));
-						log.debug("Found:\t"+Long.toHexString(address+pos));
-					}
-				}
-			}
-		};
-
 	}
 
 	private Pointer handleCache =null;
@@ -397,6 +229,21 @@ public class ProcessImpl implements Process {
 		winAPI.ReadProcessMemory(getHandle(), pointer, outputBuffer, nSize, outNumberOfBytesRead);
 	}
 	
+	public ResultList search(long from, long to, final String value, MemoryListener listener) throws Exception {
+		log.debug("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" listener "+listener);
+		this.listener=listener;
+		final ResultList results = new ResultListImpl(this);
+		long timer=System.currentTimeMillis();
+		if (value==null || value.trim().equals(""))
+			return results;		
+
+		this.listener.init(results, value);
+		search(from, to);
+		
+		log.debug("timer "+(System.currentTimeMillis()-timer));
+		return results;
+	}
+	
 	private void search(long from, long to) throws Exception{
 		int partSize=512*1024;
 		int bufferSize=partSize+listener.getOverlapping();
@@ -438,33 +285,6 @@ public class ProcessImpl implements Process {
 		}
 		log.debug("maxRegionSize "+(maxRegionSize/1024)+" kB");
 	}
-
-	public ResultList search(long from, long to, final String value, final DSType type) throws Exception {
-		log.debug("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" type "+type);
-		final ResultList results = new ResultListImpl(this);
-		long timer=System.currentTimeMillis();
-		if (value==null || value.trim().equals(""))
-			return results;		
-
-		switch (type){
-			case Byte1:		listener=Byte1Listener; 	break;	
-			case Byte2:		listener=Byte2Listener;		break;	
-			case Byte4:		listener=Byte4Listener; 	break;	
-			case Byte8:		listener=Byte8Listener; 	break;
-			case Float:		listener=FloatListener;		break;	
-			case Double:	listener=DoubleListener;	break;
-			case ByteArray:	listener=ByteArrayListener;	break;	
-			case Ascii:		listener=AsciiListener;		break;	
-			case Unicode:	listener=UnicodeListener;	break;	
-		}
-		listener.init(results, value, type);
-		search(from, to);
-		
-		
-		log.debug("timer "+(System.currentTimeMillis()-timer));
-		return results;
-	}
-
 
 	@Override
 	public boolean equals(Object obj) {

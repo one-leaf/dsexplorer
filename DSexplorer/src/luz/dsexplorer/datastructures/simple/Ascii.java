@@ -16,7 +16,8 @@ public class Ascii extends DefaultDatastructure{
 	
 	@Override
 	public Object eval(Memory buffer) {
-		return buffer.getString(0, false);
+		return new String(buffer.getByteArray(0, (int)buffer.getSize()));
+		//return buffer.getString(0, false);
 	}
 	
 	@Override

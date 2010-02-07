@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import luz.dsexplorer.datastructures.DSType;
+import luz.dsexplorer.search.Byte4Listener;
 import luz.dsexplorer.winapi.api.Process;
 import luz.dsexplorer.winapi.api.ProcessList;
 import luz.dsexplorer.winapi.api.Result;
@@ -153,7 +153,7 @@ public class Reader {
 		int dictHash=(int)pyStringHash("orderCache");
 
 		try {
-			ResultList r = process.search(beginAddr, endAddr, ""+dictHash, DSType.Byte4);
+			ResultList r = process.search(beginAddr, endAddr, ""+dictHash, new Byte4Listener());
 			for (int i = 0; i < r.getChildCount(); i++){
 				long res=((Result)r.getChildAt(i)).getAddress();
 				res=res+2*4;
