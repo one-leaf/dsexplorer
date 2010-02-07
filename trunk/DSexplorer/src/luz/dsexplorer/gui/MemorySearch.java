@@ -22,6 +22,16 @@ import javax.swing.WindowConstants;
 
 import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.gui.listener.MemorySearchListener;
+import luz.dsexplorer.search.AsciiListener;
+import luz.dsexplorer.search.Byte1Listener;
+import luz.dsexplorer.search.Byte2Listener;
+import luz.dsexplorer.search.Byte4Listener;
+import luz.dsexplorer.search.Byte8Listener;
+import luz.dsexplorer.search.ByteArrayListener;
+import luz.dsexplorer.search.DoubleListener;
+import luz.dsexplorer.search.FloatListener;
+import luz.dsexplorer.search.UnicodeListener;
+import luz.dsexplorer.winapi.api.MemoryListener;
 import luz.dsexplorer.winapi.api.Process;
 import luz.dsexplorer.winapi.api.Result;
 import luz.dsexplorer.winapi.api.ResultList;
@@ -251,7 +261,21 @@ public class MemorySearch extends javax.swing.JPanel {
 		try{
 			int from=Integer.parseInt(txtFrom.getText(),16);
 			int to  =Integer.parseInt(txtTo  .getText(),16);
-			ResultList results=process.search(from, to, txtSearch.getText(), (DSType)cbValue.getSelectedItem());
+			DSType type = (DSType)cbValue.getSelectedItem();
+			MemoryListener listener;
+			switch (type){
+				case Byte1:		listener=new Byte1Listener(); 		break;	
+				case Byte2:		listener=new Byte2Listener();		break;	
+				case Byte4:		listener=new Byte4Listener(); 		break;	
+				case Byte8:		listener=new Byte8Listener(); 		break;
+				case Float:		listener=new FloatListener();		break;	
+				case Double:	listener=new DoubleListener();		break;
+				case ByteArray:	listener=new ByteArrayListener();	break;	
+				case Ascii:		listener=new AsciiListener();		break;	
+				case Unicode:	listener=new UnicodeListener();		break;	
+				default: 		listener=null;
+			}			
+			ResultList results=process.search(from, to, txtSearch.getText(), listener);
 			tblResults.setResults(results);
 		}catch(NumberFormatException e){
 			

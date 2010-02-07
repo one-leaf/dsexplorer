@@ -46,7 +46,8 @@ public class Result implements TreeNode, DSListener, Cloneable {
 		this.resultList=resultList;
 		this.address=address;
 		this.valueCache=value;
-		this.valueCacheOK=false;
+		if (value!=null)
+			this.valueCacheOK=true;
 		this.datastructure=datastructure;
 		this.datastructure.addListener(this);
 	}

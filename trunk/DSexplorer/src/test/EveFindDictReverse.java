@@ -3,7 +3,7 @@ package test;
 import java.util.LinkedList;
 import java.util.List;
 
-import luz.dsexplorer.datastructures.DSType;
+import luz.dsexplorer.search.Byte4Listener;
 import luz.dsexplorer.winapi.api.Process;
 import luz.dsexplorer.winapi.api.Result;
 import luz.dsexplorer.winapi.api.ResultList;
@@ -59,7 +59,7 @@ public class EveFindDictReverse {
 		System.out.println("Stage0-Price-taget: "+price);
 		
 		try {
-			ResultList r = process.search(beginAddr, endAddr, ""+price, DSType.Byte4);
+			ResultList r = process.search(beginAddr, endAddr, ""+price, new Byte4Listener());
 			for (int i = 0; i < r.getChildCount(); i++){
 				long res=((Result)r.getChildAt(i)).getAddress();
 				PyObject obj=PyObjectFactory.getObject(res-(8*4), process, true);
@@ -80,7 +80,7 @@ public class EveFindDictReverse {
 			System.out.println(String.format("Stage1-DBRow-taget: %08X", addr));
 			
 			try {
-				ResultList r = process.search(beginAddr, endAddr, ""+addr, DSType.Byte4);
+				ResultList r = process.search(beginAddr, endAddr, ""+addr, new Byte4Listener());
 				for (int i = 0; i < r.getChildCount(); i++){
 					long res=((Result)r.getChildAt(i)).getAddress();
 					list.add(res);
@@ -111,7 +111,7 @@ public class EveFindDictReverse {
 				}
 				if (target!=0){
 					System.out.println(String.format("Stage2-DBRowArray-taget: %08X", target));
-					ResultList r = process.search(beginAddr, endAddr, ""+target, DSType.Byte4);
+					ResultList r = process.search(beginAddr, endAddr, ""+target, new Byte4Listener());
 					for (int i = 0; i < r.getChildCount(); i++){
 						long res=((Result)r.getChildAt(i)).getAddress();
 						list.add(res);
@@ -134,7 +134,7 @@ public class EveFindDictReverse {
 				addr=addr-(3*4);
 				System.out.println(String.format("Stage3-DBRowList-taget: %08X", addr));
 				try {
-					ResultList r = process.search(beginAddr, endAddr, ""+addr, DSType.Byte4);
+					ResultList r = process.search(beginAddr, endAddr, ""+addr, new Byte4Listener());
 					for (int i = 0; i < r.getChildCount(); i++){
 						long res=((Result)r.getChildAt(i)).getAddress();
 						list.add(res);
@@ -158,7 +158,7 @@ public class EveFindDictReverse {
 				System.out.println(String.format("Stage4-DBRowListArray-taget: %08X", target));
 				
 				try {
-					ResultList r = process.search(beginAddr, endAddr, ""+target, DSType.Byte4);
+					ResultList r = process.search(beginAddr, endAddr, ""+target, new Byte4Listener());
 					for (int i = 0; i < r.getChildCount(); i++){
 						long res=((Result)r.getChildAt(i)).getAddress();
 						list.add(res);
@@ -181,7 +181,7 @@ public class EveFindDictReverse {
 				addr=addr-(3*4);
 				System.out.println(String.format("Stage5-PyList-taget: %08X", addr));
 				try {
-					ResultList r = process.search(beginAddr, endAddr, ""+addr, DSType.Byte4);
+					ResultList r = process.search(beginAddr, endAddr, ""+addr, new Byte4Listener());
 					for (int i = 0; i < r.getChildCount(); i++){
 						long res=((Result)r.getChildAt(i)).getAddress();
 						list.add(res);
@@ -228,7 +228,7 @@ public class EveFindDictReverse {
 			System.out.println(String.format("Stage7-DictPtr-taget: %08X", addr));
 			
 			try {
-				ResultList r = process.search(beginAddr, endAddr, ""+addr, DSType.Byte4);
+				ResultList r = process.search(beginAddr, endAddr, ""+addr, new Byte4Listener());
 				for (int i = 0; i < r.getChildCount(); i++){
 					long res=((Result)r.getChildAt(i)).getAddress();
 					list.add(res);
@@ -252,7 +252,7 @@ public class EveFindDictReverse {
 				try {
 //					process.ReadProcessMemory(Pointer.createConstant(addr), buffer, (int)buffer.getSize(), null);
 //					if (buffer.getInt(0)!=0){	//Hash != 0			
-						ResultList r = process.search(beginAddr, endAddr, ""+addr, DSType.Byte4);
+						ResultList r = process.search(beginAddr, endAddr, ""+addr, new Byte4Listener());
 						results=r.getChildCount();
 						for (int i = 0; i < r.getChildCount(); i++){
 							long res=((Result)r.getChildAt(i)).getAddress();
@@ -276,7 +276,7 @@ public class EveFindDictReverse {
 			System.out.println(String.format("Stage9-DictPtrofDict-taget: %08X", addr));
 			
 			try {
-				ResultList r = process.search(beginAddr, endAddr, ""+addr, DSType.Byte4);
+				ResultList r = process.search(beginAddr, endAddr, ""+addr, new Byte4Listener());
 				for (int i = 0; i < r.getChildCount(); i++){
 					long res=((Result)r.getChildAt(i)).getAddress();
 					list.add(res-3*4);
@@ -296,7 +296,7 @@ public class EveFindDictReverse {
 			System.out.println(String.format("Stage10-Instance-taget: %08X", addr));
 			
 			try {
-				ResultList r = process.search(beginAddr, endAddr, ""+addr, DSType.Byte4);
+				ResultList r = process.search(beginAddr, endAddr, ""+addr, new Byte4Listener());
 				for (int i = 0; i < r.getChildCount(); i++){
 					long res=((Result)r.getChildAt(i)).getAddress();
 					list.add(res);

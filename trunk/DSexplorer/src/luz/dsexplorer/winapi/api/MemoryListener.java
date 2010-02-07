@@ -1,32 +1,9 @@
 package luz.dsexplorer.winapi.api;
 
-import luz.dsexplorer.datastructures.DSType;
-import luz.dsexplorer.datastructures.Datastructure;
-
 import com.sun.jna.Memory;
 
 
-public abstract class MemoryListener {
-	private ResultList results;
-	private String value;
-	private DSType type;
-	private int overlapping;
-
-	public void add(Result result) {
-		results.add(result);
-	}
-	
-	public String getValue() {
-		return value;
-	}
-	
-	public Datastructure getType() {
-		return type.getInstance();
-	}
-	
-	public ResultList getResultList() {
-		return results;
-	}
+public interface MemoryListener {
 	
 	/**
 	 * To optimize memory reading, the reading algorithm divides large memory areas into
@@ -37,27 +14,10 @@ public abstract class MemoryListener {
 	 * 'size of the search pattern -1'.
 	 * @param overlapping
 	 */
-	public int getOverlapping(){
-		return overlapping;
-	}
-		
-	public void init(ResultList results, String value, DSType type){
-		this.results=results;
-		this.value=value;
-		this.type=type;
-		switch (type){
-			case Byte1:		overlapping=0;						break;	
-			case Byte2:		overlapping=1;						break;	
-			case Byte4:		overlapping=3;						break;	
-			case Byte8:		overlapping=7;						break;
-			case Float:		overlapping=3;						break;	
-			case Double:	overlapping=7;						break;
-			case ByteArray:	overlapping=(value.length()+1)/2;	break;	
-			case Ascii:		overlapping=value.length();			break;	
-			case Unicode:	overlapping=value.length()*2;		break;	//Assume utf16 = 2 bytes
-		}
-	}
 	
-	public abstract void mem(Memory outputBuffer, long address, long size);
+	public void init(ResultList results, String value);
+	public int getOverlapping();	
+	public void mem(Memory outputBuffer, long address, long size);
+
 
 }
