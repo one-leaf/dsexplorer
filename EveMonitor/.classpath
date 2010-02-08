@@ -7,6 +7,6 @@
 	<classpathentry kind="lib" path="lib/jna3.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="lib/simple-xml-2.1.8.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Winapi"/>
+	<classpathentry kind="lib" path="lib/winapi.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

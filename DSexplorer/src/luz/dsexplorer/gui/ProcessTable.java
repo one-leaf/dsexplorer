@@ -5,10 +5,10 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 
-import luz.dsexplorer.winapi.api.Process;
-import luz.dsexplorer.winapi.api.ProcessList;
-import luz.dsexplorer.winapi.api.WinAPI;
-import luz.dsexplorer.winapi.api.WinAPIImpl;
+import luz.winapi.api.Process;
+import luz.winapi.api.ProcessList;
+import luz.winapi.api.WinAPI;
+import luz.winapi.api.WinAPIImpl;
 
 
 public class ProcessTable extends JTable{

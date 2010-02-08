@@ -6,7 +6,7 @@ import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.datastructures.Datastructure;
 import luz.dsexplorer.datastructures.Result;
 import luz.dsexplorer.datastructures.ResultListImpl;
-import luz.dsexplorer.winapi.api.Process;
+import luz.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

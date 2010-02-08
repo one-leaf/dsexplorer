@@ -3,8 +3,8 @@ package luz.eveMonitor.utils;
 import java.util.LinkedList;
 import java.util.List;
 
-import luz.dsexplorer.winapi.api.MemoryListener;
-import luz.dsexplorer.winapi.api.Process;
+import luz.winapi.api.MemoryListener;
+import luz.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

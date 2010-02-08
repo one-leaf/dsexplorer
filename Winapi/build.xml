@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="dist" name="WinAPI">
+	<!--ANT 1.7 is required-->
+
+	<property name="dir.lib"			value="lib" />
+	<property name="dir.bin"			value="bin" />
+	<property name="dir.dist"			value="dist" />
+
+
+	<target name="dist">
+		<jar destfile="${dir.dist}/winapi.jar">
+			<fileset dir="${dir.bin}"/>
+		</jar>
+
+		<copy file="${dir.dist}/winapi.jar" tofile="../DSExplorer/lib/winapi.jar" overwrite="true"/>
+		<copy file="${dir.dist}/winapi.jar" tofile="../eveMonitor/lib/winapi.jar" overwrite="true"/>
+	</target>
+
+
+</project>
