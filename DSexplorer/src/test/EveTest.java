@@ -6,12 +6,12 @@ import java.util.Map.Entry;
 
 import luz.dsexplorer.datastructures.Container;
 import luz.dsexplorer.datastructures.ContainerImpl;
+import luz.dsexplorer.datastructures.Result;
+import luz.dsexplorer.datastructures.ResultListImpl;
 import luz.dsexplorer.datastructures.simple.Ascii;
 import luz.dsexplorer.datastructures.simple.Byte4;
 import luz.dsexplorer.winapi.api.Process;
 import luz.dsexplorer.winapi.api.ProcessList;
-import luz.dsexplorer.winapi.api.Result;
-import luz.dsexplorer.winapi.api.ResultListImpl;
 import luz.dsexplorer.winapi.api.WinAPI;
 import luz.dsexplorer.winapi.api.WinAPIImpl;
 

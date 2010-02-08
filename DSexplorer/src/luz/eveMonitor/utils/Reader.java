@@ -7,11 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import luz.dsexplorer.search.Byte4Listener;
 import luz.dsexplorer.winapi.api.Process;
 import luz.dsexplorer.winapi.api.ProcessList;
-import luz.dsexplorer.winapi.api.Result;
-import luz.dsexplorer.winapi.api.ResultList;
 import luz.dsexplorer.winapi.api.WinAPI;
 import luz.dsexplorer.winapi.api.WinAPIImpl;
 import luz.eveMonitor.datastructure.DBRow;
@@ -153,9 +150,11 @@ public class Reader {
 		int dictHash=(int)pyStringHash("orderCache");
 
 		try {
-			ResultList r = process.search(beginAddr, endAddr, ""+dictHash, new Byte4Listener());
-			for (int i = 0; i < r.getChildCount(); i++){
-				long res=((Result)r.getChildAt(i)).getAddress();
+			PointerListener listener = new PointerListener();
+			process.search(beginAddr, endAddr, ""+dictHash, listener);
+			List<Long> r = listener.getResults();
+			for (int i = 0; i < r.size(); i++){
+				long res=r.get(i);
 				res=res+2*4;
 				IntByReference val=new IntByReference();
 				process.ReadProcessMemory(Pointer.createConstant(res), val.getPointer(), 4, null);

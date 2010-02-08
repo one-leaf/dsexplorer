@@ -2,10 +2,10 @@ package test;
 
 import java.util.Iterator;
 
+import luz.dsexplorer.datastructures.Result;
+import luz.dsexplorer.datastructures.ResultList;
 import luz.dsexplorer.search.Byte4Listener;
 import luz.dsexplorer.winapi.api.Process;
-import luz.dsexplorer.winapi.api.Result;
-import luz.dsexplorer.winapi.api.ResultList;
 import luz.eveMonitor.datastructure.DBRow;
 import luz.eveMonitor.datastructure.PyDict;
 import luz.eveMonitor.datastructure.PyList;
@@ -113,7 +113,9 @@ public class EveFindDictHash {
 		System.out.println("Stage0-Hash-taget: "+String.format("%08X", hash));
 		
 		try {
-			ResultList r = process.search(beginAddr, endAddr, ""+hash, new Byte4Listener());
+			Byte4Listener listener = new Byte4Listener();
+			process.search(beginAddr, endAddr, ""+hash, listener);
+			ResultList r = listener.getResults();
 			for (int i = 0; i < r.getChildCount(); i++){
 				long res=((Result)r.getChildAt(i)).getAddress();
 				res=res+2*4;

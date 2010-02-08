@@ -1,14 +1,15 @@
 package luz.dsexplorer.search;
 
+import luz.dsexplorer.datastructures.Result;
+import luz.dsexplorer.datastructures.ResultList;
 import luz.dsexplorer.winapi.api.MemoryListener;
-import luz.dsexplorer.winapi.api.Result;
-import luz.dsexplorer.winapi.api.ResultList;
+import luz.dsexplorer.winapi.api.Process;
 
 import com.sun.jna.Memory;
 
 
 public abstract class AbstractMemoryListener implements MemoryListener {
-	protected ResultList results;
+	protected ResultList results;	
 	protected int overlapping;
 
 	public void add(Result result) {
@@ -32,8 +33,15 @@ public abstract class AbstractMemoryListener implements MemoryListener {
 		return overlapping;
 	}
 		
-	public abstract void init(ResultList results, String value);
+	@Override
+	public abstract void init(Process process, String value);
 	
+	@Override
 	public abstract void mem(Memory outputBuffer, long address, long size);
+	
+	@Override
+	public ResultList getResults(){
+		return results;
+	}
 
 }

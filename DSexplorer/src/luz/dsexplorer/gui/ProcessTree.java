@@ -13,9 +13,9 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import luz.dsexplorer.datastructures.Result;
+import luz.dsexplorer.datastructures.ResultList;
 import luz.dsexplorer.winapi.api.Process;
-import luz.dsexplorer.winapi.api.Result;
-import luz.dsexplorer.winapi.api.ResultList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

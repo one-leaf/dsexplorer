@@ -2,7 +2,6 @@ package luz.dsexplorer.winapi.api;
 
 import com.sun.jna.Memory;
 
-
 public interface MemoryListener {
 	
 	/**
@@ -15,9 +14,10 @@ public interface MemoryListener {
 	 * @param overlapping
 	 */
 	
-	public void init(ResultList results, String value);
+	public void init(Process process, String value);
 	public int getOverlapping();	
 	public void mem(Memory outputBuffer, long address, long size);
+	public Object getResults();
 
 
 }

@@ -4,9 +4,9 @@ import java.nio.charset.Charset;
 
 import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.datastructures.Datastructure;
-import luz.dsexplorer.winapi.api.ProcessImpl;
-import luz.dsexplorer.winapi.api.Result;
-import luz.dsexplorer.winapi.api.ResultList;
+import luz.dsexplorer.datastructures.Result;
+import luz.dsexplorer.datastructures.ResultListImpl;
+import luz.dsexplorer.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,15 +14,15 @@ import org.apache.commons.logging.LogFactory;
 import com.sun.jna.Memory;
 
 public class AsciiListener extends AbstractMemoryListener {
-	private static final Log log = LogFactory.getLog(ProcessImpl.class);
+	private static final Log log = LogFactory.getLog(AsciiListener.class);
 	private Charset ascii=Charset.forName("US-ASCII");
 	private DSType type=DSType.Ascii;
 	private int targetSize;
 	private String value;
 	
 	@Override
-	public void init(ResultList results, String value) {
-		this.results=results;
+	public void init(Process process, String value) {
+		this.results= new ResultListImpl(process);
 		this.overlapping=value.length();
 		this.targetSize=value.length();
 		this.value=value;		

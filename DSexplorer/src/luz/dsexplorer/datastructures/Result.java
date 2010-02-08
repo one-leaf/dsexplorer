@@ -1,4 +1,4 @@
-package luz.dsexplorer.winapi.api;
+package luz.dsexplorer.datastructures;
 
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -7,9 +7,6 @@ import java.util.List;
 
 import javax.swing.tree.TreeNode;
 
-import luz.dsexplorer.datastructures.Container;
-import luz.dsexplorer.datastructures.DSListener;
-import luz.dsexplorer.datastructures.Datastructure;
 import luz.dsexplorer.exceptions.NoProcessException;
 
 import org.apache.commons.logging.Log;
@@ -221,7 +218,7 @@ public class Result implements TreeNode, DSListener, Cloneable {
 	}
 	
 	public byte[] getMemoryBytes(long low, long high) {
-		Memory buffer=new Memory(high-low);		
+		Memory buffer=new Memory(high-low);
 		byte[] value=null;
 		try {
 			getResultList().ReadProcessMemory(Pointer.createConstant(low), buffer, (int)buffer.getSize(), null);

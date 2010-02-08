@@ -1,8 +1,9 @@
 package luz.dsexplorer.search;
 
 import luz.dsexplorer.datastructures.DSType;
-import luz.dsexplorer.winapi.api.Result;
-import luz.dsexplorer.winapi.api.ResultList;
+import luz.dsexplorer.datastructures.Result;
+import luz.dsexplorer.datastructures.ResultListImpl;
+import luz.dsexplorer.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,8 +17,8 @@ public class Byte1Listener extends AbstractMemoryListener {
 	private byte value;
 	
 	@Override
-	public void init(ResultList results, String value) {
-		this.results=results;
+	public void init(Process process, String value) {
+		this.results= new ResultListImpl(process);
 		this.value=Byte.parseByte(value);
 	}
 	

@@ -21,6 +21,8 @@ import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 
 import luz.dsexplorer.datastructures.DSType;
+import luz.dsexplorer.datastructures.Result;
+import luz.dsexplorer.datastructures.ResultList;
 import luz.dsexplorer.gui.listener.MemorySearchListener;
 import luz.dsexplorer.search.AsciiListener;
 import luz.dsexplorer.search.Byte1Listener;
@@ -33,8 +35,6 @@ import luz.dsexplorer.search.FloatListener;
 import luz.dsexplorer.search.UnicodeListener;
 import luz.dsexplorer.winapi.api.MemoryListener;
 import luz.dsexplorer.winapi.api.Process;
-import luz.dsexplorer.winapi.api.Result;
-import luz.dsexplorer.winapi.api.ResultList;
 
 
 /**
@@ -275,7 +275,8 @@ public class MemorySearch extends javax.swing.JPanel {
 				case Unicode:	listener=new UnicodeListener();		break;	
 				default: 		listener=null;
 			}			
-			ResultList results=process.search(from, to, txtSearch.getText(), listener);
+			process.search(from, to, txtSearch.getText(), listener);
+			ResultList results=(ResultList)listener.getResults();
 			tblResults.setResults(results);
 		}catch(NumberFormatException e){
 			
