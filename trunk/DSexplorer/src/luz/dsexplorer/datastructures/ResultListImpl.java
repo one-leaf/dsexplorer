@@ -14,7 +14,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import luz.dsexplorer.exceptions.NoProcessException;
-import luz.dsexplorer.winapi.api.Process;
+import luz.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -33,8 +33,8 @@ import luz.dsexplorer.search.ByteArrayListener;
 import luz.dsexplorer.search.DoubleListener;
 import luz.dsexplorer.search.FloatListener;
 import luz.dsexplorer.search.UnicodeListener;
-import luz.dsexplorer.winapi.api.MemoryListener;
-import luz.dsexplorer.winapi.api.Process;
+import luz.winapi.api.MemoryListener;
+import luz.winapi.api.Process;
 
 
 /**

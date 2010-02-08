@@ -2,7 +2,7 @@ package luz.eveMonitor.datastructure;
 
 import java.util.Iterator;
 
-import luz.dsexplorer.winapi.api.Process;
+import luz.winapi.api.Process;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;

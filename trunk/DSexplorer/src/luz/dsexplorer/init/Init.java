@@ -5,8 +5,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import luz.dsexplorer.gui.MainWindow;
-import luz.dsexplorer.winapi.tools.Advapi32Tools;
-import luz.dsexplorer.winapi.tools.Kernel32Tools;
+import luz.winapi.tools.Advapi32Tools;
+import luz.winapi.tools.Kernel32Tools;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -2,8 +2,8 @@ package luz.dsexplorer.search;
 
 import luz.dsexplorer.datastructures.Result;
 import luz.dsexplorer.datastructures.ResultList;
-import luz.dsexplorer.winapi.api.MemoryListener;
-import luz.dsexplorer.winapi.api.Process;
+import luz.winapi.api.MemoryListener;
+import luz.winapi.api.Process;
 
 import com.sun.jna.Memory;
 

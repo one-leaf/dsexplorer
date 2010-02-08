@@ -2,9 +2,9 @@ package luz.eveMonitor.threads;
 
 import java.io.File;
 
-import luz.dsexplorer.winapi.api.Process;
 import luz.eveMonitor.datastructure.PyDict;
 import luz.eveMonitor.datastructure.PyObjectFactory;
+import luz.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

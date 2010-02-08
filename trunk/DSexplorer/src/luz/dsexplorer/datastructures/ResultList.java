@@ -6,7 +6,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
 import luz.dsexplorer.exceptions.NoProcessException;
-import luz.dsexplorer.winapi.api.Process;
+import luz.winapi.api.Process;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;

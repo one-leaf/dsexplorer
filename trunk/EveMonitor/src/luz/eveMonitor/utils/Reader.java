@@ -7,10 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import luz.dsexplorer.winapi.api.Process;
-import luz.dsexplorer.winapi.api.ProcessList;
-import luz.dsexplorer.winapi.api.WinAPI;
-import luz.dsexplorer.winapi.api.WinAPIImpl;
 import luz.eveMonitor.datastructure.DBRow;
 import luz.eveMonitor.datastructure.DBRowMarket;
 import luz.eveMonitor.datastructure.PyDict;
@@ -20,6 +16,10 @@ import luz.eveMonitor.datastructure.PyObject;
 import luz.eveMonitor.datastructure.PyObjectFactory;
 import luz.eveMonitor.datastructure.RowList;
 import luz.eveMonitor.datastructure.PyDict.PyDictEntry;
+import luz.winapi.api.Process;
+import luz.winapi.api.ProcessList;
+import luz.winapi.api.WinAPI;
+import luz.winapi.api.WinAPIImpl;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;

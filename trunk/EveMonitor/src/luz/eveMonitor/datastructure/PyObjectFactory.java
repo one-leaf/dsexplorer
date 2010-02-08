@@ -1,6 +1,6 @@
 package luz.eveMonitor.datastructure;
 
-import luz.dsexplorer.winapi.api.Process;
+import luz.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

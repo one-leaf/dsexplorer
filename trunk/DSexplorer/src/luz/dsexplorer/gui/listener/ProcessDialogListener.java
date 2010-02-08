@@ -2,7 +2,7 @@ package luz.dsexplorer.gui.listener;
 
 import java.util.EventListener;
 
-import luz.dsexplorer.winapi.api.Process;
+import luz.winapi.api.Process;
 
 public interface ProcessDialogListener extends EventListener  {
     

@@ -1,6 +1,6 @@
 package luz.eveMonitor.datastructure;
 
-import luz.dsexplorer.winapi.api.Process;
+import luz.winapi.api.Process;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;

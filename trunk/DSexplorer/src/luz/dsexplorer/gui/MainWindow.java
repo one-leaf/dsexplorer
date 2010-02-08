@@ -28,7 +28,7 @@ import luz.dsexplorer.datastructures.ResultListImpl;
 import luz.dsexplorer.datastructures.simple.Byte4;
 import luz.dsexplorer.gui.listener.MemorySearchListener;
 import luz.dsexplorer.gui.listener.ProcessDialogListener;
-import luz.dsexplorer.winapi.api.Process;
+import luz.winapi.api.Process;
 
 
 
