@@ -23,12 +23,12 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileFilter;
 
+import luz.dsexplorer.datastructures.Result;
+import luz.dsexplorer.datastructures.ResultListImpl;
 import luz.dsexplorer.datastructures.simple.Byte4;
 import luz.dsexplorer.gui.listener.MemorySearchListener;
 import luz.dsexplorer.gui.listener.ProcessDialogListener;
 import luz.dsexplorer.winapi.api.Process;
-import luz.dsexplorer.winapi.api.Result;
-import luz.dsexplorer.winapi.api.ResultListImpl;
 
 
 

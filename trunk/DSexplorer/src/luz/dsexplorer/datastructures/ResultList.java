@@ -1,4 +1,4 @@
-package luz.dsexplorer.winapi.api;
+package luz.dsexplorer.datastructures;
 
 import java.io.File;
 
@@ -6,6 +6,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
 import luz.dsexplorer.exceptions.NoProcessException;
+import luz.dsexplorer.winapi.api.Process;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;

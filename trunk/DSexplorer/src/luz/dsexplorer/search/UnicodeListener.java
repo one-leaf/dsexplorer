@@ -4,8 +4,9 @@ import java.nio.charset.Charset;
 
 import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.datastructures.Datastructure;
-import luz.dsexplorer.winapi.api.Result;
-import luz.dsexplorer.winapi.api.ResultList;
+import luz.dsexplorer.datastructures.Result;
+import luz.dsexplorer.datastructures.ResultListImpl;
+import luz.dsexplorer.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,8 +21,8 @@ public class UnicodeListener extends AbstractMemoryListener {
 	private String value;
 	
 	@Override
-	public void init(ResultList results, String value) {
-		this.results=results;
+	public void init(Process process, String value) {
+		this.results= new ResultListImpl(process);
 		this.overlapping=value.length()*2;	//Assume utf16 = 2 bytes
 		this.targetSize=value.length()*2;
 		this.value=value.toLowerCase();		

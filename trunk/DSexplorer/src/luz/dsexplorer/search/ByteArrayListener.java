@@ -2,8 +2,9 @@ package luz.dsexplorer.search;
 
 import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.datastructures.Datastructure;
-import luz.dsexplorer.winapi.api.Result;
-import luz.dsexplorer.winapi.api.ResultList;
+import luz.dsexplorer.datastructures.Result;
+import luz.dsexplorer.datastructures.ResultListImpl;
+import luz.dsexplorer.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,8 +18,8 @@ public class ByteArrayListener extends AbstractMemoryListener {
 	private byte[] target;
 	
 	@Override
-	public void init(ResultList results, String value) {
-		this.results=results;
+	public void init(Process process, String value) {
+		this.results= new ResultListImpl(process);
 		value=value.trim();
 		this.overlapping=(value.length()+1)/2;
 

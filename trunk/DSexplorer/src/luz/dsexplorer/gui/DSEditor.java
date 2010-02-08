@@ -24,8 +24,8 @@ import luz.dsexplorer.datastructures.ContainerImpl;
 import luz.dsexplorer.datastructures.DSList;
 import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.datastructures.Datastructure;
+import luz.dsexplorer.datastructures.Result;
 import luz.dsexplorer.datastructures.simple.Byte4;
-import luz.dsexplorer.winapi.api.Result;
 
 import org.fife.ui.hex.swing.HexEditor;
 
@@ -354,7 +354,7 @@ public class DSEditor extends javax.swing.JPanel {
 	
 	private void setHexeditor(Result result){
 		Long address=result.getAddress();
-		if (address!=null){
+		if (address!=null && address>=0){
 			long low=Math.max(address-512, 0);
 			long high=address+512;
 			hexEditor.open(result.getMemoryBytes(low, high), low);		

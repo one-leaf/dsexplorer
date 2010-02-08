@@ -17,8 +17,6 @@ import org.simpleframework.xml.core.Persister;
 public class Status {
 	private static final Log log = LogFactory.getLog(Status.class);
 	private static final long serialVersionUID = -7273434703969063635L;
-	private static final String PID = "pid";
-	private static final String DICT = "dict";
 	private static final String FILENAME = "eveCache.xml";
 	
 	private Process process;

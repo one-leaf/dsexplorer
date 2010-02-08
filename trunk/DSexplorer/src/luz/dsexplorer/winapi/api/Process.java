@@ -12,6 +12,6 @@ public interface Process {
 	public int getPid();
 	public void addHwnd(Pointer hWnd);
 	public Object getIcon();
-	public ResultList search(long from, long to, final String value, final MemoryListener listener) throws Exception;
+	public void search(long from, long to, final String value, final MemoryListener listener) throws Exception;
 	public String getStatic(Long address);
 }

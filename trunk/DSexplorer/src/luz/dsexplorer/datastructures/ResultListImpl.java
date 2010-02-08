@@ -1,4 +1,4 @@
-package luz.dsexplorer.winapi.api;
+package luz.dsexplorer.datastructures;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,10 +13,8 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import luz.dsexplorer.datastructures.Container;
-import luz.dsexplorer.datastructures.DSList;
-import luz.dsexplorer.datastructures.Datastructure;
 import luz.dsexplorer.exceptions.NoProcessException;
+import luz.dsexplorer.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

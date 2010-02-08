@@ -3,7 +3,7 @@ package luz.dsexplorer.gui.listener;
 import java.util.EventListener;
 import java.util.List;
 
-import luz.dsexplorer.winapi.api.Result;
+import luz.dsexplorer.datastructures.Result;
 
 public interface MemorySearchListener extends EventListener  {
     

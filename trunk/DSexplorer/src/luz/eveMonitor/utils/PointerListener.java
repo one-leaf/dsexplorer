@@ -1,8 +1,9 @@
-package luz.dsexplorer.search;
+package luz.eveMonitor.utils;
 
-import luz.dsexplorer.datastructures.DSType;
-import luz.dsexplorer.datastructures.Result;
-import luz.dsexplorer.datastructures.ResultListImpl;
+import java.util.LinkedList;
+import java.util.List;
+
+import luz.dsexplorer.winapi.api.MemoryListener;
 import luz.dsexplorer.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
@@ -10,15 +11,15 @@ import org.apache.commons.logging.LogFactory;
 
 import com.sun.jna.Memory;
 
-public class Byte4Listener extends AbstractMemoryListener {
-	private static final Log log = LogFactory.getLog(Byte4Listener.class);
+public class PointerListener implements MemoryListener {
+	private static final Log log = LogFactory.getLog(PointerListener.class);
+	private List<Long> results;
 	private int overlapping=3;
-	private DSType type=DSType.Byte4;
 	private int value;
 	
 	@Override
 	public void init(Process process, String value) {
-		this.results= new ResultListImpl(process);
+		this.results= new LinkedList<Long>();
 		this.value=Integer.parseInt(value);
 	}
 	
@@ -28,10 +29,20 @@ public class Byte4Listener extends AbstractMemoryListener {
 			int current=outputBuffer.getInt(pos);
 			
 			if (this.value==current){
-				add(new Result(getResultList(), this.type.getInstance(), address+pos, current));
+				this.results.add(address+pos);
 				log.debug("Found:\t"+Long.toHexString(address+pos));
 			}
 		}
+	}
+
+	@Override
+	public int getOverlapping() {
+		return overlapping;
+	}
+
+	@Override
+	public List<Long> getResults() {
+		return results;
 	}
 
 }

@@ -229,19 +229,15 @@ public class ProcessImpl implements Process {
 		winAPI.ReadProcessMemory(getHandle(), pointer, outputBuffer, nSize, outNumberOfBytesRead);
 	}
 	
-	public ResultList search(long from, long to, final String value, MemoryListener listener) throws Exception {
+	public void search(long from, long to, final String value, MemoryListener listener) throws Exception {
 		log.debug("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" listener "+listener);
 		this.listener=listener;
-		final ResultList results = new ResultListImpl(this);
 		long timer=System.currentTimeMillis();
-		if (value==null || value.trim().equals(""))
-			return results;		
 
-		this.listener.init(results, value);
+		this.listener.init(this, value);
 		search(from, to);
 		
 		log.debug("timer "+(System.currentTimeMillis()-timer));
-		return results;
 	}
 	
 	private void search(long from, long to) throws Exception{
