@@ -36,12 +36,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JTable;
@@ -659,8 +660,9 @@ class HexTable extends JTable {
 		}
 
 		protected void paintComponent(Graphics g) {
-	    	((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-
+	    	Map desktopHints = (Map)(Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints"));
+	    	((Graphics2D)g).addRenderingHints(desktopHints);	    	
+	    	
 			g.setColor(getBackground());
 		    g.fillRect(0, 0, getWidth(),getHeight());
 
