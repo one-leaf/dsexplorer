@@ -661,7 +661,8 @@ class HexTable extends JTable {
 
 		protected void paintComponent(Graphics g) {
 	    	Map desktopHints = (Map)(Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints"));
-	    	((Graphics2D)g).addRenderingHints(desktopHints);	    	
+	    	if(desktopHints!=null)
+	    		((Graphics2D)g).addRenderingHints(desktopHints);	    	
 	    	
 			g.setColor(getBackground());
 		    g.fillRect(0, 0, getWidth(),getHeight());
