@@ -3,27 +3,43 @@
 	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
 
-	<persistence-unit name="eveMon"
-		transaction-type="RESOURCE_LOCAL">
+	<!-- look here for help: http://wiki.eclipse.org/Using_EclipseLink_JPA_Extensions_(ELUG) -->
+	
+	<persistence-unit name="eveDB" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
+		<!-- <exclude-unlisted-classes>false</exclude-unlisted-classes> -->
+		<class>luz.eveMonitor.entities.EveGraphic</class>
+		<class>luz.eveMonitor.entities.inv.InvCategory</class>
+		<class>luz.eveMonitor.entities.inv.InvGroup</class>
+		<class>luz.eveMonitor.entities.inv.InvMarketGroup</class>
+		<class>luz.eveMonitor.entities.inv.InvType</class>
+		<class>luz.eveMonitor.entities.map.MapSolarSystem</class>
+		<class>luz.eveMonitor.entities.map.MapRegion</class>
+		<class>luz.eveMonitor.entities.map.MapConstellation</class>
+		<class>luz.eveMonitor.entities.sta.StaOperation</class>
+		<class>luz.eveMonitor.entities.sta.StaStation</class>
+		<class>luz.eveMonitor.entities.sta.StaStationType</class>
+
 		<properties>
-			<property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:derby:EveMonDB;create=true" />
-			<property name="javax.persistence.jdbc.user" value="eveMon" />
-			<property name="javax.persistence.jdbc.password" value="pass" />
+			<!-- DOWNLOAD THIS DB -> http://eve.no-ip.de/dom111/dom111-sqlite3-v1.db.bz2 -->
+			<property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:sqlite:dom111-sqlite3-v1.db" />
+			<property name="javax.persistence.jdbc.user" value="" />
+			<property name="javax.persistence.jdbc.password" value="" />
 
-			<property name="eclipselink.target-database" value="Derby" />
-			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+			<property name="eclipselink.target-database" value="Database" />		<!-- SQLLite is not supported -->
+			<property name="eclipselink.ddl-generation" value="none" />				<!-- do not touch this db -->
 			<property name="eclipselink.ddl-generation.output-mode" value="database" />
+			
+			<property name="eclipselink.jdbc.read-connections.shared" value="true" />
 			<property name="eclipselink.jdbc.read-connections.min" value="1" />
-			<property name="eclipselink.jdbc.write-connections.min" value="1" />
+			<property name="eclipselink.jdbc.read-connections.max" value="1" />			
+			<property name="eclipselink.jdbc.write-connections.min" value="0" />	<!-- do not touch this db -->
+			<property name="eclipselink.jdbc.write-connections.max" value="0" />	<!-- do not touch this db -->
 
-			<property name="eclipselink.logging.level" value="ALL" />
-			<property name="eclipselink.logging.thread" value="true" />
-			<property name="eclipselink.logging.session" value="true" />
-			<property name="eclipselink.logging.timestamp" value="true" />
-			<property name="eclipselink.logging.exceptions" value="true" />
+			<property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.CommonsLoggingSessionLog" />
+			<property name="eclipselink.logging.level" value="INFO" />
 
 		</properties>
 
