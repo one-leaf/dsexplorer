@@ -8,9 +8,9 @@
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="lib/simple-xml-2.1.8.jar"/>
 	<classpathentry kind="lib" path="lib/winapi.jar"/>
-	<classpathentry kind="lib" path="lib/derby-10.5.3.0.jar"/>
-	<classpathentry kind="lib" path="lib/derbyclient.jar"/>
+	<classpathentry kind="lib" path="lib/sqlitejdbc-v056.jar"/>
 	<classpathentry kind="lib" path="lib/eclipselink.2.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/javax.persistence_1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/eclipselink-commonsLogging.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
