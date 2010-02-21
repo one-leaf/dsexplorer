@@ -3,6 +3,8 @@ package luz.eveMonitor.init;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -24,6 +26,9 @@ public class Init {
 	private static DictFinder df;
 	private static RowFinder rf;
 	
+	private static EntityManager emEveDB;
+	private static EntityManager emEveMon;
+	
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -33,12 +38,15 @@ public class Init {
 		} catch (IllegalAccessException e)          { log.warn("getSystemLookAndFeelClassName", e);
 		} catch (UnsupportedLookAndFeelException e) { log.warn("getSystemLookAndFeelClassName", e);
 		}
-
+		
+		emEveMon = Persistence.createEntityManagerFactory("eveMon").createEntityManager();
+		emEveDB  = Persistence.createEntityManagerFactory("eveDB" ).createEntityManager();
+		
 		window=new MainWindow();
 		status=new Status();
 		pf = new ProcessFinder(status);
 		df = new DictFinder(status);
-		rf = new RowFinder(status, window);
+		rf = new RowFinder(status, window, emEveMon, emEveDB);
 		
 		pf.start();
 		df.start();

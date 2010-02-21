@@ -1,4 +1,4 @@
-package luz.eveMonitor.entities.map;
+package luz.eveMonitor.entities.eveDB.map;
 
 import java.io.Serializable;
 

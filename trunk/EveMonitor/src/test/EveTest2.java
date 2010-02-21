@@ -3,8 +3,8 @@ package test;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import luz.eveMonitor.datastructure.DBRowMarket;
 import luz.eveMonitor.datastructure.PyDict;
+import luz.eveMonitor.entities.eveMon.Order;
 import luz.eveMonitor.utils.Reader;
 
 import com.sun.jna.Memory;
@@ -43,13 +43,12 @@ public class EveTest2 {
 	}
 
 	private static void showRows(Reader r) throws Exception {
-		List<DBRowMarket> list = r.getRows();
+		List<Order> list = r.getRows();
 		StringBuilder sb=new StringBuilder();
 		int rows=0;
-		for (DBRowMarket marketRow : list) {
+		for (Order marketRow : list) {
 			sb.setLength(0);
 			sb.append(rows)								.append('\t');
-			sb.append(String.format("%08X", marketRow.getAddress())).append('\t');//sb.append("price     ");
 			sb.append(marketRow.getPrice())				.append('\t');//sb.append("vol rem   ");
 			sb.append(marketRow.getVolRem())			.append('\t');//sb.append("issued    ");
 			sb.append(sdf.format(marketRow.getIssued())).append('\t');//sb.append("orderID   ");

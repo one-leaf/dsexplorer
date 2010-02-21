@@ -1,4 +1,4 @@
-package luz.eveMonitor.entities.sta;
+package luz.eveMonitor.entities.eveDB.sta;
 
 import java.io.Serializable;
 

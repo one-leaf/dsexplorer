@@ -48,7 +48,7 @@ public class Status {
 	
 	public void setProcess(Process process) {
 		if ((this.process==null && process!=null) 
-				|| !this.process.equals(process)){
+				|| (this.process!=null && !this.process.equals(process)) ){
 			this.process = process;
 			this.dict=null;
 			if(process!=null)
