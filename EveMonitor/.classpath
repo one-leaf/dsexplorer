@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/eclipselink.2.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/javax.persistence_1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/eclipselink-commonsLogging.jar"/>
+	<classpathentry kind="lib" path="lib/h2-1.2.129.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

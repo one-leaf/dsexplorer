@@ -1,4 +1,4 @@
-package luz.eveMonitor.entities.sta;
+package luz.eveMonitor.entities.eveDB.sta;
 
 import java.io.Serializable;
 
@@ -6,9 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 
-import luz.eveMonitor.entities.map.MapConstellation;
-import luz.eveMonitor.entities.map.MapRegion;
-import luz.eveMonitor.entities.map.MapSolarSystem;
+import luz.eveMonitor.entities.eveDB.map.MapConstellation;
+import luz.eveMonitor.entities.eveDB.map.MapRegion;
+import luz.eveMonitor.entities.eveDB.map.MapSolarSystem;
 
 @Entity(name="StaStations")
 public class StaStation implements Serializable{

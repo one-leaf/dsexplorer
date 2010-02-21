@@ -10,7 +10,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 
-import luz.eveMonitor.datastructure.DBRowMarket;
+import luz.eveMonitor.entities.eveMon.Order;
 
 
 public class DBRowTable extends JTable{
@@ -26,28 +26,27 @@ public class DBRowTable extends JTable{
 
 		this.setModel(model);
 		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		this.getColumnModel().getColumn( 0).setPreferredWidth(20);
-		this.getColumnModel().getColumn( 1).setPreferredWidth(20);
-		this.getColumnModel().getColumn( 2).setPreferredWidth(20);
-		this.getColumnModel().getColumn( 3).setPreferredWidth(80);	//Issued
-		this.getColumnModel().getColumn( 4).setPreferredWidth(30);
-		this.getColumnModel().getColumn( 5).setPreferredWidth(20);
+		this.getColumnModel().getColumn( 0).setPreferredWidth(30);	//OrderID
+		this.getColumnModel().getColumn( 1).setPreferredWidth(5);	//Bid	
+		this.getColumnModel().getColumn( 2).setPreferredWidth(10);	//type
+		this.getColumnModel().getColumn( 3).setPreferredWidth(40);	//Price
+		this.getColumnModel().getColumn( 4).setPreferredWidth(10);	//VolRem
+		this.getColumnModel().getColumn( 5).setPreferredWidth(10);	//VolEnter
 		this.getColumnModel().getColumn( 6).setPreferredWidth(10);	//VolMin
-		this.getColumnModel().getColumn( 7).setPreferredWidth(30);
-		this.getColumnModel().getColumn( 8).setPreferredWidth(30);
-		this.getColumnModel().getColumn( 9).setPreferredWidth(30);
+		this.getColumnModel().getColumn( 7).setPreferredWidth(30);	//Station
+		this.getColumnModel().getColumn( 8).setPreferredWidth(30);	//System
+		this.getColumnModel().getColumn( 9).setPreferredWidth(30);	//Region
 		this.getColumnModel().getColumn(10).setPreferredWidth(10);	//Jumps
-		this.getColumnModel().getColumn(11).setPreferredWidth(10);	//type
-		this.getColumnModel().getColumn(12).setPreferredWidth(50);	//range
-		this.getColumnModel().getColumn(13).setPreferredWidth(50);	//dur
-		this.getColumnModel().getColumn(14).setPreferredWidth(5);	//Bid		
+		this.getColumnModel().getColumn(11).setPreferredWidth(50);	//range
+		this.getColumnModel().getColumn(12).setPreferredWidth(80);	//Issued
+		this.getColumnModel().getColumn(13).setPreferredWidth(50);	//dur	
 	}
 	
 	public void refresh() {
 		model.refresh();		
 	}
 	
-	public DBRowMarket getSelectedItem(){		
+	public Order getSelectedItem(){		
 		int rowSorted = this.getSelectedRow();
 		if (rowSorted!=-1){
 			int rowReal =getRowSorter().convertRowIndexToModel(rowSorted);
@@ -60,29 +59,28 @@ public class DBRowTable extends JTable{
 		private static final long serialVersionUID = 7780019195084742274L;
 		private SimpleDateFormat sdfIssued = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 		private Object[][] columns = {
-				{"Addr",		Integer.class},
+				{"OrderID",		Integer.class},
+				{"Bid",			Byte.class}	,
+				{"Type",		String.class},
 				{"Price",		Double.class},
 				{"VolRem",		Double.class},
-				{"Issued",		String.class},
-				{"OrderID",		Integer.class},
 				{"VolEnter",	Integer.class},
 				{"VolMin",		Integer.class},
-				{"StationID",	Integer.class},
-				{"RegionID",	Integer.class},
-				{"SystemID",	Integer.class},
+				{"Station",		String.class},
+				{"System",		String.class},
+				{"Region",		String.class},
 				{"Jumps",		Integer.class},
-				{"Type",		Short.class},
 				{"Range",		String.class},
-				{"Duration",	String.class},
-				{"Bid",			Byte.class}				
+				{"Issued",		String.class},
+				{"Duration",	String.class}		
 		};
 
-		private List<DBRowMarket> list=new LinkedList<DBRowMarket>();
+		private List<Order> list=new LinkedList<Order>();
 	    public MyTableModel(){
 
 	    }
 	    
-	    public DBRowMarket getItemAt(int index) {
+	    public Order getItemAt(int index) {
 			return list.get(index);
 		}
 
@@ -109,20 +107,20 @@ public class DBRowTable extends JTable{
 	    @Override
 	    public Object getValueAt(int row, int col) {
 			try {
-		    	switch (col){		    	
-		    		case  0: return String.format("%08X", list.get(row).getAddress());	
-		    		case  1: return list.get(row).getPrice();
-		    		case  2: return list.get(row).getVolRem();
-		    		case  3: return sdfIssued.format(list.get(row).getIssued());
-		    		case  4: return list.get(row).getOrderID();
+		    	switch (col){
+	    			case  0: return list.get(row).getOrderID();
+		    		case  1: return list.get(row).getBid();
+		    		case  2: return list.get(row).getType().getTypeName();
+		    		case  3: return list.get(row).getPrice();
+		    		case  4: return list.get(row).getVolRem();
 		    		case  5: return list.get(row).getVolEnter();
 		    		case  6: return list.get(row).getVolMin();
-		    		case  7: return list.get(row).getStationID();
-		    		case  8: return list.get(row).getRegionID();
-		    		case  9: return list.get(row).getSystemID();
+		    		case  7: return list.get(row).getStation().getStationName();
+		    		case  8: return list.get(row).getSystem().getSolarSystemName();
+		    		case  9: return list.get(row).getRegion().getRegionName();
 		    		case 10: return list.get(row).getJumps();
-		    		case 11: return list.get(row).getType();
-		    		case 12:
+
+		    		case 11:
 		    			short range=list.get(row).getRange();
 		    			switch (range) {
 							case -1: return "Station";
@@ -130,6 +128,7 @@ public class DBRowTable extends JTable{
 							case 32767: return "Region";
 							default:return range+" Jumps";
 						}
+		    		case 12: return sdfIssued.format(list.get(row).getIssued());
 		    		case 13: 
 		    			short days=list.get(row).getDuration();
 		    			long issued=list.get(row).getIssued().getTime();
@@ -147,7 +146,7 @@ public class DBRowTable extends JTable{
 		    				c.get(Calendar.MINUTE)     +"M "+
 		    				c.get(Calendar.SECOND)     +"S ";
 		    			return diff;
-		    		case 14: return list.get(row).getBid();
+
 		    	}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -155,21 +154,21 @@ public class DBRowTable extends JTable{
 			return null;
 	    }
 
-		public void addItem(DBRowMarket row) {
+		public void addItem(Order row) {
 			if(row!=null){
 				this.list.add(row);
 				fireTableDataChanged();
 			}
 		}
 
-		public void addItems(List<DBRowMarket> list) {
+		public void addItems(List<Order> list) {
 			if (list!=null && list.size()>0){
 				this.list.addAll(list);
 				fireTableDataChanged();
 			}
 		}
 		
-		public void setItems(List<DBRowMarket> list) {
+		public void setItems(List<Order> list) {
 			this.list=list;
 			fireTableDataChanged();			
 		}
@@ -184,16 +183,16 @@ public class DBRowTable extends JTable{
 
 	}
 
-	public void addItem(DBRowMarket row) {
+	public void addItem(Order row) {
 		model.addItem(row);
 		
 	}
 
-	public void setItems(List<DBRowMarket> list) {
+	public void setItems(List<Order> list) {
 		model.setItems(list);		
 	}
 
-	public void addItems(List<DBRowMarket> list) {
+	public void addItems(List<Order> list) {
 		model.addItems(list);		
 	}
 }

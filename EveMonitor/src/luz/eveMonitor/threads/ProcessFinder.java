@@ -21,7 +21,7 @@ public  class ProcessFinder extends Thread{
 		begin:
 		while(run){
 			status.setProcess(reader.findProcess());
-			log.debug("checking eve process "+status.getPid());
+			log.debug("checking eve process: "+status.getPid());
 			try {
                 sleep(2*1000);
             } catch (InterruptedException e){

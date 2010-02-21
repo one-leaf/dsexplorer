@@ -13,7 +13,7 @@ import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import luz.eveMonitor.datastructure.DBRowMarket;
+import luz.eveMonitor.entities.eveMon.Order;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -200,12 +200,12 @@ public class MainWindow extends javax.swing.JFrame {
 
 
 
-	public void setRows(List<DBRowMarket> list) {
+	public void setRows(List<Order> list) {
 		dBRowTable.setItems(list);
 	}
 	
 
-	public void addRows(List<DBRowMarket> list) {
+	public void addRows(List<Order> list) {
 		dBRowTable.addItems(list);
 	}
 	

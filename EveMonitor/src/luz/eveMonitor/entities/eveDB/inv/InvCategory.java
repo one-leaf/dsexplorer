@@ -1,4 +1,4 @@
-package luz.eveMonitor.entities.inv;
+package luz.eveMonitor.entities.eveDB.inv;
 
 import java.io.Serializable;
 
@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 
-import luz.eveMonitor.entities.EveGraphic;
+import luz.eveMonitor.entities.eveDB.EveGraphic;
 
 @Entity(name="invCategories")
 public class InvCategory implements Serializable{

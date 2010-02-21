@@ -2,7 +2,9 @@ package luz.eveMonitor.threads;
 
 import java.util.List;
 
-import luz.eveMonitor.datastructure.DBRowMarket;
+import javax.persistence.EntityManager;
+
+import luz.eveMonitor.entities.eveMon.Order;
 import luz.eveMonitor.gui.MainWindow;
 import luz.eveMonitor.utils.Reader;
 
@@ -13,12 +15,17 @@ public  class RowFinder extends Thread{
 	private static final Log log = LogFactory.getLog(RowFinder.class);
 	private static Reader reader=new Reader();
 	private MainWindow window;
+	private static EntityManager emEveDB;
+	private static EntityManager emEveMon;
 	private Status status=null;
 	private boolean run=true;
 	
-	public RowFinder(Status status, MainWindow window) {
+	public RowFinder(Status status, MainWindow window, EntityManager emEveMon, EntityManager emEveDB) {
 		this.status=status;
 		this.window=window;
+		this.emEveMon=emEveMon;
+		this.emEveDB=emEveDB;
+		reader.setEntityManager(emEveDB);
 	}
 	
 	
@@ -42,7 +49,7 @@ public  class RowFinder extends Thread{
 			
 			//PHASE 2 - find Rows ///////////////////////////////////////
 			while(status.getDict()!=null){
-				List<DBRowMarket> list = reader.getNewRows();
+				List<Order> list = reader.getNewRows();
 				this.window.addRows(list);
 				
 				synchronized (status) {

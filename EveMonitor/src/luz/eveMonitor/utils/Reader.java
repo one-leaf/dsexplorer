@@ -7,8 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+
 import luz.eveMonitor.datastructure.DBRow;
-import luz.eveMonitor.datastructure.DBRowMarket;
 import luz.eveMonitor.datastructure.PyDict;
 import luz.eveMonitor.datastructure.PyInt;
 import luz.eveMonitor.datastructure.PyList;
@@ -16,6 +17,7 @@ import luz.eveMonitor.datastructure.PyObject;
 import luz.eveMonitor.datastructure.PyObjectFactory;
 import luz.eveMonitor.datastructure.RowList;
 import luz.eveMonitor.datastructure.PyDict.PyDictEntry;
+import luz.eveMonitor.entities.eveMon.Order;
 import luz.winapi.api.Process;
 import luz.winapi.api.ProcessList;
 import luz.winapi.api.WinAPI;
@@ -30,9 +32,10 @@ import com.sun.jna.ptr.IntByReference;
 
 public class Reader {
 	static SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+	private EntityManager emEveDB;
 	private WinAPI winApi;
 	private PyDict dict;
-	
+
 	//Lazy things
 	private Process process;
 	
@@ -59,6 +62,10 @@ public class Reader {
 		this.dict=dict;
 	}
 	
+	public void setEntityManager(EntityManager emEveDB) {
+		this.emEveDB=emEveDB;		
+	}
+	
 	public Process findProcess(){
 		ProcessList pl = winApi.getProcessList();
 		for (Process p : pl) {
@@ -75,9 +82,9 @@ public class Reader {
 	}
 	
 	
-	public List<DBRowMarket> getRows() throws Exception{
+	public List<Order> getRows() throws Exception{
 		long timer=System.currentTimeMillis();
-		List<DBRowMarket> rows = new LinkedList<DBRowMarket>();
+		List<Order> rows = new LinkedList<Order>();
 		
 		Iterator<PyDictEntry> dictIter = dict.getDictEntries();
 		PyDictEntry dictEntry;
@@ -96,7 +103,7 @@ public class Reader {
 						DBRow dbRow;
 						while(rowIter.hasNext()){
 							dbRow=rowIter.next();
-							rows.add(new DBRowMarket(dbRow));
+							rows.add(new Order(dbRow, emEveDB));
 						}
 					}
 				}
@@ -108,9 +115,9 @@ public class Reader {
 	}
 	
 	private Map<Integer, Integer> stamps=new HashMap<Integer, Integer>();
-	public List<DBRowMarket> getNewRows() {
+	public List<Order> getNewRows() {
 		long timer=System.currentTimeMillis();
-		List<DBRowMarket> rows = new LinkedList<DBRowMarket>();
+		List<Order> rows = new LinkedList<Order>();
 		
 		int typeId;
 		Iterator<PyDictEntry> dictIter = dict.getDictEntries();
@@ -133,7 +140,7 @@ public class Reader {
 						DBRow dbRow;
 						while(rowIter.hasNext()){
 							dbRow=rowIter.next();
-							rows.add(new DBRowMarket(dbRow));
+							rows.add(new Order(dbRow, emEveDB));
 						}
 					}
 				}
@@ -202,6 +209,8 @@ public class Reader {
 		x = x&0xFFFFFFFFL;	//unsigned int
 		return x;
 	}
+
+
 
 
 	

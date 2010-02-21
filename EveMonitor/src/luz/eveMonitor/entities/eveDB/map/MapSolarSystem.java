@@ -1,4 +1,4 @@
-package luz.eveMonitor.entities.map;
+package luz.eveMonitor.entities.eveDB.map;
 
 import java.io.Serializable;
 
@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 
-import luz.eveMonitor.entities.inv.InvType;
+import luz.eveMonitor.entities.eveDB.inv.InvType;
 
 @Entity(name="MapSolarSystems")
 public class MapSolarSystem implements Serializable{
