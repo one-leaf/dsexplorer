@@ -1,15 +1,18 @@
 package luz.eveMonitor.threads;
 
-import luz.eveMonitor.utils.Reader;
+import luz.winapi.api.Process;
+import luz.winapi.api.ProcessList;
+import luz.winapi.api.WinAPI;
+import luz.winapi.api.WinAPIImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public  class ProcessFinder extends Thread{
 	private static final Log log = LogFactory.getLog(ProcessFinder.class);
-	private static Reader reader=new Reader();
 	private Status status=null;
 	private boolean run=true;
+	private WinAPI winApi= WinAPIImpl.getInstance();	
 	
 	public ProcessFinder(Status status) {
 		this.status=status;
@@ -20,7 +23,7 @@ public  class ProcessFinder extends Thread{
 	public void run() {
 		begin:
 		while(run){
-			status.setProcess(reader.findProcess());
+			status.setProcess(findProcess());
 			log.debug("checking eve process: "+status.getPid());
 			try {
                 sleep(2*1000);
@@ -33,6 +36,17 @@ public  class ProcessFinder extends Thread{
 	public void stopNow(){
 		run=false;
 		this.interrupt();
+	}
+	
+	
+	public Process findProcess(){
+		ProcessList pl = winApi.getProcessList();
+		for (Process p : pl) {
+			if (p.getSzExeFile().endsWith("ExeFile.exe")){
+				return p;
+			}			
+		}
+		return null;
 	}
 
 }

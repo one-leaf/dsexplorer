@@ -3,7 +3,7 @@ package test;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import luz.eveMonitor.datastructure.PyDict;
+import luz.eveMonitor.datastructure.python.PyDict;
 import luz.eveMonitor.entities.eveMon.Order;
 import luz.eveMonitor.utils.Reader;
 

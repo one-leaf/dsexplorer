@@ -2,8 +2,8 @@ package luz.eveMonitor.threads;
 
 import java.io.File;
 
-import luz.eveMonitor.datastructure.PyDict;
-import luz.eveMonitor.datastructure.PyObjectFactory;
+import luz.eveMonitor.datastructure.python.PyDict;
+import luz.eveMonitor.datastructure.python.PyObjectFactory;
 import luz.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
@@ -63,8 +63,7 @@ public class Status {
 	}
 	
 	public void setDict(PyDict dict) {
-		if ((this.dict==null && dict!=null) 
-				|| !this.dict.equals(dict)){
+		if (!areEqual(this.dict, dict)){
 			this.dict = dict;
 			if(dict!=null)
 				this.dictAddr=dict.getAddress();
@@ -84,6 +83,10 @@ public class Status {
 		}
 	}
 	
+	static public boolean areEqual(Object aThis, Object aThat){
+		return aThis == null ? aThat == null : aThis.equals(aThat);
+	}
+	
 	public void getCache(){
 		if (this.process!=null){			
 
@@ -101,7 +104,7 @@ public class Status {
 					}					
 				}				
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.warn(e);
 			}
 		}
 	}

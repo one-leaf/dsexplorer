@@ -1,12 +1,13 @@
-package luz.eveMonitor.datastructure;
+package luz.eveMonitor.datastructure.python;
 
 import java.util.Date;
 
-import luz.eveMonitor.datastructure.RowDescr.Column;
-import luz.eveMonitor.datastructure.RowDescr.ColumnType;
+import luz.eveMonitor.datastructure.python.RowDescr.Column;
+import luz.eveMonitor.datastructure.python.RowDescr.ColumnType;
 import luz.winapi.api.Process;
 
 public class DBRow extends PyObject {
+	private RowDescr rowDescrCache=null;
 	
 	public DBRow(PyObject_VAR_HEAD head, Process process) {
 		super(head, 67, process);
@@ -14,7 +15,9 @@ public class DBRow extends PyObject {
 
 	public int		getRowDescrPtr(){return super.getInt   (0);}
 	public RowDescr getRowDescr(){
-		return (RowDescr)PyObjectFactory.getObject(getRowDescrPtr(), process, false);
+		if (rowDescrCache==null)
+			rowDescrCache=(RowDescr)PyObjectFactoryCached.getObject(getRowDescrPtr(), process, false);
+		return rowDescrCache;
 	}	
 	public int		getU4		  (){return super.getInt   (4);}
 

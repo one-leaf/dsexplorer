@@ -9,14 +9,14 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
-import luz.eveMonitor.datastructure.DBRow;
-import luz.eveMonitor.datastructure.PyDict;
-import luz.eveMonitor.datastructure.PyInt;
-import luz.eveMonitor.datastructure.PyList;
-import luz.eveMonitor.datastructure.PyObject;
-import luz.eveMonitor.datastructure.PyObjectFactory;
-import luz.eveMonitor.datastructure.RowList;
-import luz.eveMonitor.datastructure.PyDict.PyDictEntry;
+import luz.eveMonitor.datastructure.python.DBRow;
+import luz.eveMonitor.datastructure.python.PyDict;
+import luz.eveMonitor.datastructure.python.PyInt;
+import luz.eveMonitor.datastructure.python.PyList;
+import luz.eveMonitor.datastructure.python.PyObject;
+import luz.eveMonitor.datastructure.python.PyObjectFactory;
+import luz.eveMonitor.datastructure.python.RowList;
+import luz.eveMonitor.datastructure.python.PyDict.PyDictEntry;
 import luz.eveMonitor.entities.eveMon.Order;
 import luz.winapi.api.Process;
 import luz.winapi.api.ProcessList;

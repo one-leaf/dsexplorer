@@ -37,7 +37,7 @@
 			<property name="eclipselink.jdbc.write-connections.max" value="0" />	<!-- do not touch this db -->
 
 			<property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.CommonsLoggingSessionLog" />
-			<property name="eclipselink.logging.level" value="FINEST" />
+			<property name="eclipselink.logging.level" value="INFO" />
 
 		</properties>
 	</persistence-unit>
@@ -65,7 +65,7 @@
 			<property name="eclipselink.jdbc.write-connections.max" value="1" />
 
 			<property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.CommonsLoggingSessionLog" />
-			<property name="eclipselink.logging.level" value="FINEST" />
+			<property name="eclipselink.logging.level" value="INFO" />
 
 		</properties>
 	</persistence-unit>

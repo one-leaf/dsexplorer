@@ -3,9 +3,9 @@ package test;
 import java.util.LinkedList;
 import java.util.List;
 
-import luz.eveMonitor.datastructure.PyList;
-import luz.eveMonitor.datastructure.PyObject;
-import luz.eveMonitor.datastructure.PyObjectFactory;
+import luz.eveMonitor.datastructure.python.PyList;
+import luz.eveMonitor.datastructure.python.PyObject;
+import luz.eveMonitor.datastructure.python.PyObjectFactory;
 import luz.eveMonitor.utils.PointerListener;
 import luz.eveMonitor.utils.Reader;
 import luz.winapi.api.Process;

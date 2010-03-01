@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -23,23 +22,24 @@ public class DBRowTable extends JTable{
 		model=new MyTableModel();
 
 		this.setAutoCreateRowSorter(true);
-
+		
 		this.setModel(model);
 		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		this.getColumnModel().getColumn( 0).setPreferredWidth(30);	//OrderID
-		this.getColumnModel().getColumn( 1).setPreferredWidth(5);	//Bid	
-		this.getColumnModel().getColumn( 2).setPreferredWidth(10);	//type
-		this.getColumnModel().getColumn( 3).setPreferredWidth(40);	//Price
-		this.getColumnModel().getColumn( 4).setPreferredWidth(10);	//VolRem
-		this.getColumnModel().getColumn( 5).setPreferredWidth(10);	//VolEnter
-		this.getColumnModel().getColumn( 6).setPreferredWidth(10);	//VolMin
-		this.getColumnModel().getColumn( 7).setPreferredWidth(30);	//Station
-		this.getColumnModel().getColumn( 8).setPreferredWidth(30);	//System
-		this.getColumnModel().getColumn( 9).setPreferredWidth(30);	//Region
-		this.getColumnModel().getColumn(10).setPreferredWidth(10);	//Jumps
-		this.getColumnModel().getColumn(11).setPreferredWidth(50);	//range
-		this.getColumnModel().getColumn(12).setPreferredWidth(80);	//Issued
-		this.getColumnModel().getColumn(13).setPreferredWidth(50);	//dur	
+		int row=0;
+		this.getColumnModel().getColumn(row++).setPreferredWidth(30);	//OrderID
+		this.getColumnModel().getColumn(row++).setPreferredWidth(5);	//Bid	
+		this.getColumnModel().getColumn(row++).setPreferredWidth(10);	//type
+		this.getColumnModel().getColumn(row++).setPreferredWidth(40);	//Price
+		this.getColumnModel().getColumn(row++).setPreferredWidth(10);	//VolRem
+		this.getColumnModel().getColumn(row++).setPreferredWidth(10);	//VolEnter
+		this.getColumnModel().getColumn(row++).setPreferredWidth(10);	//VolMin
+		this.getColumnModel().getColumn(row++).setPreferredWidth(30);	//Station
+		this.getColumnModel().getColumn(row++).setPreferredWidth(30);	//System
+		this.getColumnModel().getColumn(row++).setPreferredWidth(30);	//Region
+		this.getColumnModel().getColumn(row++).setPreferredWidth(10);	//Jumps
+		this.getColumnModel().getColumn(row++).setPreferredWidth(50);	//range
+		this.getColumnModel().getColumn(row++).setPreferredWidth(80);	//Issued
+		this.getColumnModel().getColumn(row++).setPreferredWidth(50);	//dur	
 	}
 	
 	public void refresh() {
@@ -130,16 +130,9 @@ public class DBRowTable extends JTable{
 						}
 		    		case 12: return sdfIssued.format(list.get(row).getIssued());
 		    		case 13: 
-		    			short days=list.get(row).getDuration();
-		    			long issued=list.get(row).getIssued().getTime();
+		    		case 14: 
 		    			Calendar c = Calendar.getInstance();
-		    			c.setTimeInMillis(issued);
-		    			c.add(Calendar.DAY_OF_YEAR, days-1);	//TODO why -1
-		    			long expires=c.getTimeInMillis();
-		    			
-		    			long now=System.currentTimeMillis();
-		    			c.setTimeInMillis(expires-now);
-		    			c.setTimeZone(TimeZone.getTimeZone("GMT"));
+		    			c.setTime(list.get(row).getDuration());
 		    			String diff=
 		    				c.get(Calendar.DAY_OF_YEAR)+"D "+
 		    				c.get(Calendar.HOUR_OF_DAY)+"H "+
