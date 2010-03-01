@@ -1,4 +1,4 @@
-package luz.eveMonitor.datastructure;
+package luz.eveMonitor.datastructure.python;
 
 import java.util.Iterator;
 

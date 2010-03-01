@@ -1,4 +1,4 @@
-package luz.eveMonitor.datastructure;
+package luz.eveMonitor.datastructure.python;
 
 import java.util.Iterator;
 
@@ -7,9 +7,9 @@ import luz.winapi.api.Process;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 
-public class PyList extends PyObject{
+public class RowList extends PyObject{
 
-	public PyList(PyObject_VAR_HEAD head, Process process) {
+	public RowList(PyObject_VAR_HEAD head, Process process) {
 		super(head, 24, process);
 	}
 	
@@ -20,19 +20,21 @@ public class PyList extends PyObject{
 	public int		getU4      (){return super.getInt   (16);}
 	public int		getU5      (){return super.getInt   (20);}
 	
-	public PyObject getElement(int i){
+
+	public DBRow getElement(int i) {
 		IntByReference val = new IntByReference();
 		try {
 			process.ReadProcessMemory(Pointer.createConstant(getListPtr()+(4*i)), val.getPointer(), 4, null);
-			return	PyObjectFactory.getObject(val.getValue(), process, false);
+			return	(DBRow)PyObjectFactory.getObject(val.getValue(), process, false);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
-	public Iterator<PyObject> getIterator(){
-		return new Iterator<PyObject>() {
+
+
+	public Iterator<DBRow> getIterator() {
+		return new Iterator<DBRow>() {
 			int index=0;
 			int limit=getElements();
 
@@ -42,7 +44,7 @@ public class PyList extends PyObject{
 			}
 
 			@Override
-			public PyObject next() {
+			public DBRow next() {
 				return getElement(index++);
 			}
 
@@ -50,5 +52,4 @@ public class PyList extends PyObject{
 			public void remove() {}
 		};
 	}
-
 }

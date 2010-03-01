@@ -2,8 +2,8 @@ package test;
 
 import java.util.Iterator;
 
-import luz.eveMonitor.datastructure.PyDict;
-import luz.eveMonitor.datastructure.PyDict.PyDictEntry;
+import luz.eveMonitor.datastructure.python.PyDict;
+import luz.eveMonitor.datastructure.python.PyDict.PyDictEntry;
 import luz.eveMonitor.utils.Reader;
 
 public class EveFindDict {

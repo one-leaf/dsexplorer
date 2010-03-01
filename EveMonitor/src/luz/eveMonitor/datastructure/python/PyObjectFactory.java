@@ -1,4 +1,4 @@
-package luz.eveMonitor.datastructure;
+package luz.eveMonitor.datastructure.python;
 
 import luz.winapi.api.Process;
 
