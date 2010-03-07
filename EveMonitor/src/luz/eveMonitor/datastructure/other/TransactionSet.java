@@ -62,6 +62,10 @@ public class TransactionSet implements Iterable<Transaction>, TableModel{
 		fireTableDataChanged();		
 	}
 	
+	public int size() {
+		return transs.size();
+	}
+	
 	
 
 	// Model stuff////////////////////////////////////
@@ -195,6 +199,8 @@ public class TransactionSet implements Iterable<Transaction>, TableModel{
 	public Transaction getTransaction(int row) {
 		return bestOf[row];
 	}
+
+
 
 
 

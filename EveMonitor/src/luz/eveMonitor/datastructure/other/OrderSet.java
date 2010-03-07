@@ -20,6 +20,10 @@ public class OrderSet implements Iterable<Order> {
 	public Iterator<Order> iterator() {
 		return orders.iterator();
 	}
+	
+	public int size(){
+		return orders.size();
+	}
 
 
 }

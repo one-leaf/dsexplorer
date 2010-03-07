@@ -336,6 +336,7 @@ public class MainWindow extends javax.swing.JFrame {
 		this.status=status;
 		tblTransactions.setModel(map.getTransactions());
 		stStatusBar.setStatus(status);
+		stStatusBar.setMap(map);
 		
 //		tblOrders.setModel(map.getOrders());
 		TransactionSettings ts = map.getTransactionSettings();
