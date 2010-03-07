@@ -26,7 +26,7 @@ public class Transaction implements Comparable<Transaction>{
 	}
 	
 	public double calcWin(TransactionSettings settings) {
-		return calcWin(settings.getMaxMoney(), settings.getMaxVolume(), settings.getAccounting(), settings.getSecurity());		
+		return calcWin(settings.getMaxMoney(), settings.getMaxVolume(), settings.getAccounting(), settings.getSecurity().min);		
 	}
 	
 	public double calcWin(double money, double volume, int accounting, double security){
@@ -55,19 +55,10 @@ public class Transaction implements Comparable<Transaction>{
 
 	
 	//Object///////////////////////////////////////////////
-	
-	
-	private Object[] getSignificantFields(){
-		return new Object[] {buy, sell};
-	}
-	
+
 	@Override
 	public int hashCode() {
-		int hash = 0;
-		for (Object o : getSignificantFields()) {
-			hash = 31*hash+o.hashCode();
-		}
-		return hash;
+		return 31*buy.hashCode()+sell.hashCode();
 	}
 	
 	@Override
@@ -77,25 +68,10 @@ public class Transaction implements Comparable<Transaction>{
 		
 		if(!(o instanceof Transaction))
 			return false;		
-		Transaction that=(Transaction)o;
-		
-		Object[] thisFields=this.getSignificantFields();
-		Object[] thatFields=that.getSignificantFields();
-		for (int i = 0; i < thisFields.length; i++) {
-			if(!areEqual(thisFields[i], thatFields[i]))
-				return false;
-		}
-		
-		return true;
+		Transaction that=(Transaction)o;		
+
+		return this.buy.equals(that.buy) && this.sell.equals(that.sell);
 	}
-	
-	static public boolean areEqual(Object aThis, Object aThat){
-		return aThis == null ? aThat == null : aThis.equals(aThat);
-	}
-
-
-
-
 
 	
 }

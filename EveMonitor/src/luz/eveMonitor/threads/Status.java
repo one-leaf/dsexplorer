@@ -44,17 +44,21 @@ public class Status {
 		return dictAddr;
 	}
 	
+
+	
 	
 	
 	public void setProcess(Process process) {
-		if ((this.process==null && process!=null) 
-				|| (this.process!=null && !this.process.equals(process)) ){
+		if (!areEqual(this.process, process)){
 			this.process = process;
 			this.dict=null;
+
 			if(process!=null)
 				this.pid=process.getPid();
 			else
 				this.pid=null;
+
+			this.getDictCache();
 			
 			synchronized (this) {
 				this.notifyAll();
@@ -63,23 +67,21 @@ public class Status {
 	}
 	
 	public void setDict(PyDict dict) {
-		if (!areEqual(this.dict, dict)){
-			this.dict = dict;
-			if(dict!=null)
-				this.dictAddr=dict.getAddress();
-			else
-				this.dictAddr= null;
-			
-			try {
-				Serializer serializer = new Persister();
-				serializer.write(this, new File(FILENAME));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			synchronized (this) {
-				this.notifyAll();
-			}		
+		this.dict = dict;
+		if(dict!=null)
+			this.dictAddr=dict.getAddress();
+		else
+			this.dictAddr= null;
+		
+		try {
+			Serializer serializer = new Persister();
+			serializer.write(this, new File(FILENAME));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		synchronized (this) {
+			this.notifyAll();
 		}
 	}
 	
@@ -87,7 +89,7 @@ public class Status {
 		return aThis == null ? aThat == null : aThis.equals(aThat);
 	}
 	
-	public void getCache(){
+	public void getDictCache(){
 		if (this.process!=null){			
 
 			try {
@@ -108,7 +110,8 @@ public class Status {
 			}
 		}
 	}
-	
+
+
 	
 	
 	

@@ -9,6 +9,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import luz.eveMonitor.datastructure.other.Security;
 import luz.eveMonitor.datastructure.other.TransactionSettings;
 import luz.eveMonitor.datastructure.other.TypeGroupMap;
 import luz.eveMonitor.gui.MainWindow;
@@ -48,10 +49,10 @@ public class Init {
 		emEveDB  = Persistence.createEntityManagerFactory("eveDB" ).createEntityManager();
 		
 		
-		settings = new TransactionSettings(51000000d, 19859.3d, 4, 0.5);
+		settings = new TransactionSettings(51000000d, 19859.3d, 4, Security.highsec, 20);
 		map = new TypeGroupMap(settings);
-		window=new MainWindow(map);
 		status=new Status();
+		window=new MainWindow(map, status);
 		pf = new ProcessFinder(status);
 		df = new DictFinder(status);
 		rf = new RowFinder(status, map, emEveMon, emEveDB);

@@ -4,15 +4,20 @@ import java.util.HashMap;
 
 import luz.eveMonitor.entities.eveMon.Order;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class TypeGroupMap extends HashMap<Integer, TypeGroup> {
 	private static final long serialVersionUID = 6338817211296046005L;
+	private static final Log log = LogFactory.getLog(TypeGroupMap.class);
 //	OrderSet orders = new OrderSet();
-	TransactionSet transs = new TransactionSet();
+	TransactionSet transs;
 	TransactionSettings settings;
 
 
 	public TypeGroupMap(TransactionSettings settings) {
 		this.settings=settings;
+		transs = new TransactionSet(settings.getNumber());
 	}
 
 	private TypeGroup getTypeGroup(int typeId) {
@@ -46,11 +51,21 @@ public class TypeGroupMap extends HashMap<Integer, TypeGroup> {
 //	return orders;
 //}
 	
+	public synchronized void refresh(double maxMoney, double maxVolume, int accounting, Security security, int number) {
+		settings.setMaxMoney(maxMoney);
+		settings.setMaxVolume(maxVolume);
+		settings.setAccounting(accounting);
+		settings.setSecurity(security);
+		transs.refresh(maxMoney, maxVolume, accounting, security, number);		
+	}
 	
 	public void createTrans(int typeId) {
 		TypeGroup tp = getTypeGroup(typeId);
+		log.trace("create Trans");
 		tp.createTrans(settings);
+		log.trace("add Trans");
 		transs.addAll(tp.getTrans());
+		log.trace("add Trans done");
 	}
 
 	public TransactionSet getTransactions() {

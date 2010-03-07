@@ -45,12 +45,12 @@ public class TypeGroup {
 			}
 		}		
 	}
-	public boolean addBuy(Order order) {
-		return buys.add(order);
+	public void addBuy(Order order) {
+		buys.add(order);
 	}
 	
-	public boolean addSell(Order order) {
-		return sells.add(order);
+	public void addSell(Order order) {
+		sells.add(order);
 	}
 	
 	

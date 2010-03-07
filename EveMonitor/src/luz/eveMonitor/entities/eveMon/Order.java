@@ -18,11 +18,14 @@ import luz.eveMonitor.entities.eveDB.inv.InvType;
 import luz.eveMonitor.entities.eveDB.map.MapRegion;
 import luz.eveMonitor.entities.eveDB.map.MapSolarSystem;
 import luz.eveMonitor.entities.eveDB.sta.StaStation;
+import luz.winapi.api.exception.OpenProcessException;
+import luz.winapi.api.exception.ReadProcessMemoryException;
 @NamedQueries({
 	@NamedQuery(name="findOrderByType", query="SELECT o FROM Orders o WHERE o.typeID=:typeID AND o.bid=:bid")
 })
 @Entity(name="Orders")
 public class Order {
+
 	@Id
 	private int orderID;
 	private double price;
@@ -54,7 +57,7 @@ public class Order {
 	}
 	
 	
-	public Order(DBRow dbrow, EntityManager emEveDB) {
+	public Order(DBRow dbrow, EntityManager emEveDB) throws ReadProcessMemoryException, OpenProcessException {
 		this.price		=(Double)((Long)dbrow.getColumnValue("price")/10000d);
 		this.volRem		=(Double) dbrow.getColumnValue("volRemaining");
 		this.issued		=(Date)   dbrow.getColumnValue("issued");
@@ -167,17 +170,10 @@ public class Order {
 	
 	//Object///////////////////////////////////////////////
 	
-	private Object[] getSignificantFields(){
-		return new Object[] {orderID, volRem};
-	}
 	
 	@Override
 	public int hashCode() {
-		int hash = 0;
-		for (Object o : getSignificantFields()) {
-			hash = 31*hash+o.hashCode();
-		}
-		return hash;
+		return orderID;
 	}
 	
 	@Override
@@ -187,21 +183,8 @@ public class Order {
 		
 		if(!(o instanceof Order))
 			return false;		
-		Order that=(Order)o;
-		
-		Object[] thisFields=this.getSignificantFields();
-		Object[] thatFields=that.getSignificantFields();
-		for (int i = 0; i < thisFields.length; i++) {
-			if(!areEqual(thisFields[i], thatFields[i]))
-				return false;
-		}
-		
-		return true;
-	}
-	
-	static public boolean areEqual(Object aThis, Object aThat){
-		return aThis == null ? aThat == null : aThis.equals(aThat);
-	}
+		Order that=(Order)o;		
 
-
+		return this.orderID==that.orderID;
+	}
 }

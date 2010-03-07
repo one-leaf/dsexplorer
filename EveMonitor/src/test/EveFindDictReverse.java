@@ -9,6 +9,8 @@ import luz.eveMonitor.datastructure.python.PyObjectFactory;
 import luz.eveMonitor.utils.PointerListener;
 import luz.eveMonitor.utils.Reader;
 import luz.winapi.api.Process;
+import luz.winapi.api.exception.OpenProcessException;
+import luz.winapi.api.exception.ReadProcessMemoryException;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
@@ -20,8 +22,10 @@ public class EveFindDictReverse {
 
 	/**
 	 * @param args
+	 * @throws OpenProcessException 
+	 * @throws ReadProcessMemoryException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		long timer=System.currentTimeMillis();
 		Reader r = new Reader();
 		r.findProcess();
@@ -129,7 +133,7 @@ public class EveFindDictReverse {
 		return list;		
 	}
 	
-	public static List<Long> stage3DBRowList(List<Long> addrs){
+	public static List<Long> stage3DBRowList(List<Long> addrs) throws ReadProcessMemoryException, OpenProcessException{
 		List<Long> list = new LinkedList<Long>();
 		
 		for (Long addr : addrs) {
@@ -180,7 +184,7 @@ public class EveFindDictReverse {
 		return list;		
 	}
 	
-	public static List<Long> stage5PyList(List<Long> addrs){
+	public static List<Long> stage5PyList(List<Long> addrs) throws ReadProcessMemoryException, OpenProcessException{
 		List<Long> list = new LinkedList<Long>();
 		
 		for (Long addr : addrs) {

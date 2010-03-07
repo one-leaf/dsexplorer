@@ -4,13 +4,15 @@ public class TransactionSettings {
 	private double maxMoney;
 	private double maxVolume;
 	private int accounting;
-	private double security;
+	private Security security;
+	private int number;
 	
-	public TransactionSettings(double maxMoney, double maxVolume, int accounting, double security) {
+	public TransactionSettings(double maxMoney, double maxVolume, int accounting, Security highsec, int number) {
 		this.maxMoney=maxMoney;
 		this.maxVolume=maxVolume;
 		this.accounting=accounting;
-		this.security=security;
+		this.security=highsec;
+		this.number=number;
 	}
 	
 
@@ -38,12 +40,23 @@ public class TransactionSettings {
 		this.accounting = accounting;
 	}
 
-	public double getSecurity() {
+	public Security getSecurity() {
 		return security;
 	}
 
-	public void setSecurity(double security) {
+	public void setSecurity(Security security) {
 		this.security = security;
 	}
+
+
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	public int getNumber() {
+		return number;
+	}
+	
+	
 
 }
