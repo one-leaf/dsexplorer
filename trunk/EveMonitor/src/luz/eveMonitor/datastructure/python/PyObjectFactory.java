@@ -1,6 +1,8 @@
 package luz.eveMonitor.datastructure.python;
 
 import luz.winapi.api.Process;
+import luz.winapi.api.exception.OpenProcessException;
+import luz.winapi.api.exception.ReadProcessMemoryException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -8,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
 public class PyObjectFactory {
 	private static final Log log = LogFactory.getLog(PyObjectFactory.class);
 	
-	public static PyObject getObject(long address, Process process, boolean raw){
+	public static PyObject getObject(long address, Process process, boolean raw) throws ReadProcessMemoryException, OpenProcessException{
 		if (raw==false)
 			address=address-4*4;	//next, prev, u1, u2
 		PyObject_VAR_HEAD head;
@@ -40,11 +42,7 @@ public class PyObjectFactory {
 		if(obj==null){
 			log.warn("unknown object type "+sType+" @ "+String.format("%08X", address));
 		}else{
-			try {	
-				obj.read();
-			} catch (Exception e) {
-				log.warn("cannot read PyObject Data @ "+String.format("%08X", address));
-			}
+			obj.read();
 		}
 		return obj;
 	}

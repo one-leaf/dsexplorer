@@ -3,6 +3,8 @@ package luz.eveMonitor.datastructure.python;
 import java.util.Iterator;
 
 import luz.winapi.api.Process;
+import luz.winapi.api.exception.OpenProcessException;
+import luz.winapi.api.exception.ReadProcessMemoryException;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
@@ -63,14 +65,14 @@ public class PyDict extends PyObject {
 		public int getKeyPtr()		{ return super.getInt(4);}	
 		public int getValuePtr()	{ return super.getInt(8);}
 		
-		public PyObject getValue(){
+		public PyObject getValue() throws ReadProcessMemoryException, OpenProcessException{
 			if(getValuePtr()!=0)
 				return PyObjectFactory.getObject(getValuePtr(), process, false);
 			else
 				return null;
 		}
 
-		public PyObject getKey() {
+		public PyObject getKey() throws ReadProcessMemoryException, OpenProcessException {
 			if(getKeyPtr()!=0)
 				return PyObjectFactory.getObject(getKeyPtr(), process, false);
 			else

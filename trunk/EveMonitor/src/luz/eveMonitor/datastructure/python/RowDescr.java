@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import luz.winapi.api.Process;
+import luz.winapi.api.exception.OpenProcessException;
+import luz.winapi.api.exception.ReadProcessMemoryException;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
@@ -30,7 +32,7 @@ public class RowDescr extends PyObject{
 	}
 	
 	@Override
-	public void read() throws Exception {
+	public void read() throws ReadProcessMemoryException, OpenProcessException {
 		super.read();
 		int colSize=Column.ColumnSize;
 		Memory buffer=new Memory(getColums()*colSize);

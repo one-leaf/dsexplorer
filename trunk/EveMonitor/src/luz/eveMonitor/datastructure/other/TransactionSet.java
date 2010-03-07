@@ -1,69 +1,66 @@
 package luz.eveMonitor.datastructure.other;
 
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class TransactionSet implements Iterable<Transaction>, TableModel{
-	private List<Transaction> transs=new LinkedList<Transaction>();
+	private static final Log log = LogFactory.getLog(TransactionSet.class);
+	private int number;
+
 	private EventListenerList listenerList = new EventListenerList();
 	
-	public synchronized boolean add(Transaction newTrans) {
-		int size=transs.size();
-		int row=0;
-		if(size==0){
-			transs.add(newTrans);
-		}else{
-			for (row=0; row < size; row++) {		
-				if(newTrans.win>transs.get(row).win){
-					transs.add(row, newTrans);
-					fireTableRowsInserted(row, row);
-					return true;
-				}else{
-					if(transs.get(row).equals(newTrans))
-						return false;					
-				}				
-			}
-		}
-		transs.add(row, newTrans);
-		fireTableRowsInserted(row, row);
-		return true;
+	private ConcurrentSkipListSet<Transaction> transs=new ConcurrentSkipListSet<Transaction>();
+	private Transaction[] bestOf;
+	
+	
+	
+	public TransactionSet(int number) {
+		this.number=number;
+	}
+
+	public void add(Transaction newTrans) {
+		transs.add(newTrans);
+		update();
 	}
 	
-
-	public void addAll(List<Transaction> newTranss) {
-		for (Transaction newT : newTranss)
-			add(newT);
+	public void addAll(List<Transaction> newTrans) {
+		transs.addAll(newTrans);
+		update();
 	}
-
+	
+	public synchronized void refresh(double money, double volume, int accounting, Security security, int number) {
+		for (Transaction t : transs)
+			t.calcWin(money, volume, accounting, security.min);
+		this.transs=new ConcurrentSkipListSet<Transaction>(transs);	//sort again
+		this.number=number;
+		update();
+	}
+	
 	@Override
 	public Iterator<Transaction> iterator() {
 		return transs.iterator();
 	}
 	
 	
-	public void refresh(double money, double volume, int accounting, double security) {
-		for (Transaction t : transs)
-			t.calcWin(money, volume, accounting, security);
-		Collections.sort(transs);
-		fireTableDataChanged();	
+	private void update(){
+		bestOf=new Transaction[this.number];
+		int i=0;
+		for (Transaction t : transs){
+			bestOf[i++]=t;
+			if(i==this.number)
+				break;
+		}
+		fireTableDataChanged();		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 
@@ -101,16 +98,17 @@ public class TransactionSet implements Iterable<Transaction>, TableModel{
 
 	@Override
 	public int getRowCount() {
-		return Math.min(20, transs.size());
+		return Math.min(this.number, transs.size());
 	}
 
     @Override
     public Object getValueAt(int row, int col) {
+    	if(bestOf[row]==null) return null;
 		switch (col){
-    		case  0: return transs.get(row).buy.getType().getTypeName();
-    		case  1: return transs.get(row).buy.getPrice();
-    		case  2: return transs.get(row).buy.getVolRem();
-    		case  3: return transs.get(row).buy.getStation().getStationName();
+    		case  0: return bestOf[row].buy.getType().getTypeName();
+    		case  1: return bestOf[row].buy.getPrice();
+    		case  2: return bestOf[row].buy.getVolRem();
+    		case  3: return bestOf[row].buy.getStation().getStationName();
 //    		case  4: 
 //    			Calendar c1 = Calendar.getInstance();
 //    			c1.setTime(transs.get(row).buy.getDuration());
@@ -120,13 +118,13 @@ public class TransactionSet implements Iterable<Transaction>, TableModel{
 //    				c1.get(Calendar.MINUTE)     +"M "+
 //    				c1.get(Calendar.SECOND)     +"S ";
 //    			return diff1;
-    		case  4: return transs.get(row).items;	
-    		case  5: return transs.get(row).win;
+    		case  4: return bestOf[row].items;	
+    		case  5: return bestOf[row].win;
 
     		
-    		case  6: return transs.get(row).sell.getPrice();
-    		case  7: return transs.get(row).sell.getVolRem();
-    		case  8: return transs.get(row).sell.getStation().getStationName();
+    		case  6: return bestOf[row].sell.getPrice();
+    		case  7: return bestOf[row].sell.getVolRem();
+    		case  8: return bestOf[row].sell.getStation().getStationName();
 //    		case  9: 
 //    			Calendar c2 = Calendar.getInstance();
 //    			c2.setTime(transs.get(row).sell.getDuration());
@@ -192,6 +190,10 @@ public class TransactionSet implements Iterable<Transaction>, TableModel{
 				continue;
 			((TableModelListener) arrayOfObject[(i + 1)]).tableChanged(paramTableModelEvent);
 		}
+	}
+
+	public Transaction getTransaction(int row) {
+		return bestOf[row];
 	}
 
 

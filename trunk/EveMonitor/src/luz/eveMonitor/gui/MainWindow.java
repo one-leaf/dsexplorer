@@ -2,6 +2,7 @@ package luz.eveMonitor.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -17,10 +18,15 @@ import javax.swing.LayoutStyle;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import luz.eveMonitor.datastructure.other.Security;
+import luz.eveMonitor.datastructure.other.Transaction;
 import luz.eveMonitor.datastructure.other.TransactionSettings;
 import luz.eveMonitor.datastructure.other.TypeGroupMap;
-
+import luz.eveMonitor.threads.Status;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -39,17 +45,22 @@ public class MainWindow extends javax.swing.JFrame {
 	private static final long serialVersionUID = 6529006528289001505L;
 	private JMenuItem helpMenuItem;
 	private JMenu jMenu5;
-	private JScrollPane jScrollPane1;
-	private JScrollPane jScrollPane2;
-	private JLabel jLabel1;
+	private JScrollPane spTransTable;
+	private JLabel lblMaxMoney;
 	private JTextField txtMaxVolume;
 	private TransactionTable tblTransactions;
 	private JTextField txtMaxMoney;
-	private DBRowTable tblOrders;
 	private JSpinner spAccounting;
-	private JLabel jLabel3;
+	private JLabel lblAccounting;
 	private JButton btnRefresh;
-	private JLabel jLabel2;
+	private JTextField txtNumber;
+	private JLabel lblNumber;
+	private JSpinner spSecurity;
+	private JLabel lblSecurity;
+	private StatusBar stStatusBar;
+	private OrderInfo oiSell;
+	private OrderInfo oiBuy;
+	private JLabel lblMaxVol;
 	private JMenuItem deleteMenuItem;
 	private JSeparator jSeparator1;
 	private JMenuItem pasteMenuItem;
@@ -66,6 +77,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private JMenu jMenu3;
 	private JMenuBar jMenuBar1;
 	private TypeGroupMap map;
+	private Status status;
 	/**
 	* Auto-generated main method to display this JFrame
 	*/
@@ -92,21 +104,14 @@ public class MainWindow extends javax.swing.JFrame {
 			GroupLayout thisLayout = new GroupLayout((JComponent)getContentPane());
 			getContentPane().setLayout(thisLayout);
 			{
-				jScrollPane1 = new JScrollPane();
-				{
-					tblOrders = new DBRowTable();
-					jScrollPane1.setViewportView(tblOrders);
-				}
-			}
-			{
 				SpinnerListModel spAccountingModel = 
 					new SpinnerListModel( new Integer[] { 0,1,2,3,4,5 });
 				spAccounting = new JSpinner();
 				spAccounting.setModel(spAccountingModel);
 			}
 			{
-				jLabel3 = new JLabel();
-				jLabel3.setText("Accouting Level:");
+				lblAccounting = new JLabel();
+				lblAccounting.setText("Accouting Level:");
 			}
 			{
 				btnRefresh = new JButton();
@@ -118,22 +123,55 @@ public class MainWindow extends javax.swing.JFrame {
 				});
 			}
 			{
-				jLabel2 = new JLabel();
-				jLabel2.setText("max Volume:");
+				lblMaxVol = new JLabel();
+				lblMaxVol.setText("max Volume:");
 			}
 			{
 				txtMaxVolume = new JTextField();
 			}
 			{
-				jLabel1 = new JLabel();
-				jLabel1.setText("max Money:");
+				lblMaxMoney = new JLabel();
+				lblMaxMoney.setText("max Money:");
 			}
 			{
-				jScrollPane2 = new JScrollPane();
+				spTransTable = new JScrollPane();
 				{
 					tblTransactions = new TransactionTable();
-					jScrollPane2.setViewportView(tblTransactions);
+					spTransTable.setViewportView(tblTransactions);
+					tblTransactions.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+						@Override
+						public void valueChanged(ListSelectionEvent evt) {
+							tblTransactionsSelected(evt);							
+						}
+					});
 				}
+			}
+			{
+				stStatusBar = new StatusBar();
+			}
+			{
+				txtNumber = new JTextField();
+			}
+			{
+				lblNumber = new JLabel();
+				lblNumber.setText("Number:");
+			}
+			{
+				SpinnerListModel spSecurityModel =  new SpinnerListModel(Security.values());
+				spSecurity = new JSpinner();
+				spSecurity.setModel(spSecurityModel);
+			}
+			{
+				lblSecurity = new JLabel();
+				lblSecurity.setText("Security:");
+			}
+			{
+				oiBuy = new OrderInfo();
+				oiBuy.setBorder(BorderFactory.createTitledBorder(null, "Buy Order", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION));
+			}
+			{
+				oiSell = new OrderInfo();
+				oiSell.setBorder(BorderFactory.createTitledBorder(null, "Sell Order", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION));
 			}
 			{
 				txtMaxMoney = new JTextField();
@@ -144,35 +182,63 @@ public class MainWindow extends javax.swing.JFrame {
 				    .addComponent(btnRefresh, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(txtMaxMoney, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(txtMaxVolume, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(jLabel1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(jLabel2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(jLabel3, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(spAccounting, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
+				    .addComponent(lblMaxMoney, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblMaxVol, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblAccounting, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(spAccounting, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblSecurity, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(spSecurity, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblNumber, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(txtNumber, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(jScrollPane2, 0, 184, Short.MAX_VALUE)
+				.addComponent(spTransTable, 0, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 211, GroupLayout.PREFERRED_SIZE)
-				.addContainerGap());
-			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
-				.addContainerGap()
 				.addGroup(thisLayout.createParallelGroup()
-				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				        .addComponent(jLabel1, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
-				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				        .addComponent(txtMaxMoney, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
-				        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-				        .addComponent(jLabel2, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
-				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				        .addComponent(txtMaxVolume, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
-				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				        .addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
-				        .addComponent(spAccounting, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)
-				        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-				        .addComponent(btnRefresh, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-				        .addGap(0, 555, Short.MAX_VALUE))
-				    .addComponent(jScrollPane2, GroupLayout.Alignment.LEADING, 0, 1094, Short.MAX_VALUE)
-				    .addComponent(jScrollPane1, GroupLayout.Alignment.LEADING, 0, 1094, Short.MAX_VALUE))
-				.addContainerGap());
+				    .addComponent(oiBuy, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(oiSell, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE))
+				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				.addComponent(stStatusBar, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE));
+			thisLayout.setHorizontalGroup(thisLayout.createParallelGroup()
+				.addComponent(stStatusBar, GroupLayout.Alignment.LEADING, 0, 1016, Short.MAX_VALUE)
+				.addGroup(thisLayout.createSequentialGroup()
+				    .addPreferredGap(stStatusBar, oiBuy, LayoutStyle.ComponentPlacement.INDENT)
+				    .addGroup(thisLayout.createParallelGroup()
+				        .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				            .addGroup(thisLayout.createParallelGroup()
+				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                    .addComponent(lblMaxMoney, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
+				                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				                    .addComponent(txtMaxMoney, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+				                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				                    .addComponent(lblMaxVol, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
+				                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				                    .addComponent(txtMaxVolume, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE))
+				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                    .addComponent(oiBuy, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
+				                    .addGap(50)))
+				            .addGap(10)
+				            .addComponent(lblAccounting, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				            .addComponent(spAccounting, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
+				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				            .addComponent(lblSecurity, GroupLayout.PREFERRED_SIZE, 54, GroupLayout.PREFERRED_SIZE)
+				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				            .addComponent(spSecurity, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				            .addComponent(lblNumber, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				            .addComponent(txtNumber, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+				            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+				            .addGroup(thisLayout.createParallelGroup()
+				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                    .addComponent(btnRefresh, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				                    .addGap(0, 0, Short.MAX_VALUE))
+				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                    .addGap(0, 0, Short.MAX_VALUE)
+				                    .addComponent(oiSell, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE))))
+				        .addComponent(spTransTable, GroupLayout.Alignment.LEADING, 0, 996, Short.MAX_VALUE))
+				    .addContainerGap()));
+
 			{
 				jMenuBar1 = new JMenuBar();
 				setJMenuBar(jMenuBar1);
@@ -256,56 +322,47 @@ public class MainWindow extends javax.swing.JFrame {
 				}
 			}
 			pack();
+			this.setSize(1024, 660);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 
-
 	//$hide>>$
-	public MainWindow(TypeGroupMap map) {
+	public MainWindow(TypeGroupMap map, Status status) {
 		this();
 		this.map=map;
+		this.status=status;
 		tblTransactions.setModel(map.getTransactions());
-
-
+		stStatusBar.setStatus(status);
 		
 //		tblOrders.setModel(map.getOrders());
 		TransactionSettings ts = map.getTransactionSettings();
 		txtMaxMoney.setText(Double.toString(ts.getMaxMoney()));
 		txtMaxVolume.setText(""+ts.getMaxVolume());
 		spAccounting.setValue(ts.getAccounting());
+		spSecurity.setValue(ts.getSecurity());
+		txtNumber.setText(""+ts.getNumber());
 		
 	}
 	
 	private void btnRefreshActionPerformed(ActionEvent evt) {
-		map.getTransactions().refresh(Double.parseDouble(txtMaxMoney.getText()), Double.parseDouble(txtMaxVolume.getText()), (Integer)spAccounting.getValue(), 0.5d);
+		map.refresh(Double.parseDouble(txtMaxMoney.getText()), 
+				Double.parseDouble(txtMaxVolume.getText()), 
+				(Integer)spAccounting.getValue(), 
+				((Security)spSecurity.getValue()),
+				Integer.parseInt(txtNumber.getText()));
 	}
-
-
-//	public void setRows(List<Order> list) {
-//		tblOrders.setItems(list);
-//	}
-//	
-//
-//	public void addRows(List<Order> list) {
-//		tblOrders.addItems(list);
-//	}
-//	
-//	public void setTransaction(Transaction t) {
-//		if(t!=null){
-//			txtWin.setText(""+t.win);
-//			if(t.buy!=null){
-//				tblTransactions.addItem(t);
-//			}
-//		}
-//	}
-//
-//	public void setTransactions(List<Transaction> transactions) {
-//		tblTransactions.setItems(transactions);		
-//	}
-
+	
+	private void tblTransactionsSelected(ListSelectionEvent evt) {
+		int row= tblTransactions.getSelectedRow();
+		if(row!=-1){
+			Transaction t = tblTransactions.getTransaction(row);
+			oiBuy.setOrder(t.buy);
+			oiSell.setOrder(t.sell);
+		}
+	}
 	
 	
 	//$hide<<$
