@@ -52,6 +52,10 @@ public class TypeGroup {
 	public void addSell(Order order) {
 		sells.add(order);
 	}
+
+	public int getOrderCount() {
+		return buys.size()+sells.size();
+	}
 	
 	
 

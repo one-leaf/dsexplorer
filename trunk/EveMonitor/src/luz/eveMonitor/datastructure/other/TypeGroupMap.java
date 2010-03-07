@@ -75,4 +75,11 @@ public class TypeGroupMap extends HashMap<Integer, TypeGroup> {
 	public TransactionSettings getTransactionSettings() {
 		return settings;
 	}
+
+	public int getOrderCount() {
+		int count=0;
+		for (TypeGroup tg : this.values())
+			count+=tg.getOrderCount();			
+		return count;
+	}
 }
