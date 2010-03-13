@@ -13,9 +13,7 @@ import luz.eveMonitor.datastructure.other.Security;
 import luz.eveMonitor.datastructure.other.TransactionSettings;
 import luz.eveMonitor.datastructure.other.TypeGroupMap;
 import luz.eveMonitor.gui.MainWindow;
-import luz.eveMonitor.threads.DictFinder;
-import luz.eveMonitor.threads.ProcessFinder;
-import luz.eveMonitor.threads.RowFinder;
+import luz.eveMonitor.threads.Grabber;
 import luz.eveMonitor.threads.Status;
 
 import org.apache.commons.logging.Log;
@@ -25,9 +23,7 @@ public class Init {
 	private static final Log log = LogFactory.getLog(Init.class);
 	private static MainWindow window;
 	private static Status status;
-	private static ProcessFinder pf;
-	private static DictFinder df;
-	private static RowFinder rf;
+	private static Grabber gr;
 	private static TypeGroupMap map;
 	private static TransactionSettings settings;
 	
@@ -53,14 +49,10 @@ public class Init {
 		map = new TypeGroupMap(settings);
 		status=new Status();
 		window=new MainWindow(map, status);
-		pf = new ProcessFinder(status);
-		df = new DictFinder(status);
-		rf = new RowFinder(status, map, emEveMon, emEveDB);
-		
-		pf.start();
-		df.start();
-		rf.start();
-		
+
+		gr = new Grabber(status, map, emEveMon, emEveDB);
+		gr.start();
+
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				window.addWindowListener(new WindowListener() {
@@ -73,9 +65,7 @@ public class Init {
 					
 					@Override
 					public void windowClosed(WindowEvent e) {
-				        pf.stopNow();
-				        df.stopNow();
-				        rf.stopNow();
+						gr.stopNow();
 					}
 				});
 				window.setLocationRelativeTo(null);

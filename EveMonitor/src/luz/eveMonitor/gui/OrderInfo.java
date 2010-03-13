@@ -32,17 +32,22 @@ public class OrderInfo extends javax.swing.JPanel {
 	private JLabel lblVolRem;
 	private JLabel lbl3;
 	private JLabel lblStation;
-	private JLabel lbl5;
 	private JLabel lbl4;
-	private JLabel lblRegion;
 	private JLabel lblSystem;
-	private JLabel lblExpires;
-	private JLabel lbl8;
-	private JLabel lblRange;
-	private JLabel lbl7;
-	private JLabel lblJumps;
+	private JLabel lbl5;
+	private JLabel lblRegion;
 	private JLabel lbl6;
-
+	private JLabel lblJumps;
+	private JLabel lbl7;
+	private JLabel lblRange;
+	private JLabel lbl8;
+	private JLabel lblExpires;
+	private JLabel lbl9;
+	private JLabel lblType;
+	private JLabel lbl10;
+	private JLabel lblGroup;
+//	private JLabel lbl11;
+//	private JLabel lblMGroup;
 	/**
 	* Auto-generated main method to display this 
 	* JPanel inside a new JFrame.
@@ -73,27 +78,6 @@ public class OrderInfo extends javax.swing.JPanel {
 				lblPrice = new JLabel();
 			}
 			{
-				lbl5 = new JLabel();
-				lbl5.setText("Region:");
-			}
-			{
-				lbl4 = new JLabel();
-				lbl4.setText("System:");
-			}
-			{
-				lblRegion = new JLabel();
-			}
-			{
-				lblSystem = new JLabel();
-			}
-			{
-				lbl8 = new JLabel();
-				lbl8.setText("Expires in:");
-			}
-			{
-				lblExpires = new JLabel();
-			}
-			{
 				lbl2 = new JLabel();
 				lbl2.setText("Quantity:");
 			}
@@ -108,6 +92,20 @@ public class OrderInfo extends javax.swing.JPanel {
 				lblStation = new JLabel();
 			}
 			{
+				lbl4 = new JLabel();
+				lbl4.setText("System:");
+			}
+			{
+				lblSystem = new JLabel();
+			}	
+			{
+				lbl5 = new JLabel();
+				lbl5.setText("Region:");
+			}
+			{
+				lblRegion = new JLabel();
+			}
+			{
 				lbl6 = new JLabel();
 				lbl6.setText("Jumps:");
 			}
@@ -120,54 +118,102 @@ public class OrderInfo extends javax.swing.JPanel {
 			}
 			{
 				lblRange = new JLabel();
+			}			
+			{
+				lbl8 = new JLabel();
+				lbl8.setText("Expires in:");
 			}
+			{
+				lblExpires = new JLabel();
+			}
+			{
+				lbl9 = new JLabel();
+				lbl9.setText("Type:");
+			}
+			{
+				lblType = new JLabel();
+			}
+			{
+				lbl10 = new JLabel();
+				lbl10.setText("Group:");
+			}
+			{
+				lblGroup = new JLabel();
+			}
+//			{
+//				lbl11 = new JLabel();
+//				lbl11.setText("MGroup:");
+//			}
+//			{
+//				lblMGroup = new JLabel();
+//			}
+
+
 				thisLayout.setVerticalGroup(thisLayout.createSequentialGroup()
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl1, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblPrice, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					    .addComponent(lbl1      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblPrice  , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl2, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblVolRem, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					    .addComponent(lbl2      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblVolRem , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl3, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lbl3      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
 					    .addComponent(lblStation, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl4, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblSystem, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					    .addComponent(lbl4      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblSystem , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl5, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblRegion, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					    .addComponent(lbl5      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblRegion , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl6, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblJumps, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					    .addComponent(lbl6      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblJumps  , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl7, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblRange, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					    .addComponent(lbl7      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblRange  , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl8, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblExpires, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap());
+					    .addComponent(lbl8      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblExpires, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					.addGroup(thisLayout.createParallelGroup()
+					    .addComponent(lbl9      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblType   , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					.addGroup(thisLayout.createParallelGroup()
+					    .addComponent(lbl10     , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblGroup  , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+//					.addGroup(thisLayout.createParallelGroup()
+//					    .addComponent(lbl11     , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+//					    .addComponent(lblMGroup  , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+
+					    .addContainerGap());
 				thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl1, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lbl2, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lbl3, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lbl4, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lbl5, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lbl6, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lbl7, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lbl8, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE))
+					    .addComponent(lbl1 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lbl2 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lbl3 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lbl4 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lbl5 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lbl6 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lbl7 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lbl8 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lbl9 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lbl10, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+//					    .addComponent(lbl11, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+					    )
 					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lblPrice, 0, 300, Short.MAX_VALUE)
-					    .addComponent(lblVolRem, 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblPrice  , 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblVolRem , 0, 300, Short.MAX_VALUE)
 					    .addComponent(lblStation, 0, 300, Short.MAX_VALUE)
-					    .addComponent(lblSystem, 0, 300, Short.MAX_VALUE)
-					    .addComponent(lblRegion, 0, 300, Short.MAX_VALUE)
-					    .addComponent(lblJumps, 0, 300, Short.MAX_VALUE)
-					    .addComponent(lblRange, 0, 300, Short.MAX_VALUE)
-					    .addComponent(lblExpires, 0, 300, Short.MAX_VALUE)));
+					    .addComponent(lblSystem , 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblRegion , 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblJumps  , 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblRange  , 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblExpires, 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblType   , 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblGroup  , 0, 300, Short.MAX_VALUE)
+//					    .addComponent(lblMGroup , 0, 300, Short.MAX_VALUE)
+					));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -202,7 +248,9 @@ public class OrderInfo extends javax.swing.JPanel {
 				c.get(Calendar.MINUTE)     +"M "+
 				c.get(Calendar.SECOND)     +"S ";
 			lblExpires.setText(expires);
-			
+			lblType   .setText(order.getType().getTypeName());
+			lblGroup  .setText(order.getType().getGroupID().getGroupName());
+//			lblGroup  .setText(order.getType().getMarketGroupID().getMarketGroupName());
 		}else{
 			lblPrice  .setText("");
 			lblVolRem .setText("");
@@ -212,6 +260,9 @@ public class OrderInfo extends javax.swing.JPanel {
 			lblJumps  .setText("");
 			lblRange  .setText("");
 			lblExpires.setText("");
+			lblType   .setText("");
+			lblGroup  .setText("");
+//			lblMGroup .setText("");
 		}
 		
 		

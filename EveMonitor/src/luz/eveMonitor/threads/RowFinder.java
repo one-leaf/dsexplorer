@@ -54,9 +54,12 @@ public  class RowFinder extends Thread{
 			try {
 				getNewRows();
 			} catch (ReadProcessMemoryException e1) {
+				//TODO set dict to null-> enforce a new search?
 				log.warn("cannot read");
 			} catch (OpenProcessException e1) {
 				log.warn("process problem");
+			} catch (Exception e){
+				log.warn("something weird ", e);
 			}
 
 			synchronized (status) {

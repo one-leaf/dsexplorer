@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import luz.winapi.api.exception.OpenProcessException;
+import luz.winapi.api.exception.ReadProcessMemoryException;
 import luz.winapi.constants.GAFlags;
 import luz.winapi.constants.ProcessInformationClass;
 import luz.winapi.jna.Kernel32.LPPROCESSENTRY32;
@@ -45,7 +47,7 @@ public class ProcessImpl implements Process {
 	}
 
 	private Pointer handleCache =null;
-	public Pointer getHandle() throws Exception{
+	public Pointer getHandle() throws OpenProcessException{
 		if (handleCache!=null)
 			return handleCache;
 		handleCache = winAPI.OpenProcess(Kernel32Tools.PROCESS_ALL_ACCESS, false, this.pid);
@@ -225,7 +227,7 @@ public class ProcessImpl implements Process {
 		return winAPI.VirtualQueryEx(getHandle(), lpAddress);
 	}
 	
-	public void ReadProcessMemory(Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Exception{
+	public void ReadProcessMemory(Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws OpenProcessException, ReadProcessMemoryException{
 		winAPI.ReadProcessMemory(getHandle(), pointer, outputBuffer, nSize, outNumberOfBytesRead);
 	}
 	

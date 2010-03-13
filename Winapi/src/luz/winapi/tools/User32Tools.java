@@ -46,10 +46,10 @@ public class User32Tools {
 		}		
 	}
 	
+
 	public List<Pointer> EnumWindows(){
 		final List<Pointer> mutex=Collections.synchronizedList(new LinkedList<Pointer>());
-		
-		new Thread(new Runnable(){
+		Thread enumThread=new Thread(new Runnable(){
 			@Override
 			public void run() {
 				u32.EnumWindows(new WNDENUMPROC() {  
@@ -59,11 +59,12 @@ public class User32Tools {
 					} 
 				}, null);				
 			}
-		}).start();
-		
+		});
+		enumThread.start();
 		try {
 			synchronized (mutex) {
 				mutex.wait(20);	//FIXME Find better method. Dont go below 10!
+				enumThread.interrupt();
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

@@ -68,17 +68,19 @@ public class DictFinder extends Thread{
 			return false;
 		
 		try {
+			//this object will probably be still in memory, just abondoned!
+			//Need more reverse engineering
 			PyObject obj=PyObjectFactory.getObject(dict.getAddress(), status.getProcess(), true);
 			
 			if(!(obj instanceof PyDict)){
 				log.warn("invalid dict: instance");
 				return false;
 			}
-			
-			if(dict.getRefCount()<1){
-				log.warn("invalid dict: getRefCount");
+			if(dict.getMa_Table()==0){	//is set to 0 apparantly before abondonning
+				log.warn("invalid dict: missing table");
 				return false;
 			}
+			
 			log.debug("renewing dict");
 			status.setDict(dict);
 			
