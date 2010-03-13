@@ -82,4 +82,8 @@ public class TypeGroupMap extends HashMap<Integer, TypeGroup> {
 			count+=tg.getOrderCount();			
 		return count;
 	}
+
+	public int getTypeCount() {
+		return this.values().size();
+	}
 }

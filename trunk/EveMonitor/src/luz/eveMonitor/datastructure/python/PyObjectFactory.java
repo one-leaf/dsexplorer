@@ -46,5 +46,15 @@ public class PyObjectFactory {
 		}
 		return obj;
 	}
+	
+	public static long pyStringHash(String string){
+		int len = string.length();
+		long x = string.charAt(0) << 7;
+		for (int index=0; index < len; index++)
+			x = (1000003*x) ^ string.charAt(index);
+		x ^= len;
+		x = x&0xFFFFFFFFL;	//unsigned int
+		return x;
+	}
 
 }

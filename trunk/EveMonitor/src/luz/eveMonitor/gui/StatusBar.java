@@ -30,6 +30,7 @@ public class StatusBar extends javax.swing.JPanel {
 	private static final long serialVersionUID = 1505143385322711167L;
 	private JLabel lblOrders;
 	private JLabel lblTrans;
+	private JLabel lblTypes;
 	private JLabel lblDict;
 	private JLabel lblProcess;
 	private Status status;
@@ -71,6 +72,12 @@ public class StatusBar extends javax.swing.JPanel {
 				lblDict.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 			}
 			{
+				lblTypes = new JLabel();
+				this.add(lblTypes);
+				lblTypes.setText("Types: ");
+				lblTypes.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+			}			
+			{
 				lblOrders = new JLabel();
 				this.add(lblOrders);
 				lblOrders.setText("Orders: ");
@@ -107,6 +114,7 @@ public class StatusBar extends javax.swing.JPanel {
 			
 			@Override
 			public void tableChanged(TableModelEvent paramTableModelEvent) {
+				lblTypes.setText("Types: "+StatusBar.this.map.getTypeCount());
 				lblOrders.setText("Orders: "+StatusBar.this.map.getOrderCount());
 				lblTrans.setText("Transactions: "+StatusBar.this.map.getTransactions().size());		
 			}

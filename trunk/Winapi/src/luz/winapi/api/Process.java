@@ -1,12 +1,15 @@
 package luz.winapi.api;
 
 
+import luz.winapi.api.exception.OpenProcessException;
+import luz.winapi.api.exception.ReadProcessMemoryException;
+
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 
 public interface Process {
 
-	public void ReadProcessMemory(Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Exception;
+	public void ReadProcessMemory(Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws OpenProcessException, ReadProcessMemoryException;
 	public String getSzExeFile();
 	public String getModuleFileNameExA();
 	public int getPid();

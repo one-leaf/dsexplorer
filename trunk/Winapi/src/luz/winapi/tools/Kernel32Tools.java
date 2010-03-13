@@ -3,6 +3,8 @@ package luz.winapi.tools;
 import java.util.LinkedList;
 import java.util.List;
 
+import luz.winapi.api.exception.OpenProcessException;
+import luz.winapi.api.exception.ReadProcessMemoryException;
 import luz.winapi.jna.Kernel32;
 import luz.winapi.jna.Kernel32.ENUMRESNAMEPROC;
 import luz.winapi.jna.Kernel32.LPPROCESSENTRY32;
@@ -71,20 +73,20 @@ public class Kernel32Tools {
 		return k32.GetLastError();
 	}
 	
-	public Pointer OpenProcess(int dwDesiredAccess, boolean bInheritHandle, int dwProcessId) throws Exception{
+	public Pointer OpenProcess(int dwDesiredAccess, boolean bInheritHandle, int dwProcessId) throws OpenProcessException{
 		Pointer process = k32.OpenProcess(dwDesiredAccess, false, dwProcessId);
     	if (process == null){
     		int err=k32.GetLastError();
-            throw new Exception("openProcess failed. Error: "+err);
+            throw new OpenProcessException("openProcess failed. Error: "+err);
     	}
         return process;
     }
 	
-	public void ReadProcessMemory(Pointer hProcess, Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Exception{
+	public void ReadProcessMemory(Pointer hProcess, Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws ReadProcessMemoryException{
         boolean success = k32.ReadProcessMemory(hProcess, pointer, outputBuffer, nSize, outNumberOfBytesRead);
     	if (!success){
     		int err=k32.GetLastError();
-    		throw new Exception("readProcessMemory failed. Error: "+err);
+    		throw new ReadProcessMemoryException("readProcessMemory failed. Error: "+err);
     	}
     }
 	
