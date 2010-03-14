@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import luz.winapi.api.Process;
-import luz.winapi.api.exception.OpenProcessException;
-import luz.winapi.api.exception.ReadProcessMemoryException;
+import luz.winapi.api.exception.Kernel32Exception;
 
 public class PyObjectFactoryCached {
     private static PyObjectFactoryCached instance=new PyObjectFactoryCached();
@@ -17,7 +16,7 @@ public class PyObjectFactoryCached {
         return instance;
     }
     
-	public static PyObject getObject(long address, Process process, boolean raw) throws ReadProcessMemoryException, OpenProcessException{
+	public static PyObject getObject(long address, Process process, boolean raw) throws Kernel32Exception{
 		Long key=raw?address:address-PyObject_VAR_HEAD.SIZE;
 		PyObject obj = cache.get(key);
 		if(obj==null){

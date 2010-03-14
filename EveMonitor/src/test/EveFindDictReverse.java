@@ -9,8 +9,7 @@ import luz.eveMonitor.datastructure.python.PyObjectFactory;
 import luz.eveMonitor.utils.PointerListener;
 import luz.eveMonitor.utils.Reader;
 import luz.winapi.api.Process;
-import luz.winapi.api.exception.OpenProcessException;
-import luz.winapi.api.exception.ReadProcessMemoryException;
+import luz.winapi.api.exception.Kernel32Exception;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
@@ -133,7 +132,7 @@ public class EveFindDictReverse {
 		return list;		
 	}
 	
-	public static List<Long> stage3DBRowList(List<Long> addrs) throws ReadProcessMemoryException, OpenProcessException{
+	public static List<Long> stage3DBRowList(List<Long> addrs) throws Kernel32Exception{
 		List<Long> list = new LinkedList<Long>();
 		
 		for (Long addr : addrs) {
@@ -184,7 +183,7 @@ public class EveFindDictReverse {
 		return list;		
 	}
 	
-	public static List<Long> stage5PyList(List<Long> addrs) throws ReadProcessMemoryException, OpenProcessException{
+	public static List<Long> stage5PyList(List<Long> addrs) throws Kernel32Exception{
 		List<Long> list = new LinkedList<Long>();
 		
 		for (Long addr : addrs) {

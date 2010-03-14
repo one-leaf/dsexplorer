@@ -20,8 +20,7 @@ import luz.winapi.api.Process;
 import luz.winapi.api.ProcessList;
 import luz.winapi.api.WinAPI;
 import luz.winapi.api.WinAPIImpl;
-import luz.winapi.api.exception.OpenProcessException;
-import luz.winapi.api.exception.ReadProcessMemoryException;
+import luz.winapi.api.exception.Kernel32Exception;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -66,15 +65,9 @@ public  class Grabber extends Thread{
 				while(true){
 					try {
 						findDict();
-					} catch (OpenProcessException e) {
-						log.warn("findDict: cannot read");
-						break;
-					} catch (ReadProcessMemoryException e) {
-						log.warn("findDict: process problem");
-						break;
-					} catch (Exception e) {
-						log.warn("findDict: cannot read");
-						break;
+					} catch (Exception e){	//really catch everthing, this thread sould not die
+						log.warn("findDict: fail ", e);
+						continue begin;
 					}
 					if(status.getDict()==null){
 						try {
@@ -90,17 +83,9 @@ public  class Grabber extends Thread{
 								findRows();
 								sleep(1000);
 								refreshDict();
-							} catch (ReadProcessMemoryException e) {
-								log.warn("findRows: cannot read");
-								break;
-							} catch (OpenProcessException e) {
-								log.warn("findRows: process problem");
-								break;
-							} catch (InterruptedException e){
-				            	continue begin;
-				            } catch (Exception e){
-								log.warn("findRows: something weird ", e);
-								break;
+				            } catch (Exception e){	//really catch everthing, this thread sould not die
+								log.warn("findRows: fail ", e);
+								continue begin;
 							}
 						}
 					}
@@ -139,9 +124,10 @@ public  class Grabber extends Thread{
 				return;
 			}			
 		}
+		status.setProcess(null);
 	}
 	
-	public void findDict() throws OpenProcessException, ReadProcessMemoryException, Exception{
+	public void findDict() throws Kernel32Exception{
 		log.trace("findDict");
 		long beginAddr=0;
 		long endAddr=0x23000000L;
@@ -168,16 +154,19 @@ public  class Grabber extends Thread{
 				return;				
 			}
 		}
+		status.setDict(null);
 	}
 	
-	public void refreshDict() throws ReadProcessMemoryException, OpenProcessException{
+	public void refreshDict() throws Kernel32Exception {
 		PyObject obj=PyObjectFactory.getObject(status.getDictAddr(), status.getProcess(), true);
 		if(obj instanceof PyDict){
 			status.setDict((PyDict)obj);
+		}else{
+			status.setDict(null);
 		}
 	}
 	
-	public void findRows() throws ReadProcessMemoryException, OpenProcessException {
+	public void findRows() throws Kernel32Exception {
 		log.trace("findRows");	
 		int rowCounter=0;
 		int typeId;

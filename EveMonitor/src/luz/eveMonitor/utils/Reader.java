@@ -22,8 +22,7 @@ import luz.winapi.api.Process;
 import luz.winapi.api.ProcessList;
 import luz.winapi.api.WinAPI;
 import luz.winapi.api.WinAPIImpl;
-import luz.winapi.api.exception.OpenProcessException;
-import luz.winapi.api.exception.ReadProcessMemoryException;
+import luz.winapi.api.exception.Kernel32Exception;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -117,7 +116,7 @@ public class Reader {
 	}
 	
 	private Map<Integer, Integer> stamps=new HashMap<Integer, Integer>();
-	public List<Order> getNewRows() throws ReadProcessMemoryException, OpenProcessException {
+	public List<Order> getNewRows() throws Kernel32Exception{
 		long timer=System.currentTimeMillis();
 		List<Order> rows = new LinkedList<Order>();
 		

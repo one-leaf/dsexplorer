@@ -1,10 +1,10 @@
 package luz.eveMonitor.datastructure.python;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import luz.winapi.api.Process;
-import luz.winapi.api.exception.OpenProcessException;
-import luz.winapi.api.exception.ReadProcessMemoryException;
+import luz.winapi.api.exception.Kernel32Exception;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
@@ -20,15 +20,14 @@ public class PyDict extends PyObject {
 	public int		getMa_Mask    (){return super.getInt   (8);}
 	public int		getMa_Table   (){return super.getInt   (12);}
 	public int		getMa_Lokup   (){return super.getInt   (16);}
-	public PyDictEntry	getDictEntry(int i){
-		//TDODO get entry with hash mod ma_mask = slot
-		PyDictEntry entry=new PyDictEntry(process);
+	public PyDictEntry	getDictEntry(int i) throws NoSuchElementException{
+		//TODO get entry with hash mod ma_mask = slot
 		try {
+			PyDictEntry entry=new PyDictEntry(process);
 			process.ReadProcessMemory(Pointer.createConstant(getMa_Table()+(4*3)*i), entry, (int)entry.getSize(), null);
 			return entry;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+		} catch (Kernel32Exception e) {
+			throw new NoSuchElementException("PyDict became invalid");
 		}
 	}
 	
@@ -65,14 +64,14 @@ public class PyDict extends PyObject {
 		public int getKeyPtr()		{ return super.getInt(4);}	
 		public int getValuePtr()	{ return super.getInt(8);}
 		
-		public PyObject getValue() throws ReadProcessMemoryException, OpenProcessException{
+		public PyObject getValue() throws Kernel32Exception{
 			if(getValuePtr()!=0)
 				return PyObjectFactory.getObject(getValuePtr(), process, false);
 			else
 				return null;
 		}
 
-		public PyObject getKey() throws ReadProcessMemoryException, OpenProcessException {
+		public PyObject getKey() throws Kernel32Exception {
 			if(getKeyPtr()!=0)
 				return PyObjectFactory.getObject(getKeyPtr(), process, false);
 			else

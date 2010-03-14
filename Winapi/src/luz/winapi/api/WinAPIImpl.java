@@ -3,8 +3,7 @@ package luz.winapi.api;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-import luz.winapi.api.exception.OpenProcessException;
-import luz.winapi.api.exception.ReadProcessMemoryException;
+import luz.winapi.api.exception.Kernel32Exception;
 import luz.winapi.constants.GAFlags;
 import luz.winapi.constants.ProcessInformationClass;
 import luz.winapi.jna.Kernel32.LPPROCESSENTRY32;
@@ -64,15 +63,15 @@ public class WinAPIImpl implements WinAPI{
 		return plist;
 	}
 	
-	public Pointer OpenProcess(int dwDesiredAccess, boolean bInheritHandle, int dwProcessId) throws OpenProcessException{
+	public Pointer OpenProcess(int dwDesiredAccess, boolean bInheritHandle, int dwProcessId) throws Kernel32Exception{
 		return k32.OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId);		
 	}
 	
-	public MEMORY_BASIC_INFORMATION VirtualQueryEx(Pointer hProcess,Pointer lpAddress){
+	public MEMORY_BASIC_INFORMATION VirtualQueryEx(Pointer hProcess,Pointer lpAddress) throws Kernel32Exception{
 		return k32.VirtualQueryEx(hProcess, lpAddress);
 	}
 	
-	public void ReadProcessMemory(Pointer hProcess, Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws ReadProcessMemoryException{
+	public void ReadProcessMemory(Pointer hProcess, Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Kernel32Exception{
 		k32.ReadProcessMemory(hProcess, pointer, outputBuffer, nSize, outNumberOfBytesRead);
 	}
 	

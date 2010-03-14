@@ -6,8 +6,7 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import luz.winapi.api.exception.OpenProcessException;
-import luz.winapi.api.exception.ReadProcessMemoryException;
+import luz.winapi.api.exception.Kernel32Exception;
 import luz.winapi.constants.GAFlags;
 import luz.winapi.constants.ProcessInformationClass;
 import luz.winapi.jna.Kernel32.LPPROCESSENTRY32;
@@ -47,7 +46,7 @@ public class ProcessImpl implements Process {
 	}
 
 	private Pointer handleCache =null;
-	public Pointer getHandle() throws OpenProcessException{
+	public Pointer getHandle() throws Kernel32Exception{
 		if (handleCache!=null)
 			return handleCache;
 		handleCache = winAPI.OpenProcess(Kernel32Tools.PROCESS_ALL_ACCESS, false, this.pid);
@@ -223,15 +222,15 @@ public class ProcessImpl implements Process {
 		return pebCache;
 	}
 	
-	public MEMORY_BASIC_INFORMATION VirtualQueryEx(Pointer lpAddress) throws Exception{
+	public MEMORY_BASIC_INFORMATION VirtualQueryEx(Pointer lpAddress) throws Kernel32Exception{
 		return winAPI.VirtualQueryEx(getHandle(), lpAddress);
 	}
 	
-	public void ReadProcessMemory(Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws OpenProcessException, ReadProcessMemoryException{
+	public void ReadProcessMemory(Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Kernel32Exception{
 		winAPI.ReadProcessMemory(getHandle(), pointer, outputBuffer, nSize, outNumberOfBytesRead);
 	}
 	
-	public void search(long from, long to, final String value, MemoryListener listener) throws Exception {
+	public void search(long from, long to, final String value, MemoryListener listener) throws Kernel32Exception {
 		log.debug("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" listener "+listener);
 		this.listener=listener;
 		long timer=System.currentTimeMillis();
@@ -242,7 +241,7 @@ public class ProcessImpl implements Process {
 		log.debug("timer "+(System.currentTimeMillis()-timer));
 	}
 	
-	private void search(long from, long to) throws Exception{
+	private void search(long from, long to) throws Kernel32Exception{
 		int partSize=512*1024;
 		int bufferSize=partSize+listener.getOverlapping();
 		int readSize;

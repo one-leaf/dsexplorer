@@ -66,6 +66,11 @@ public class TransactionSet implements Iterable<Transaction>, TableModel{
 		return transs.size();
 	}
 	
+
+	public void clear() {
+		transs.clear();		
+	}
+
 	
 
 	// Model stuff////////////////////////////////////

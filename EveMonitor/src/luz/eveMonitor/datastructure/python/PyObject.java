@@ -1,8 +1,7 @@
 package luz.eveMonitor.datastructure.python;
 
 import luz.winapi.api.Process;
-import luz.winapi.api.exception.OpenProcessException;
-import luz.winapi.api.exception.ReadProcessMemoryException;
+import luz.winapi.api.exception.Kernel32Exception;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
@@ -43,18 +42,18 @@ public class PyObject extends Memory{
 		return head.getRefCount();
 	}
 	
-	public PyObject getNext() throws ReadProcessMemoryException, OpenProcessException{
+	public PyObject getNext() throws Kernel32Exception{
 		return PyObjectFactory.getObject(head.getNextPtr(), process, true);
 	}
 	
-	public PyObject getPrev() throws ReadProcessMemoryException, OpenProcessException{
+	public PyObject getPrev() throws Kernel32Exception{
 		return PyObjectFactory.getObject(head.getPrevPtr(), process, true);
 	}
 	
 	
 	
 	
-	public void read() throws ReadProcessMemoryException, OpenProcessException{
+	public void read() throws Kernel32Exception{
 		process.ReadProcessMemory(Pointer.createConstant(getAddress()+head.getSize()), this, (int)this.getSize(), null);
 	}
 	

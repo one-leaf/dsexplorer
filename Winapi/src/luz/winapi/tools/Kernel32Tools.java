@@ -3,8 +3,7 @@ package luz.winapi.tools;
 import java.util.LinkedList;
 import java.util.List;
 
-import luz.winapi.api.exception.OpenProcessException;
-import luz.winapi.api.exception.ReadProcessMemoryException;
+import luz.winapi.api.exception.Kernel32Exception;
 import luz.winapi.jna.Kernel32;
 import luz.winapi.jna.Kernel32.ENUMRESNAMEPROC;
 import luz.winapi.jna.Kernel32.LPPROCESSENTRY32;
@@ -73,20 +72,20 @@ public class Kernel32Tools {
 		return k32.GetLastError();
 	}
 	
-	public Pointer OpenProcess(int dwDesiredAccess, boolean bInheritHandle, int dwProcessId) throws OpenProcessException{
+	public Pointer OpenProcess(int dwDesiredAccess, boolean bInheritHandle, int dwProcessId) throws Kernel32Exception{
 		Pointer process = k32.OpenProcess(dwDesiredAccess, false, dwProcessId);
     	if (process == null){
     		int err=k32.GetLastError();
-            throw new OpenProcessException("openProcess failed. Error: "+err);
+            throw new Kernel32Exception("openProcess failed. Error: "+err);
     	}
         return process;
     }
 	
-	public void ReadProcessMemory(Pointer hProcess, Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws ReadProcessMemoryException{
+	public void ReadProcessMemory(Pointer hProcess, Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Kernel32Exception{
         boolean success = k32.ReadProcessMemory(hProcess, pointer, outputBuffer, nSize, outNumberOfBytesRead);
     	if (!success){
     		int err=k32.GetLastError();
-    		throw new ReadProcessMemoryException("readProcessMemory failed. Error: "+err);
+    		throw new Kernel32Exception("readProcessMemory failed. Error: "+err);
     	}
     }
 	
@@ -165,9 +164,13 @@ public class Kernel32Tools {
     public static int PAGE_WRITECOMBINE     =0x0400;	//100 0000 0000
 
     
-    public MEMORY_BASIC_INFORMATION VirtualQueryEx(Pointer hProcess,Pointer lpAddress){
+    public MEMORY_BASIC_INFORMATION VirtualQueryEx(Pointer hProcess,Pointer lpAddress) throws Kernel32Exception{
     	MEMORY_BASIC_INFORMATION lpBuffer = new MEMORY_BASIC_INFORMATION();
-        k32.VirtualQueryEx(hProcess, lpAddress, lpBuffer, lpBuffer.size());
+        int ret = k32.VirtualQueryEx(hProcess, lpAddress, lpBuffer, lpBuffer.size());
+        if (ret==0){
+    		int err=k32.GetLastError();
+    		throw new Kernel32Exception("VirtualQueryEx failed. Error: "+err);
+    	}
         return lpBuffer;
     }
 }
