@@ -16,7 +16,7 @@ public class PyObjectFactory {
 		try {
 			head=new PyObject_VAR_HEAD(address, process);
 			head.read();
-		} catch (Exception e) {
+		} catch (Kernel32Exception e) {
 			log.warn("cannot read PyObject_VAR_HEAD @ "+String.format("%08X", address));
 			return null;
 		}

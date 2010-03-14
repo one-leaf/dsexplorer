@@ -42,10 +42,10 @@ public class OrderInfo extends javax.swing.JPanel {
 	private JLabel lblRange;
 	private JLabel lbl8;
 	private JLabel lblExpires;
-	private JLabel lbl9;
-	private JLabel lblType;
-	private JLabel lbl10;
-	private JLabel lblGroup;
+//	private JLabel lbl9;
+//	private JLabel lblType;
+//	private JLabel lbl10;
+//	private JLabel lblGroup;
 //	private JLabel lbl11;
 //	private JLabel lblMGroup;
 	/**
@@ -126,20 +126,20 @@ public class OrderInfo extends javax.swing.JPanel {
 			{
 				lblExpires = new JLabel();
 			}
-			{
-				lbl9 = new JLabel();
-				lbl9.setText("Type:");
-			}
-			{
-				lblType = new JLabel();
-			}
-			{
-				lbl10 = new JLabel();
-				lbl10.setText("Group:");
-			}
-			{
-				lblGroup = new JLabel();
-			}
+//			{
+//				lbl9 = new JLabel();
+//				lbl9.setText("Type:");
+//			}
+//			{
+//				lblType = new JLabel();
+//			}
+//			{
+//				lbl10 = new JLabel();
+//				lbl10.setText("Group:");
+//			}
+//			{
+//				lblGroup = new JLabel();
+//			}
 //			{
 //				lbl11 = new JLabel();
 //				lbl11.setText("MGroup:");
@@ -174,12 +174,12 @@ public class OrderInfo extends javax.swing.JPanel {
 					.addGroup(thisLayout.createParallelGroup()
 					    .addComponent(lbl8      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
 					    .addComponent(lblExpires, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
-					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl9      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblType   , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
-					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl10     , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblGroup  , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+//					.addGroup(thisLayout.createParallelGroup()
+//					    .addComponent(lbl9      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+//					    .addComponent(lblType   , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+//					.addGroup(thisLayout.createParallelGroup()
+//					    .addComponent(lbl10     , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+//					    .addComponent(lblGroup  , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 //					.addGroup(thisLayout.createParallelGroup()
 //					    .addComponent(lbl11     , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
 //					    .addComponent(lblMGroup  , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
@@ -196,8 +196,8 @@ public class OrderInfo extends javax.swing.JPanel {
 					    .addComponent(lbl6 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
 					    .addComponent(lbl7 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
 					    .addComponent(lbl8 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lbl9 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lbl10, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+//					    .addComponent(lbl9 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+//					    .addComponent(lbl10, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
 //					    .addComponent(lbl11, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
 					    )
 					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -210,8 +210,8 @@ public class OrderInfo extends javax.swing.JPanel {
 					    .addComponent(lblJumps  , 0, 300, Short.MAX_VALUE)
 					    .addComponent(lblRange  , 0, 300, Short.MAX_VALUE)
 					    .addComponent(lblExpires, 0, 300, Short.MAX_VALUE)
-					    .addComponent(lblType   , 0, 300, Short.MAX_VALUE)
-					    .addComponent(lblGroup  , 0, 300, Short.MAX_VALUE)
+//					    .addComponent(lblType   , 0, 300, Short.MAX_VALUE)
+//					    .addComponent(lblGroup  , 0, 300, Short.MAX_VALUE)
 //					    .addComponent(lblMGroup , 0, 300, Short.MAX_VALUE)
 					));
 
@@ -248,8 +248,8 @@ public class OrderInfo extends javax.swing.JPanel {
 				c.get(Calendar.MINUTE)     +"M "+
 				c.get(Calendar.SECOND)     +"S ";
 			lblExpires.setText(expires);
-			lblType   .setText(order.getType().getTypeName());
-			lblGroup  .setText(order.getType().getGroupID().getGroupName());
+//			lblType   .setText(order.getType().getTypeName());
+//			lblGroup  .setText(order.getType().getGroupID().getGroupName());
 //			lblGroup  .setText(order.getType().getMarketGroupID().getMarketGroupName());
 		}else{
 			lblPrice  .setText("");
@@ -260,8 +260,8 @@ public class OrderInfo extends javax.swing.JPanel {
 			lblJumps  .setText("");
 			lblRange  .setText("");
 			lblExpires.setText("");
-			lblType   .setText("");
-			lblGroup  .setText("");
+//			lblType   .setText("");
+//			lblGroup  .setText("");
 //			lblMGroup .setText("");
 		}
 		
