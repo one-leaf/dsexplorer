@@ -53,6 +53,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private JSpinner spAccounting;
 	private JLabel lblAccounting;
 	private JButton btnRefresh;
+	private TransInfo transInfo;
 	private JButton btnClear;
 	private JTextField txtNumber;
 	private JLabel lblNumber;
@@ -151,6 +152,10 @@ public class MainWindow extends javax.swing.JFrame {
 				stStatusBar = new StatusBar();
 			}
 			{
+				transInfo = new TransInfo();
+				transInfo.setBorder(BorderFactory.createTitledBorder("Tranaction Info"));
+			}
+			{
 				btnClear = new JButton();
 				btnClear.setText("Clear");
 				btnClear.addActionListener(new ActionListener() {
@@ -202,11 +207,12 @@ public class MainWindow extends javax.swing.JFrame {
 				    .addComponent(txtNumber, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(btnClear, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(spTransTable, 0, 352, Short.MAX_VALUE)
+				.addComponent(spTransTable, GroupLayout.PREFERRED_SIZE, 352, GroupLayout.PREFERRED_SIZE)
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup()
-				    .addComponent(oiBuy, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(oiSell, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE))
+				    .addComponent(oiBuy, GroupLayout.Alignment.LEADING, 0, 177, Short.MAX_VALUE)
+				    .addComponent(transInfo, GroupLayout.Alignment.LEADING, 0, 177, Short.MAX_VALUE)
+				    .addComponent(oiSell, GroupLayout.Alignment.LEADING, 0, 177, Short.MAX_VALUE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addComponent(stStatusBar, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE));
 			thisLayout.setHorizontalGroup(thisLayout.createParallelGroup()
@@ -215,21 +221,20 @@ public class MainWindow extends javax.swing.JFrame {
 				    .addPreferredGap(stStatusBar, oiBuy, LayoutStyle.ComponentPlacement.INDENT)
 				    .addGroup(thisLayout.createParallelGroup()
 				        .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				            .addGroup(thisLayout.createParallelGroup()
-				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				                    .addComponent(lblMaxMoney, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
-				                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				                    .addComponent(txtMaxMoney, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
-				                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				                    .addComponent(lblMaxVol, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
-				                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				                    .addComponent(txtMaxVolume, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE))
-				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				                    .addComponent(oiBuy, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
-				                    .addGap(72)))
-				            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-				            .addComponent(lblAccounting, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(oiBuy, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
 				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				            .addComponent(transInfo, 0, 470, Short.MAX_VALUE)
+				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				            .addComponent(oiSell, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE))
+				        .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				            .addComponent(lblMaxMoney, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
+				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				            .addComponent(txtMaxMoney, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				            .addComponent(lblMaxVol, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
+				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				            .addComponent(txtMaxVolume, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblAccounting, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
 				            .addComponent(spAccounting, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
 				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				            .addComponent(lblSecurity, GroupLayout.PREFERRED_SIZE, 54, GroupLayout.PREFERRED_SIZE)
@@ -239,15 +244,10 @@ public class MainWindow extends javax.swing.JFrame {
 				            .addComponent(lblNumber, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
 				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				            .addComponent(txtNumber, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-				            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-				            .addGroup(thisLayout.createParallelGroup()
-				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				                    .addComponent(btnRefresh, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				                    .addGap(0, 142, Short.MAX_VALUE)
-				                    .addComponent(btnClear, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
-				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				                    .addGap(0, 40, Short.MAX_VALUE)
-				                    .addComponent(oiSell, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE))))
+				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				            .addComponent(btnRefresh, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				            .addGap(0, 160, Short.MAX_VALUE)
+				            .addComponent(btnClear, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
 				        .addComponent(spTransTable, GroupLayout.Alignment.LEADING, 0, 996, Short.MAX_VALUE))
 				    .addContainerGap()));
 
@@ -375,6 +375,7 @@ public class MainWindow extends javax.swing.JFrame {
 			Transaction t = tblTransactions.getTransaction(row);
 			oiBuy.setOrder(t.buy);
 			oiSell.setOrder(t.sell);
+			transInfo.setTransaction(t, map.getTransactionSettings());
 		}
 	}
 	

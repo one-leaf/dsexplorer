@@ -13,6 +13,10 @@ public class Transaction implements Comparable<Transaction>{
 		this.sell=sell;
 	}
 	
+	public long getMaxItemNumber(TransactionSettings settings) {
+		return getMaxItemNumber(settings.getMaxVolume(), settings.getMaxMoney());
+	}
+		
 	public long getMaxItemNumber(double volume, double money){
 		double maxBuy  = buy.getVolRem();
 		double maxSell = sell.getVolRem();		
@@ -23,6 +27,10 @@ public class Transaction implements Comparable<Transaction>{
 		items=Math.min(items, maxVol);
 		items=Math.min(items, maxPrice);		
 		return (long)items;
+	}
+	
+	public long getMaxCargo(TransactionSettings settings) {
+		return (long)(settings.getMaxVolume() / buy.getType().getVolume());
 	}
 	
 	public double calcWin(TransactionSettings settings) {
@@ -37,6 +45,16 @@ public class Transaction implements Comparable<Transaction>{
 			win=(items*sell.getPrice())*(1-(10-accounting)/1000d)-items*buy.getPrice();
 		}
 		return win;
+	}
+	
+	public double calcPercent(TransactionSettings settings){
+		int accounting = settings.getAccounting();
+		double volume=settings.getMaxVolume();
+		double money=settings.getMaxMoney();
+		items = getMaxItemNumber(volume, money);
+		double gain=(items*sell.getPrice())*(1-(10-accounting)/1000d);
+		double loss=items*buy.getPrice();
+		return (gain-loss)/loss*100;		
 	}
 	
 	public double getVolume(){

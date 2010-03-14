@@ -1,6 +1,7 @@
 package luz.eveMonitor.datastructure.python;
 
 import luz.winapi.api.Process;
+import luz.winapi.api.exception.Kernel32Exception;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
@@ -31,7 +32,7 @@ public class PyObject_VAR_HEAD extends Memory{
 		try{
 			process.ReadProcessMemory(Pointer.createConstant(getTypePtr()), buf2, (int)buf2.getSize(), null);
 			nameAddr=buf2.getInt(12);
-		}catch (Exception e){
+		}catch (Kernel32Exception e){
 			System.out.println("cannot get typePtr "+String.format("%08X", getTypePtr()));
 			return typeString;
 		}
@@ -39,13 +40,13 @@ public class PyObject_VAR_HEAD extends Memory{
 		try{
 			process.ReadProcessMemory(Pointer.createConstant(nameAddr), buf2, (int)buf2.getSize(), null);
 			typeString=buf2.getString(0);
-		}catch (Exception e){
+		}catch (Kernel32Exception e){
 			System.out.println("cannot get typeString "+String.format("%08X", nameAddr));
 		}
 		return typeString;	
 	}
 	
-	public void read() throws Exception{
+	public void read() throws Kernel32Exception {
 		process.ReadProcessMemory(Pointer.createConstant(getAddress()), this, (int)this.getSize(), null);
 	}
 }
