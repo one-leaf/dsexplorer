@@ -66,17 +66,18 @@ public class Status {
 
 	public void setDict(PyDict dict) {
 		this.dict = dict;
-		if (dict != null)
+		if (dict != null){
 			this.dictAddr = dict.getAddress();
-		else
+			try {
+				Serializer serializer = new Persister();
+				serializer.write(this, new File(FILENAME));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
 			this.dictAddr = null;
-
-		try {
-			Serializer serializer = new Persister();
-			serializer.write(this, new File(FILENAME));
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
+
 		fireStatusChanged();
 		synchronized (this) {
 			this.notifyAll();

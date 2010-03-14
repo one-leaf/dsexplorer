@@ -59,6 +59,12 @@ public class TypeGroupMap extends HashMap<Integer, TypeGroup> {
 		transs.refresh(maxMoney, maxVolume, accounting, security, number);		
 	}
 	
+	@Override
+	public void clear(){
+		super.clear();
+		transs.clear();
+	}
+	
 	public void createTrans(int typeId) {
 		TypeGroup tp = getTypeGroup(typeId);
 		log.trace("create Trans");

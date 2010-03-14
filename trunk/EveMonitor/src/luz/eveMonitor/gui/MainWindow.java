@@ -53,6 +53,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private JSpinner spAccounting;
 	private JLabel lblAccounting;
 	private JButton btnRefresh;
+	private JButton btnClear;
 	private JTextField txtNumber;
 	private JLabel lblNumber;
 	private JSpinner spSecurity;
@@ -150,6 +151,15 @@ public class MainWindow extends javax.swing.JFrame {
 				stStatusBar = new StatusBar();
 			}
 			{
+				btnClear = new JButton();
+				btnClear.setText("Clear");
+				btnClear.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnClearActionPerformed(evt);
+					}
+				});
+			}
+			{
 				txtNumber = new JTextField();
 			}
 			{
@@ -189,9 +199,10 @@ public class MainWindow extends javax.swing.JFrame {
 				    .addComponent(lblSecurity, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(spSecurity, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblNumber, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(txtNumber, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				    .addComponent(txtNumber, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(btnClear, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(spTransTable, 0, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+				.addComponent(spTransTable, 0, 352, Short.MAX_VALUE)
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup()
 				    .addComponent(oiBuy, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE)
@@ -215,8 +226,8 @@ public class MainWindow extends javax.swing.JFrame {
 				                    .addComponent(txtMaxVolume, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE))
 				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				                    .addComponent(oiBuy, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
-				                    .addGap(50)))
-				            .addGap(10)
+				                    .addGap(72)))
+				            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 				            .addComponent(lblAccounting, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
 				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				            .addComponent(spAccounting, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
@@ -232,9 +243,10 @@ public class MainWindow extends javax.swing.JFrame {
 				            .addGroup(thisLayout.createParallelGroup()
 				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				                    .addComponent(btnRefresh, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				                    .addGap(0, 0, Short.MAX_VALUE))
+				                    .addGap(0, 142, Short.MAX_VALUE)
+				                    .addComponent(btnClear, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
 				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				                    .addGap(0, 0, Short.MAX_VALUE)
+				                    .addGap(0, 40, Short.MAX_VALUE)
 				                    .addComponent(oiSell, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE))))
 				        .addComponent(spTransTable, GroupLayout.Alignment.LEADING, 0, 996, Short.MAX_VALUE))
 				    .addContainerGap()));
@@ -329,6 +341,7 @@ public class MainWindow extends javax.swing.JFrame {
 	}
 	
 
+
 	//$hide>>$
 	public MainWindow(TypeGroupMap map, Status status) {
 		this();
@@ -365,6 +378,9 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 	}
 	
+	private void btnClearActionPerformed(ActionEvent evt) {
+		this.map.clear();
+	}
 	
 	//$hide<<$
 }

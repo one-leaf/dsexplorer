@@ -1,6 +1,5 @@
 package luz.eveMonitor.utils;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,7 +37,16 @@ public class PointerListener2 implements MemoryListener {
 		byte[] current;
 		for (long pos = 0; pos < size-overlapping; pos=pos+1) {
 			current = outputBuffer.getByteArray(pos, this.overlapping);
-			if (Arrays.equals(target, current)){
+			
+			if(target[0]==current[0])
+			if(target[1]==current[1])
+			if(target[2]==current[2])
+			if(target[3]==current[3])
+			if(target[4]==current[4])
+			if(target[5]==current[5])
+			if(target[6]==current[6])
+			if(target[7]==current[7]){				//35812					
+//			if (Arrays.equals(target, current)){	//36000
 				this.results.add(address+pos);
 				log.debug("Found:\t"+Long.toHexString(address+pos));
 			}

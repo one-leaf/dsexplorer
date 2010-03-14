@@ -1,8 +1,7 @@
 package luz.eveMonitor.datastructure.python;
 
 import luz.winapi.api.Process;
-import luz.winapi.api.exception.OpenProcessException;
-import luz.winapi.api.exception.ReadProcessMemoryException;
+import luz.winapi.api.exception.Kernel32Exception;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 public class PyObjectFactory {
 	private static final Log log = LogFactory.getLog(PyObjectFactory.class);
 	
-	public static PyObject getObject(long address, Process process, boolean raw) throws ReadProcessMemoryException, OpenProcessException{
+	public static PyObject getObject(long address, Process process, boolean raw) throws Kernel32Exception{
 		if (raw==false)
 			address=address-4*4;	//next, prev, u1, u2
 		PyObject_VAR_HEAD head;
