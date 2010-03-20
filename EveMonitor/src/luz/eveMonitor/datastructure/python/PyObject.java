@@ -1,5 +1,6 @@
 package luz.eveMonitor.datastructure.python;
 
+import luz.eveMonitor.datastructure.python.exception.PythonObjectException;
 import luz.winapi.api.Process;
 import luz.winapi.api.exception.Kernel32Exception;
 
@@ -42,11 +43,11 @@ public class PyObject extends Memory{
 		return head.getRefCount();
 	}
 	
-	public PyObject getNext() throws Kernel32Exception{
+	public PyObject getNext() throws PythonObjectException{
 		return PyObjectFactory.getObject(head.getNextPtr(), process, true);
 	}
 	
-	public PyObject getPrev() throws Kernel32Exception{
+	public PyObject getPrev() throws PythonObjectException{
 		return PyObjectFactory.getObject(head.getPrevPtr(), process, true);
 	}
 	

@@ -1,6 +1,7 @@
 package luz.eveMonitor.gui;
 
 import java.awt.Dimension;
+import java.text.NumberFormat;
 
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
@@ -26,6 +27,8 @@ import luz.eveMonitor.datastructure.other.TransactionSettings;
 */
 public class TransInfo extends javax.swing.JPanel {
 	private static final long serialVersionUID = -4375884411896017055L;
+	private NumberFormat nf= NumberFormat.getInstance();
+	private NumberFormat pf= NumberFormat.getPercentInstance();
 	private JLabel lbl1;
 	private JLabel lblWin;
 	private JLabel lbl2;
@@ -166,13 +169,15 @@ public class TransInfo extends javax.swing.JPanel {
 	
 	public void setTransaction(Transaction trans, TransactionSettings settings){
 		if(trans!=null){
-			lblWin    .setText(String.format("%.2f", trans.calcWin(settings)));
-			lblPercent.setText(String.format("%.2f", trans.calcPercent(settings)));
+
+
+			lblWin    .setText(nf.format(trans.calcWin(settings)));
+			lblPercent.setText(pf.format(trans.calcPercent(settings)));
 			lblType   .setText(trans.buy.getType().getTypeName());
 			lblGroup  .setText(trans.buy.getType().getGroupID().getGroupName());
-			lblVolume .setText(String.format("%.2f", trans.buy.getType().getVolume()));
-			lblItems  .setText(""+trans.getMaxItemNumber(settings));
-			lblCargo  .setText(""+trans.getMaxCargo(settings));
+			lblVolume .setText(nf.format(trans.buy.getType().getVolume()));
+			lblItems  .setText(nf.format(trans.getMaxItemNumber(settings)));
+			lblCargo  .setText(nf.format(trans.getMaxCargo(settings)));
 
 
 		}else{

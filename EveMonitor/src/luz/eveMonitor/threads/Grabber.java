@@ -14,6 +14,7 @@ import luz.eveMonitor.datastructure.python.PyObject;
 import luz.eveMonitor.datastructure.python.PyObjectFactory;
 import luz.eveMonitor.datastructure.python.RowList;
 import luz.eveMonitor.datastructure.python.PyDict.PyDictEntry;
+import luz.eveMonitor.datastructure.python.exception.PythonObjectException;
 import luz.eveMonitor.entities.eveMon.Order;
 import luz.eveMonitor.utils.PointerListener;
 import luz.winapi.api.Process;
@@ -129,8 +130,8 @@ public  class Grabber extends Thread{
 	
 	public void findDict() throws Kernel32Exception{
 		log.trace("findDict");
-		long beginAddr=0;
-		long endAddr=0x23000000L;
+		long beginAddr=0x00400000L;
+		long endAddr  =0x23000000L;
 		int dictHash=(int)PyObjectFactory.pyStringHash("orderCache");
 
 		long timer=System.currentTimeMillis();
@@ -143,21 +144,25 @@ public  class Grabber extends Thread{
 			res=res+2*4;
 			IntByReference val=new IntByReference();
 			status.getProcess().ReadProcessMemory(Pointer.createConstant(res), val.getPointer(), 4, null);
-			PyObject obj=PyObjectFactory.getObject(val.getValue(), status.getProcess(), false);
-			if (obj instanceof PyDict){
-				log.info(String.format("findDict-result: %08X -> %08X", res, val.getValue()));
-				PyDict dict=(PyDict)PyObjectFactory.getObject(val.getValue(),status.getProcess(), false);;
-				status.setDict(dict);
-				
-				timer=System.currentTimeMillis()-timer;
-				log.debug("Dict Search time: "+timer+" ms");
-				return;				
+			
+			try {
+				PyObject obj = PyObjectFactory.getObject(val.getValue(), status.getProcess(), false);
+				if (obj instanceof PyDict){
+					log.info(String.format("findDict-result: %08X -> %08X", res, val.getValue()));
+					status.setDict((PyDict)obj);
+					
+					timer=System.currentTimeMillis()-timer;
+					log.debug("Dict Search time: "+timer+" ms");
+					return;				
+				}			
+			} catch (PythonObjectException e) {
+				// do nothing, try 
 			}
 		}
 		status.setDict(null);
 	}
 	
-	public void refreshDict() throws Kernel32Exception {
+	public void refreshDict() throws PythonObjectException {
 		PyObject obj=PyObjectFactory.getObject(status.getDictAddr(), status.getProcess(), true);
 		if(obj instanceof PyDict){
 			status.setDict((PyDict)obj);
@@ -166,7 +171,7 @@ public  class Grabber extends Thread{
 		}
 	}
 	
-	public void findRows() throws Kernel32Exception {
+	public void findRows() throws PythonObjectException {
 		log.trace("findRows");	
 		int rowCounter=0;
 		int typeId;

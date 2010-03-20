@@ -54,7 +54,7 @@ public class Transaction implements Comparable<Transaction>{
 		items = getMaxItemNumber(volume, money);
 		double gain=(items*sell.getPrice())*(1-(10-accounting)/1000d);
 		double loss=items*buy.getPrice();
-		return (gain-loss)/loss*100;		
+		return (gain-loss)/loss;		
 	}
 	
 	public double getVolume(){

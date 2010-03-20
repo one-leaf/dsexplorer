@@ -3,6 +3,7 @@ package luz.eveMonitor.datastructure.python;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import luz.eveMonitor.datastructure.python.exception.PythonObjectException;
 import luz.winapi.api.Process;
 import luz.winapi.api.exception.Kernel32Exception;
 
@@ -64,14 +65,14 @@ public class PyDict extends PyObject {
 		public int getKeyPtr()		{ return super.getInt(4);}	
 		public int getValuePtr()	{ return super.getInt(8);}
 		
-		public PyObject getValue() throws Kernel32Exception{
+		public PyObject getValue() throws PythonObjectException{
 			if(getValuePtr()!=0)
 				return PyObjectFactory.getObject(getValuePtr(), process, false);
 			else
 				return null;
 		}
 
-		public PyObject getKey() throws Kernel32Exception {
+		public PyObject getKey() throws PythonObjectException {
 			if(getKeyPtr()!=0)
 				return PyObjectFactory.getObject(getKeyPtr(), process, false);
 			else

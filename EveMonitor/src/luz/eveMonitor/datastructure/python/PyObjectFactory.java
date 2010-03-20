@@ -1,5 +1,6 @@
 package luz.eveMonitor.datastructure.python;
 
+import luz.eveMonitor.datastructure.python.exception.PythonObjectException;
 import luz.winapi.api.Process;
 import luz.winapi.api.exception.Kernel32Exception;
 
@@ -9,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
 public class PyObjectFactory {
 	private static final Log log = LogFactory.getLog(PyObjectFactory.class);
 	
-	public static PyObject getObject(long address, Process process, boolean raw) throws Kernel32Exception{
+	public static PyObject getObject(long address, Process process, boolean raw) throws PythonObjectException{
 		if (raw==false)
 			address=address-4*4;	//next, prev, u1, u2
 		PyObject_VAR_HEAD head;
@@ -17,8 +18,7 @@ public class PyObjectFactory {
 			head=new PyObject_VAR_HEAD(address, process);
 			head.read();
 		} catch (Kernel32Exception e) {
-			log.warn("cannot read PyObject_VAR_HEAD @ "+String.format("%08X", address));
-			return null;
+			throw new PythonObjectException("read PyObject_VAR_HEAD @ "+String.format("%08X", address));
 		}
 		PyObject obj=null;
 		//TODO optimize this string mapping
@@ -39,9 +39,13 @@ public class PyObjectFactory {
 			obj = new RowList(head, process);
 		}
 		if(obj==null){
-			log.warn("unknown object type "+sType+" @ "+String.format("%08X", address));
+			throw new PythonObjectException("unknown object type "+sType+" @ "+String.format("%08X", address));
 		}else{
-			obj.read();
+			try {
+				obj.read();
+			} catch (Kernel32Exception e) {
+				throw new PythonObjectException("unknown object type "+sType+" @ "+String.format("%08X", address));
+			}
 		}
 		return obj;
 	}
