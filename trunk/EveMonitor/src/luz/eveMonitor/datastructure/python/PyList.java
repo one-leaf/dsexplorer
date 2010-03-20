@@ -3,6 +3,7 @@ package luz.eveMonitor.datastructure.python;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import luz.eveMonitor.datastructure.python.exception.PythonObjectException;
 import luz.winapi.api.Process;
 import luz.winapi.api.exception.Kernel32Exception;
 
@@ -22,11 +23,13 @@ public class PyList extends PyObject{
 	public int		getU4      (){return super.getInt   (16);}
 	public int		getU5      (){return super.getInt   (20);}
 	
-	public PyObject getElement(int i) throws NoSuchElementException{
+	public PyObject getElement(int i) {
 		try {
 			IntByReference val = new IntByReference();
 			process.ReadProcessMemory(Pointer.createConstant(getListPtr()+(4*i)), val.getPointer(), 4, null);
 			return	PyObjectFactory.getObject(val.getValue(), process, false);
+		} catch (PythonObjectException e) {
+			throw new NoSuchElementException("PyList became invalid");
 		} catch (Kernel32Exception e) {
 			throw new NoSuchElementException("PyList became invalid");
 		}

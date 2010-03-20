@@ -17,12 +17,12 @@ import luz.eveMonitor.datastructure.python.PyObject;
 import luz.eveMonitor.datastructure.python.PyObjectFactory;
 import luz.eveMonitor.datastructure.python.RowList;
 import luz.eveMonitor.datastructure.python.PyDict.PyDictEntry;
+import luz.eveMonitor.datastructure.python.exception.PythonObjectException;
 import luz.eveMonitor.entities.eveMon.Order;
 import luz.winapi.api.Process;
 import luz.winapi.api.ProcessList;
 import luz.winapi.api.WinAPI;
 import luz.winapi.api.WinAPIImpl;
-import luz.winapi.api.exception.Kernel32Exception;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -116,7 +116,7 @@ public class Reader {
 	}
 	
 	private Map<Integer, Integer> stamps=new HashMap<Integer, Integer>();
-	public List<Order> getNewRows() throws Kernel32Exception{
+	public List<Order> getNewRows() throws PythonObjectException{
 		long timer=System.currentTimeMillis();
 		List<Order> rows = new LinkedList<Order>();
 		

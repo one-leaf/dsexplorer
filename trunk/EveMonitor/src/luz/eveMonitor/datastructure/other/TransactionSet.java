@@ -59,7 +59,7 @@ public class TransactionSet implements Iterable<Transaction>, TableModel{
 			if(i==this.number)
 				break;
 		}
-		fireTableDataChanged();		
+		fireTableDataChanged();
 	}
 	
 	public int size() {
@@ -68,7 +68,8 @@ public class TransactionSet implements Iterable<Transaction>, TableModel{
 	
 
 	public void clear() {
-		transs.clear();		
+		transs.clear();	
+		fireTableDataChanged();
 	}
 
 	

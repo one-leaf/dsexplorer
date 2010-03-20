@@ -1,6 +1,8 @@
 package luz.eveMonitor.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -80,6 +82,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private JMenuBar jMenuBar1;
 	private TypeGroupMap map;
 	private Status status;
+	private NumberFormat nf= NumberFormat.getInstance();
 	/**
 	* Auto-generated main method to display this JFrame
 	*/
@@ -353,20 +356,24 @@ public class MainWindow extends javax.swing.JFrame {
 		
 //		tblOrders.setModel(map.getOrders());
 		TransactionSettings ts = map.getTransactionSettings();
-		txtMaxMoney.setText(Double.toString(ts.getMaxMoney()));
-		txtMaxVolume.setText(""+ts.getMaxVolume());
+		txtMaxMoney.setText(nf.format(ts.getMaxMoney()));
+		txtMaxVolume.setText(nf.format(ts.getMaxVolume()));
 		spAccounting.setValue(ts.getAccounting());
 		spSecurity.setValue(ts.getSecurity());
-		txtNumber.setText(""+ts.getNumber());
+		txtNumber.setText(nf.format(ts.getNumber()));
 		
 	}
 	
 	private void btnRefreshActionPerformed(ActionEvent evt) {
-		map.refresh(Double.parseDouble(txtMaxMoney.getText()), 
-				Double.parseDouble(txtMaxVolume.getText()), 
-				(Integer)spAccounting.getValue(), 
-				((Security)spSecurity.getValue()),
-				Integer.parseInt(txtNumber.getText()));
+		try {
+			map.refresh(nf.parse(txtMaxMoney.getText()).doubleValue(), 
+					nf.parse(txtMaxVolume.getText()).doubleValue(), 
+					(Integer)spAccounting.getValue(), 
+					(Security)spSecurity.getValue(),
+					nf.parse(txtNumber.getText()).intValue());
+			} catch (ParseException e) {
+			//Do nothing
+		}
 	}
 	
 	private void tblTransactionsSelected(ListSelectionEvent evt) {

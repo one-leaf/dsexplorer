@@ -1,6 +1,7 @@
 package luz.eveMonitor.gui;
 
 import java.awt.Dimension;
+import java.text.NumberFormat;
 import java.util.Calendar;
 
 import javax.swing.GroupLayout;
@@ -26,6 +27,7 @@ import luz.eveMonitor.entities.eveMon.Order;
 */
 public class OrderInfo extends javax.swing.JPanel {
 	private static final long serialVersionUID = -4375884411896017055L;
+	private NumberFormat nf= NumberFormat.getInstance();
 	private JLabel lbl1;
 	private JLabel lblPrice;
 	private JLabel lbl2;
@@ -42,12 +44,7 @@ public class OrderInfo extends javax.swing.JPanel {
 	private JLabel lblRange;
 	private JLabel lbl8;
 	private JLabel lblExpires;
-//	private JLabel lbl9;
-//	private JLabel lblType;
-//	private JLabel lbl10;
-//	private JLabel lblGroup;
-//	private JLabel lbl11;
-//	private JLabel lblMGroup;
+
 	/**
 	* Auto-generated main method to display this 
 	* JPanel inside a new JFrame.
@@ -126,27 +123,6 @@ public class OrderInfo extends javax.swing.JPanel {
 			{
 				lblExpires = new JLabel();
 			}
-//			{
-//				lbl9 = new JLabel();
-//				lbl9.setText("Type:");
-//			}
-//			{
-//				lblType = new JLabel();
-//			}
-//			{
-//				lbl10 = new JLabel();
-//				lbl10.setText("Group:");
-//			}
-//			{
-//				lblGroup = new JLabel();
-//			}
-//			{
-//				lbl11 = new JLabel();
-//				lbl11.setText("MGroup:");
-//			}
-//			{
-//				lblMGroup = new JLabel();
-//			}
 
 
 				thisLayout.setVerticalGroup(thisLayout.createSequentialGroup()
@@ -174,15 +150,6 @@ public class OrderInfo extends javax.swing.JPanel {
 					.addGroup(thisLayout.createParallelGroup()
 					    .addComponent(lbl8      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
 					    .addComponent(lblExpires, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
-//					.addGroup(thisLayout.createParallelGroup()
-//					    .addComponent(lbl9      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-//					    .addComponent(lblType   , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
-//					.addGroup(thisLayout.createParallelGroup()
-//					    .addComponent(lbl10     , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-//					    .addComponent(lblGroup  , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
-//					.addGroup(thisLayout.createParallelGroup()
-//					    .addComponent(lbl11     , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-//					    .addComponent(lblMGroup  , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 
 					    .addContainerGap());
 				thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
@@ -196,10 +163,8 @@ public class OrderInfo extends javax.swing.JPanel {
 					    .addComponent(lbl6 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
 					    .addComponent(lbl7 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
 					    .addComponent(lbl8 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-//					    .addComponent(lbl9 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-//					    .addComponent(lbl10, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-//					    .addComponent(lbl11, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-					    )
+					    
+					)
 					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 					.addGroup(thisLayout.createParallelGroup()
 					    .addComponent(lblPrice  , 0, 300, Short.MAX_VALUE)
@@ -210,9 +175,7 @@ public class OrderInfo extends javax.swing.JPanel {
 					    .addComponent(lblJumps  , 0, 300, Short.MAX_VALUE)
 					    .addComponent(lblRange  , 0, 300, Short.MAX_VALUE)
 					    .addComponent(lblExpires, 0, 300, Short.MAX_VALUE)
-//					    .addComponent(lblType   , 0, 300, Short.MAX_VALUE)
-//					    .addComponent(lblGroup  , 0, 300, Short.MAX_VALUE)
-//					    .addComponent(lblMGroup , 0, 300, Short.MAX_VALUE)
+
 					));
 
 		} catch (Exception e) {
@@ -223,12 +186,12 @@ public class OrderInfo extends javax.swing.JPanel {
 	
 	public void setOrder(Order order){
 		if(order!=null){
-			lblPrice  .setText(""+order.getPrice());
-			lblVolRem .setText(""+order.getVolRem());
-			lblStation.setText(""+order.getStation().getStationName());
-			lblSystem .setText(""+order.getSystem().getSolarSystemName());
-			lblRegion .setText(""+order.getRegion().getRegionName());			
-			lblJumps  .setText(""+order.getJumps());
+			lblPrice  .setText(nf.format(order.getPrice()));
+			lblVolRem .setText(nf.format(order.getVolRem()));
+			lblStation.setText(order.getStation().getStationName());
+			lblSystem .setText(order.getSystem().getSolarSystemName());
+			lblRegion .setText(order.getRegion().getRegionName());			
+			lblJumps  .setText(nf.format(order.getJumps()));
 			
 			String rangeT;
 			short range=order.getRange();
@@ -248,9 +211,6 @@ public class OrderInfo extends javax.swing.JPanel {
 				c.get(Calendar.MINUTE)     +"M "+
 				c.get(Calendar.SECOND)     +"S ";
 			lblExpires.setText(expires);
-//			lblType   .setText(order.getType().getTypeName());
-//			lblGroup  .setText(order.getType().getGroupID().getGroupName());
-//			lblGroup  .setText(order.getType().getMarketGroupID().getMarketGroupName());
 		}else{
 			lblPrice  .setText("");
 			lblVolRem .setText("");
@@ -260,9 +220,6 @@ public class OrderInfo extends javax.swing.JPanel {
 			lblJumps  .setText("");
 			lblRange  .setText("");
 			lblExpires.setText("");
-//			lblType   .setText("");
-//			lblGroup  .setText("");
-//			lblMGroup .setText("");
 		}
 		
 		

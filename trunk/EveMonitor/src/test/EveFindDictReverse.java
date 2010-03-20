@@ -6,10 +6,10 @@ import java.util.List;
 import luz.eveMonitor.datastructure.python.PyList;
 import luz.eveMonitor.datastructure.python.PyObject;
 import luz.eveMonitor.datastructure.python.PyObjectFactory;
+import luz.eveMonitor.datastructure.python.exception.PythonObjectException;
 import luz.eveMonitor.utils.PointerListener;
 import luz.eveMonitor.utils.Reader;
 import luz.winapi.api.Process;
-import luz.winapi.api.exception.Kernel32Exception;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
@@ -132,7 +132,7 @@ public class EveFindDictReverse {
 		return list;		
 	}
 	
-	public static List<Long> stage3DBRowList(List<Long> addrs) throws Kernel32Exception{
+	public static List<Long> stage3DBRowList(List<Long> addrs) throws PythonObjectException{
 		List<Long> list = new LinkedList<Long>();
 		
 		for (Long addr : addrs) {
@@ -183,7 +183,7 @@ public class EveFindDictReverse {
 		return list;		
 	}
 	
-	public static List<Long> stage5PyList(List<Long> addrs) throws Kernel32Exception{
+	public static List<Long> stage5PyList(List<Long> addrs) throws PythonObjectException{
 		List<Long> list = new LinkedList<Long>();
 		
 		for (Long addr : addrs) {

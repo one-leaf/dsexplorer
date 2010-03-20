@@ -14,11 +14,11 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import luz.eveMonitor.datastructure.python.DBRow;
+import luz.eveMonitor.datastructure.python.exception.PythonObjectException;
 import luz.eveMonitor.entities.eveDB.inv.InvType;
 import luz.eveMonitor.entities.eveDB.map.MapRegion;
 import luz.eveMonitor.entities.eveDB.map.MapSolarSystem;
 import luz.eveMonitor.entities.eveDB.sta.StaStation;
-import luz.winapi.api.exception.Kernel32Exception;
 @NamedQueries({
 	@NamedQuery(name="findOrderByType", query="SELECT o FROM Orders o WHERE o.typeID=:typeID AND o.bid=:bid")
 })
@@ -56,7 +56,7 @@ public class Order {
 	}
 	
 	
-	public Order(DBRow dbrow, EntityManager emEveDB) throws Kernel32Exception {
+	public Order(DBRow dbrow, EntityManager emEveDB) throws PythonObjectException {
 		this.price		=(Double)((Long)dbrow.getColumnValue("price")/10000d);
 		this.volRem		=(Double) dbrow.getColumnValue("volRemaining");
 		this.issued		=(Date)   dbrow.getColumnValue("issued");

@@ -45,7 +45,7 @@ public class Init {
 		emEveDB  = Persistence.createEntityManagerFactory("eveDB" ).createEntityManager();
 		
 		
-		settings = new TransactionSettings(51000000d, 19859.3d, 4, Security.highsec, 20);
+		settings = new TransactionSettings(75000000d, 19859.3d, 4, Security.highsec, 20);
 		map = new TypeGroupMap(settings);
 		status=new Status();
 		window=new MainWindow(map, status);
