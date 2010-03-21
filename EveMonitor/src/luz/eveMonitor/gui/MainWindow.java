@@ -55,6 +55,8 @@ public class MainWindow extends javax.swing.JFrame {
 	private JSpinner spAccounting;
 	private JLabel lblAccounting;
 	private JButton btnRefresh;
+	private JSpinner spVolMult;
+	private JLabel lblVolMult;
 	private TransInfo transInfo;
 	private JButton btnClear;
 	private JTextField txtNumber;
@@ -155,12 +157,22 @@ public class MainWindow extends javax.swing.JFrame {
 				stStatusBar = new StatusBar();
 			}
 			{
+				SpinnerListModel spVolMultModel = 
+					new SpinnerListModel( new Integer[] { 1,2,3 });
+				spVolMult = new JSpinner();
+				spVolMult.setModel(spVolMultModel);
+			}
+			{
+				lblVolMult = new JLabel();
+				lblVolMult.setText("VolMult:");
+			}
+			{
 				transInfo = new TransInfo();
 				transInfo.setBorder(BorderFactory.createTitledBorder("Tranaction Info"));
 			}
 			{
 				btnClear = new JButton();
-				btnClear.setText("Clear");
+				btnClear.setText("Clear All");
 				btnClear.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnClearActionPerformed(evt);
@@ -199,23 +211,26 @@ public class MainWindow extends javax.swing.JFrame {
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				    .addComponent(btnRefresh, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(txtMaxMoney, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(txtMaxVolume, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblMaxMoney, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblMaxVol, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblAccounting, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(spAccounting, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblSecurity, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(spSecurity, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblNumber, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(txtNumber, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(btnClear, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+				    .addComponent(txtMaxVolume, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblMaxVol, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblSecurity, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(spSecurity, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(lblVolMult, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(spVolMult, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(spTransTable, GroupLayout.PREFERRED_SIZE, 352, GroupLayout.PREFERRED_SIZE)
+				.addComponent(spTransTable, 0, 343, Short.MAX_VALUE)
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup()
-				    .addComponent(oiBuy, GroupLayout.Alignment.LEADING, 0, 177, Short.MAX_VALUE)
-				    .addComponent(transInfo, GroupLayout.Alignment.LEADING, 0, 177, Short.MAX_VALUE)
-				    .addComponent(oiSell, GroupLayout.Alignment.LEADING, 0, 177, Short.MAX_VALUE))
+				    .addComponent(oiBuy, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(transInfo, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(oiSell, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addComponent(stStatusBar, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE));
 			thisLayout.setHorizontalGroup(thisLayout.createParallelGroup()
@@ -223,34 +238,44 @@ public class MainWindow extends javax.swing.JFrame {
 				.addGroup(thisLayout.createSequentialGroup()
 				    .addPreferredGap(stStatusBar, oiBuy, LayoutStyle.ComponentPlacement.INDENT)
 				    .addGroup(thisLayout.createParallelGroup()
-				        .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				            .addComponent(oiBuy, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
+				        .addGroup(thisLayout.createSequentialGroup()
+				            .addGroup(thisLayout.createParallelGroup()
+				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                    .addComponent(oiBuy, GroupLayout.PREFERRED_SIZE, 328, GroupLayout.PREFERRED_SIZE)
+				                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				                    .addComponent(transInfo, GroupLayout.PREFERRED_SIZE, 328, GroupLayout.PREFERRED_SIZE))
+				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                    .addGroup(thisLayout.createParallelGroup()
+				                        .addComponent(lblMaxVol, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
+				                        .addComponent(lblMaxMoney, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
+				                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				                    .addGroup(thisLayout.createParallelGroup()
+				                        .addComponent(txtMaxVolume, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+				                        .addComponent(txtMaxMoney, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE))
+				                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+				                    .addGroup(thisLayout.createParallelGroup()
+				                        .addComponent(lblSecurity, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+				                        .addComponent(lblAccounting, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE))
+				                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				                    .addGroup(thisLayout.createParallelGroup()
+				                        .addComponent(spSecurity, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+				                        .addComponent(spAccounting, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
+				                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				                    .addGroup(thisLayout.createParallelGroup()
+				                        .addComponent(lblVolMult, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+				                        .addComponent(lblNumber, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+				                    .addGroup(thisLayout.createParallelGroup()
+				                        .addComponent(spVolMult, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+				                        .addComponent(txtNumber, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+				                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				                    .addComponent(btnRefresh, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				                    .addGap(163)))
 				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				            .addComponent(transInfo, 0, 470, Short.MAX_VALUE)
-				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				            .addComponent(oiSell, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE))
-				        .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				            .addComponent(lblMaxMoney, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
-				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				            .addComponent(txtMaxMoney, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
-				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				            .addComponent(lblMaxVol, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
-				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				            .addComponent(txtMaxVolume, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(lblAccounting, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(spAccounting, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				            .addComponent(lblSecurity, GroupLayout.PREFERRED_SIZE, 54, GroupLayout.PREFERRED_SIZE)
-				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				            .addComponent(spSecurity, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
-				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				            .addComponent(lblNumber, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				            .addComponent(txtNumber, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-				            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				            .addComponent(btnRefresh, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				            .addGap(0, 160, Short.MAX_VALUE)
-				            .addComponent(btnClear, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
+				            .addGroup(thisLayout.createParallelGroup()
+				                .addComponent(oiSell, GroupLayout.Alignment.LEADING, 0, 328, Short.MAX_VALUE)
+				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                    .addGap(0, 253, Short.MAX_VALUE)
+				                    .addComponent(btnClear, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))))
 				        .addComponent(spTransTable, GroupLayout.Alignment.LEADING, 0, 996, Short.MAX_VALUE))
 				    .addContainerGap()));
 
@@ -337,7 +362,7 @@ public class MainWindow extends javax.swing.JFrame {
 				}
 			}
 			pack();
-			this.setSize(1024, 660);
+			this.setSize(1024, 672);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -359,6 +384,7 @@ public class MainWindow extends javax.swing.JFrame {
 		txtMaxMoney.setText(nf.format(ts.getMaxMoney()));
 		txtMaxVolume.setText(nf.format(ts.getMaxVolume()));
 		spAccounting.setValue(ts.getAccounting());
+		spVolMult.setValue(ts.getVolMult());
 		spSecurity.setValue(ts.getSecurity());
 		txtNumber.setText(nf.format(ts.getNumber()));
 		
@@ -366,11 +392,14 @@ public class MainWindow extends javax.swing.JFrame {
 	
 	private void btnRefreshActionPerformed(ActionEvent evt) {
 		try {
-			map.refresh(nf.parse(txtMaxMoney.getText()).doubleValue(), 
+			TransactionSettings ts=new TransactionSettings(
+					nf.parse(txtMaxMoney.getText()).doubleValue(), 
 					nf.parse(txtMaxVolume.getText()).doubleValue(), 
+					(Integer)spVolMult.getValue(), 
 					(Integer)spAccounting.getValue(), 
-					(Security)spSecurity.getValue(),
+					(Security)spSecurity.getValue(), 
 					nf.parse(txtNumber.getText()).intValue());
+			map.refresh(ts);
 			} catch (ParseException e) {
 			//Do nothing
 		}

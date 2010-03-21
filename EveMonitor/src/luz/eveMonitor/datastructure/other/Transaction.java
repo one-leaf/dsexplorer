@@ -12,46 +12,37 @@ public class Transaction implements Comparable<Transaction>{
 		this.buy=buy;
 		this.sell=sell;
 	}
-	
-	public long getMaxItemNumber(TransactionSettings settings) {
-		return getMaxItemNumber(settings.getMaxVolume(), settings.getMaxMoney());
-	}
-		
-	public long getMaxItemNumber(double volume, double money){
+
+	public long getMaxItemNumber(TransactionSettings ts){
 		double maxBuy  = buy.getVolRem();
 		double maxSell = sell.getVolRem();		
-		double maxVol   = volume / buy.getType().getVolume();
-		double maxPrice = money  / buy.getPrice();
+		double maxVol   = ts.getMaxVolume() / buy.getType().getVolume();
+		double maxPrice = ts.getMaxMoney()  / buy.getPrice();
 		
-		double items=Math.min(maxBuy, maxSell);
+		double items=Math.min(maxBuy, maxSell)*ts.getVolMult();
 		items=Math.min(items, maxVol);
 		items=Math.min(items, maxPrice);		
 		return (long)items;
 	}
 	
-	public long getMaxCargo(TransactionSettings settings) {
-		return (long)(settings.getMaxVolume() / buy.getType().getVolume());
+	public long getMaxCargo(TransactionSettings ts) {
+		return (long)(ts.getMaxVolume() / buy.getType().getVolume());
 	}
 	
 	public double calcWin(TransactionSettings settings) {
-		return calcWin(settings.getMaxMoney(), settings.getMaxVolume(), settings.getAccounting(), settings.getSecurity().min);		
-	}
-	
-	public double calcWin(double money, double volume, int accounting, double security){
-		if(buy.getSystem().getSecurity()<security || sell.getSystem().getSecurity()<security){
+		if(buy.getSystem().getSecurity()<settings.getSecurity().min 
+				|| sell.getSystem().getSecurity()<settings.getSecurity().min){
 			win=-999999999;
 		}else{	
-			items = getMaxItemNumber(volume, money);
-			win=(items*sell.getPrice())*(1-(10-accounting)/1000d)-items*buy.getPrice();
+			items = getMaxItemNumber(settings);
+			win=(items*sell.getPrice())*(1-(10-settings.getAccounting())/1000d)-items*buy.getPrice();
 		}
 		return win;
 	}
 	
-	public double calcPercent(TransactionSettings settings){
-		int accounting = settings.getAccounting();
-		double volume=settings.getMaxVolume();
-		double money=settings.getMaxMoney();
-		items = getMaxItemNumber(volume, money);
+	public double calcPercent(TransactionSettings ts){
+		int accounting = ts.getAccounting();
+		items = getMaxItemNumber(ts);
 		double gain=(items*sell.getPrice())*(1-(10-accounting)/1000d);
 		double loss=items*buy.getPrice();
 		return (gain-loss)/loss;		

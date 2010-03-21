@@ -51,12 +51,9 @@ public class TypeGroupMap extends HashMap<Integer, TypeGroup> {
 //	return orders;
 //}
 	
-	public synchronized void refresh(double maxMoney, double maxVolume, int accounting, Security security, int number) {
-		settings.setMaxMoney(maxMoney);
-		settings.setMaxVolume(maxVolume);
-		settings.setAccounting(accounting);
-		settings.setSecurity(security);
-		transs.refresh(maxMoney, maxVolume, accounting, security, number);		
+	public synchronized void refresh(TransactionSettings ts) {
+		this.settings=ts;
+		transs.refresh(ts);		
 	}
 	
 	@Override
@@ -92,4 +89,6 @@ public class TypeGroupMap extends HashMap<Integer, TypeGroup> {
 	public int getTypeCount() {
 		return this.values().size();
 	}
+
+
 }
