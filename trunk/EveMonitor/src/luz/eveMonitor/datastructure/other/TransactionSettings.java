@@ -6,13 +6,15 @@ public class TransactionSettings {
 	private int accounting;
 	private Security security;
 	private int number;
+	private int volMult;
 	
-	public TransactionSettings(double maxMoney, double maxVolume, int accounting, Security highsec, int number) {
+	public TransactionSettings(double maxMoney, double maxVolume, int volMult, int accounting, Security highsec, int number) {
 		this.maxMoney=maxMoney;
 		this.maxVolume=maxVolume;
 		this.accounting=accounting;
 		this.security=highsec;
 		this.number=number;
+		this.volMult=volMult;
 	}
 	
 
@@ -55,6 +57,15 @@ public class TransactionSettings {
 
 	public int getNumber() {
 		return number;
+	}
+
+
+	public void setVolMult(int volMult) {
+		this.volMult = volMult;
+	}
+
+	public int getVolMult() {
+		return volMult;
 	}
 	
 	

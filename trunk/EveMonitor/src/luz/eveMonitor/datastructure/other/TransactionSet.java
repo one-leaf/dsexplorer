@@ -37,12 +37,12 @@ public class TransactionSet implements Iterable<Transaction>, TableModel{
 		update();
 	}
 	
-	public synchronized void refresh(double money, double volume, int accounting, Security security, int number) {
+	public synchronized void refresh(TransactionSettings ts) {
 		for (Transaction t : transs)
-			t.calcWin(money, volume, accounting, security.min);
+			t.calcWin(ts);
 		this.transs=new ConcurrentSkipListSet<Transaction>(transs);	//sort again
-		this.number=number;
-		update();
+		this.number=ts.getNumber();
+		update();		
 	}
 	
 	@Override
@@ -205,6 +205,8 @@ public class TransactionSet implements Iterable<Transaction>, TableModel{
 	public Transaction getTransaction(int row) {
 		return bestOf[row];
 	}
+
+
 
 
 
