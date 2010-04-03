@@ -7,7 +7,7 @@ import luz.eveMonitor.entities.eveMon.Order;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class TypeGroupMap extends HashMap<Integer, TypeGroup> {
+public class TypeGroupMap extends HashMap<Short, TypeGroup> {
 	private static final long serialVersionUID = 6338817211296046005L;
 	private static final Log log = LogFactory.getLog(TypeGroupMap.class);
 //	OrderSet orders = new OrderSet();
@@ -20,7 +20,7 @@ public class TypeGroupMap extends HashMap<Integer, TypeGroup> {
 		transs = new TransactionSet(settings.getNumber());
 	}
 
-	private TypeGroup getTypeGroup(int typeId) {
+	private TypeGroup getTypeGroup(short typeId) {
 		TypeGroup tg = this.get(typeId);
 		if (tg == null) {
 			tg = new TypeGroup();
@@ -29,20 +29,20 @@ public class TypeGroupMap extends HashMap<Integer, TypeGroup> {
 		return tg;
 	}
 
-	public int getStamp(int typeId) {
+	public int getStamp(short typeId) {
 		return getTypeGroup(typeId).getStamp();
 	}
 
-	public void setStamp(int typeId, int stamp) {
+	public void setStamp(short typeId, int stamp) {
 		getTypeGroup(typeId).setStamp(stamp);
 	}
 
-	public void addBuy(int typeId, Order order) {
+	public void addBuy(short typeId, Order order) {
 		getTypeGroup(typeId).addBuy(order);
 //		orders.add(order);
 	}
 
-	public void addSell(int typeId, Order order) {
+	public void addSell(short typeId, Order order) {
 		getTypeGroup(typeId).addSell(order);
 //		orders.add(order);
 	}
@@ -62,7 +62,13 @@ public class TypeGroupMap extends HashMap<Integer, TypeGroup> {
 		transs.clear();
 	}
 	
-	public void createTrans(int typeId) {
+	public void removeTypeGroup(short typeId) {
+		log.debug("removing "+typeId);
+		this.remove(typeId);
+		transs.removeType(typeId);
+	}
+	
+	public void createTrans(short typeId) {
 		TypeGroup tp = getTypeGroup(typeId);
 		log.trace("create Trans");
 		tp.createTrans(settings);
@@ -89,6 +95,8 @@ public class TypeGroupMap extends HashMap<Integer, TypeGroup> {
 	public int getTypeCount() {
 		return this.values().size();
 	}
+
+
 
 
 }

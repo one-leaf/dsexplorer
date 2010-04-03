@@ -43,6 +43,8 @@ public class TransInfo extends javax.swing.JPanel {
 	private JLabel lblItems;
 	private JLabel lbl7;
 	private JLabel lblCargo;
+	private JLabel lbl8;
+	private JLabel lblTotalPrice;
 	/**
 	* Auto-generated main method to display this 
 	* JPanel inside a new JFrame.
@@ -114,29 +116,39 @@ public class TransInfo extends javax.swing.JPanel {
 			{
 				lblCargo = new JLabel();
 			}
+			{
+				lbl8 = new JLabel();
+				lbl8.setText("Total Price:");
+			}
+			{
+				lblTotalPrice = new JLabel();
+			}
 			
 				thisLayout.setVerticalGroup(thisLayout.createSequentialGroup()
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl1      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblWin  , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					    .addComponent(lbl1         , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblWin       , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl2      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblPercent , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					    .addComponent(lbl2         , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblPercent   , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl3      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblType, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					    .addComponent(lbl3         , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblType      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl4      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblGroup , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					    .addComponent(lbl4         , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblGroup     , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl5      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblVolume , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					    .addComponent(lbl5         , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblVolume    , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl6      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblItems  , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					    .addComponent(lbl6         , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblItems     , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lbl7      , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(lblCargo  , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					    .addComponent(lbl7         , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblCargo     , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					.addGroup(thisLayout.createParallelGroup()
+					    .addComponent(lbl8         , GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lblTotalPrice, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 
 					    .addContainerGap());
 				thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
@@ -149,16 +161,18 @@ public class TransInfo extends javax.swing.JPanel {
 					    .addComponent(lbl5 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
 					    .addComponent(lbl6 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
 					    .addComponent(lbl7 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+					    .addComponent(lbl8 , GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
 						)
 					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 					.addGroup(thisLayout.createParallelGroup()
-					    .addComponent(lblWin    , 0, 300, Short.MAX_VALUE)
-					    .addComponent(lblPercent, 0, 300, Short.MAX_VALUE)
-					    .addComponent(lblType   , 0, 300, Short.MAX_VALUE)
-					    .addComponent(lblGroup  , 0, 300, Short.MAX_VALUE)
-					    .addComponent(lblVolume , 0, 300, Short.MAX_VALUE)
-					    .addComponent(lblItems  , 0, 300, Short.MAX_VALUE)
-					    .addComponent(lblCargo  , 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblWin       , 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblPercent   , 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblType      , 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblGroup     , 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblVolume    , 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblItems     , 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblCargo     , 0, 300, Short.MAX_VALUE)
+					    .addComponent(lblTotalPrice, 0, 300, Short.MAX_VALUE)
 					));
 
 		} catch (Exception e) {
@@ -171,23 +185,25 @@ public class TransInfo extends javax.swing.JPanel {
 		if(trans!=null){
 
 
-			lblWin    .setText(nf.format(trans.calcWin(settings)));
-			lblPercent.setText(pf.format(trans.calcPercent(settings)));
-			lblType   .setText(trans.buy.getType().getTypeName());
-			lblGroup  .setText(trans.buy.getType().getGroupID().getGroupName());
-			lblVolume .setText(nf.format(trans.buy.getType().getVolume()));
-			lblItems  .setText(nf.format(trans.getMaxItemNumber(settings)));
-			lblCargo  .setText(nf.format(trans.getMaxCargo(settings)));
-
+			lblWin       .setText(nf.format(trans.calcWin(settings)));
+			lblPercent   .setText(pf.format(trans.calcPercent(settings)));
+			lblType      .setText(trans.buy.getType().getTypeName());
+			lblGroup     .setText(trans.buy.getType().getGroupID().getGroupName());
+			lblVolume    .setText(nf.format(trans.buy.getType().getVolume()));
+			lblItems     .setText(nf.format(trans.getMaxItemNumber(settings)));
+			lblCargo     .setText(nf.format(trans.getMaxCargo(settings)));
+			lblTotalPrice.setText(nf.format(trans.buy.getPrice()*trans.getMaxItemNumber(settings)));
 
 		}else{
-			lblWin  .setText("");
-			lblPercent .setText("");
-			lblType.setText("");
-			lblGroup .setText("");
-			lblVolume .setText("");
-			lblItems  .setText("");
-
+			lblWin       .setText("");
+			lblPercent   .setText("");
+			lblType      .setText("");
+			lblGroup     .setText("");
+			lblVolume    .setText("");
+			lblItems     .setText("");
+			lblCargo     .setText("");
+			lblTotalPrice.setText("");
+			
 		}
 		
 		
