@@ -174,12 +174,12 @@ public  class Grabber extends Thread{
 	public void findRows() throws PythonObjectException {
 		log.trace("findRows");	
 		int rowCounter=0;
-		int typeId;
+		short typeId;
 		Iterator<PyDictEntry> dictIter = status.getDict().getDictEntries();
 		while(dictIter.hasNext()){	//loop over all entries
 			PyDictEntry dictEntry=dictIter.next();
 			log.trace("get next Dict "+dictEntry);
-			typeId=dictEntry.getHash();
+			typeId=(short)dictEntry.getHash();
 			PyObject value = dictEntry.getValue();
 			if (value instanceof PyList){	//check if PyList
 				PyList pyList = (PyList)value;

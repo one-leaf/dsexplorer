@@ -55,6 +55,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private JSpinner spAccounting;
 	private JLabel lblAccounting;
 	private JButton btnRefresh;
+	private JButton btnClearType;
 	private JSpinner spVolMult;
 	private JLabel lblVolMult;
 	private TransInfo transInfo;
@@ -157,6 +158,16 @@ public class MainWindow extends javax.swing.JFrame {
 				stStatusBar = new StatusBar();
 			}
 			{
+				btnClearType = new JButton();
+				btnClearType.setText("Clear Type");
+				btnClearType.setMargin(new java.awt.Insets(2, 2, 2, 2));
+				btnClearType.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnClearTypeActionPerformed(evt);
+					}
+				});
+			}
+			{
 				SpinnerListModel spVolMultModel = 
 					new SpinnerListModel( new Integer[] { 1,2,3 });
 				spVolMult = new JSpinner();
@@ -168,7 +179,7 @@ public class MainWindow extends javax.swing.JFrame {
 			}
 			{
 				transInfo = new TransInfo();
-				transInfo.setBorder(BorderFactory.createTitledBorder("Tranaction Info"));
+				transInfo.setBorder(BorderFactory.createTitledBorder("Transaction Info"));
 			}
 			{
 				btnClear = new JButton();
@@ -216,7 +227,8 @@ public class MainWindow extends javax.swing.JFrame {
 				    .addComponent(spAccounting, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblNumber, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(txtNumber, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(btnClear, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				    .addComponent(btnClear, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(btnClearType, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				    .addComponent(txtMaxVolume, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblMaxVol, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -274,7 +286,9 @@ public class MainWindow extends javax.swing.JFrame {
 				            .addGroup(thisLayout.createParallelGroup()
 				                .addComponent(oiSell, GroupLayout.Alignment.LEADING, 0, 328, Short.MAX_VALUE)
 				                .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				                    .addGap(0, 253, Short.MAX_VALUE)
+				                    .addGap(0, 172, Short.MAX_VALUE)
+				                    .addComponent(btnClearType, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+				                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 0, GroupLayout.PREFERRED_SIZE)
 				                    .addComponent(btnClear, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))))
 				        .addComponent(spTransTable, GroupLayout.Alignment.LEADING, 0, 996, Short.MAX_VALUE))
 				    .addContainerGap()));
@@ -417,6 +431,15 @@ public class MainWindow extends javax.swing.JFrame {
 	
 	private void btnClearActionPerformed(ActionEvent evt) {
 		this.map.clear();
+	}
+	
+	private void btnClearTypeActionPerformed(ActionEvent evt) {
+		int row= tblTransactions.getSelectedRow();
+		if(row!=-1){
+			Transaction t = tblTransactions.getTransaction(row);
+			short typeId= t.buy.getTypeID();
+			this.map.removeTypeGroup(typeId);
+		}
 	}
 	
 	//$hide<<$

@@ -69,8 +69,21 @@ public class TransactionSet implements Iterable<Transaction>, TableModel{
 
 	public void clear() {
 		transs.clear();	
-		fireTableDataChanged();
+		update();
 	}
+	
+	public void removeType(short typeId) {
+		Iterator<Transaction> iter = transs.iterator();
+		while (iter.hasNext()){
+			Transaction trans=iter.next();
+			if(trans.buy.getTypeID()==typeId){
+//				log.trace("removing trans "+typeId);
+				transs.remove(trans);	
+			}
+		}
+		update();
+	}
+
 
 	
 
@@ -205,6 +218,7 @@ public class TransactionSet implements Iterable<Transaction>, TableModel{
 	public Transaction getTransaction(int row) {
 		return bestOf[row];
 	}
+
 
 
 
