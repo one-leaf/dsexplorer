@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="dist" name="WinAPI">
-	<!--ANT 1.7 is required-->
+	
+	<property name="dir.src"			location="src" />
+	<property name="dir.lib"			location="lib" />
+	<property name="dir.build"			location="buildAnt" />
+	<property name="dir.dist"			location="dist" />	
 
-	<property name="dir.lib"			value="lib" />
-	<property name="dir.bin"			value="bin" />
-	<property name="dir.dist"			value="dist" />
-
-
-	<target name="dist">
-		<jar destfile="${dir.dist}/winapi.jar">
-			<fileset dir="${dir.bin}"/>
-		</jar>
-
-		<copy file="${dir.dist}/winapi.jar" tofile="../DSExplorer/lib/winapi.jar" overwrite="true"/>
-		<copy file="${dir.dist}/winapi.jar" tofile="../eveMonitor/lib/winapi.jar" overwrite="true"/>
+	<target name="clean">
+		<delete includeemptydirs="true" quiet="true">
+			<fileset dir="${dir.build}" includes="**/*"/>
+		</delete>	
 	</target>
-
-
+	
+	<target name="compile" depends="clean">
+		<mkdir dir="${dir.build}"/>
+		<javac 
+			srcdir="${dir.src}"
+			destdir="${dir.build}"				
+			debug="on">
+			<classpath>
+			      <fileset dir="${dir.lib}" includes="**/*.jar"/>
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="dist" depends="compile">
+		<mkdir dir="${dir.dist}"/>
+		<jar destfile="${dir.dist}/winapi.jar">
+			<fileset dir="${dir.build}" includes="**/*"/>
+		</jar>
+	</target>
+	
 </project>
