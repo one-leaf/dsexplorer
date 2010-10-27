@@ -230,7 +230,7 @@ public class ProcessImpl implements Process {
 		winAPI.ReadProcessMemory(getHandle(), pointer, outputBuffer, nSize, outNumberOfBytesRead);
 	}
 	
-	public void search(long from, long to, final String value, MemoryListener listener) throws Kernel32Exception {
+	public synchronized void search(long from, long to, final String value, MemoryListener listener) throws Kernel32Exception {
 		log.debug("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" listener "+listener);
 		this.listener=listener;
 		long timer=System.currentTimeMillis();
