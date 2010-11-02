@@ -36,9 +36,18 @@ public interface Kernel32 extends StdCallLibrary {
     /*
      * http://msdn.microsoft.com/en-us/library/ms680553(VS.85).aspx
      */
-    boolean ReadProcessMemory(Pointer hProcess, Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead);
+    boolean ReadProcessMemory(Pointer hProcess, Pointer pAddress, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead);
    
     
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms681674(v=VS.85).aspx
+     */
+    boolean WriteProcessMemory(Pointer hProcess, Pointer pAddress, Pointer inputBuffer, int nSize, IntByReference outNumberOfBytesWritten);
+    
+    
+    /*
+     * http://msdn.microsoft.com/en-us/library/ms724211(VS.85).aspx
+     */
     boolean CloseHandle(Pointer hObject);
     
     

@@ -5,7 +5,6 @@ import java.nio.charset.Charset;
 import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.datastructures.Datastructure;
 import luz.dsexplorer.datastructures.Result;
-import luz.dsexplorer.datastructures.ResultListImpl;
 import luz.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
@@ -20,12 +19,15 @@ public class AsciiListener extends AbstractMemoryListener {
 	private int targetSize;
 	private String value;
 	
+	public AsciiListener(Process process) {
+		super(process);
+	}
+	
 	@Override
-	public void init(Process process, String value) {
-		this.results= new ResultListImpl(process);
-		this.overlapping=value.length();
-		this.targetSize=value.length();
-		this.value=value;		
+	public void init(Object value){
+		this.value=(String)value;
+		this.overlapping=this.value.length();
+		this.targetSize=this.value.length();
 	}
 	
 	@Override

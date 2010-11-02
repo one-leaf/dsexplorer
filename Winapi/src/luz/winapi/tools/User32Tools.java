@@ -8,6 +8,7 @@ import java.util.List;
 import luz.winapi.constants.BICompression;
 import luz.winapi.constants.DIBwUsage;
 import luz.winapi.constants.FType;
+import luz.winapi.constants.FuFlags;
 import luz.winapi.constants.GAFlags;
 import luz.winapi.constants.GCFlags;
 import luz.winapi.constants.Messages;
@@ -123,12 +124,6 @@ public class User32Tools {
         return u32.SendMessageA(hWnd, Msg.getValue(), wParam.getValue(), lParam);
     }
 	
-	public static final int SMTO_NORMAL             = 0x00;	
-	public static final int SMTO_BLOCK              = 0x01;
-	public static final int SMTO_ABORTIFHUNG        = 0x02;
-	public static final int SMTO_NOTIMEOUTIFNOTHUNG = 0x08;
-	public static final int SMTO_ERRORONEXIT        = 0x20;
-	
 	public Pointer SendMessageTimeoutA(Pointer hWnd,Messages Msg,FType wParam,int lParam, int fuFlags, int uTimeout) throws Exception{
 		PointerByReference lpdwResult = new PointerByReference();
 		int ret = u32.SendMessageTimeoutA(hWnd, Msg.getValue(), wParam.getValue(), lParam, fuFlags, uTimeout, lpdwResult);
@@ -149,20 +144,23 @@ public class User32Tools {
     }
     
     public Pointer getHIcon(Pointer hWnd){
+    	FuFlags fuFlags=new FuFlags();	
+    	fuFlags.setSMTO_NORMAL();
+    	
     	try{
-        	Pointer icon = SendMessageTimeoutA(hWnd, Messages.WM_GETICON, FType.ICON_SMALL, 0, SMTO_NORMAL, 20);
+        	Pointer icon = SendMessageTimeoutA(hWnd, Messages.WM_GETICON, FType.ICON_SMALL, 0, fuFlags.getFlags(), 20);
         if (icon!=null) return u32.CopyIcon(icon);
 		} catch (Exception e) {
 		}	
     	
         try{
-        	Pointer icon = SendMessageTimeoutA(hWnd, Messages.WM_GETICON, FType.ICON_BIG, 0, SMTO_NORMAL, 20);
+        	Pointer icon = SendMessageTimeoutA(hWnd, Messages.WM_GETICON, FType.ICON_BIG, 0, fuFlags.getFlags(), 20);
         if (icon!=null) return u32.CopyIcon(icon);
 		} catch (Exception e) {
 		}
 		
         try{
-        	Pointer icon = SendMessageTimeoutA(hWnd, Messages.WM_GETICON, FType.ICON_SMALL2, 0, SMTO_NORMAL, 20);
+        	Pointer icon = SendMessageTimeoutA(hWnd, Messages.WM_GETICON, FType.ICON_SMALL2, 0, fuFlags.getFlags(), 20);
         if (icon!=null) return u32.CopyIcon(icon);
 		} catch (Exception e) {
 		}	

@@ -263,19 +263,21 @@ public class MemorySearch extends javax.swing.JPanel {
 			int to  =Integer.parseInt(txtTo  .getText(),16);
 			DSType type = (DSType)cbValue.getSelectedItem();
 			MemoryListener listener;
+			Object search;
+			String text=txtSearch.getText();
 			switch (type){
-				case Byte1:		listener=new Byte1Listener(); 		break;	
-				case Byte2:		listener=new Byte2Listener();		break;	
-				case Byte4:		listener=new Byte4Listener(); 		break;	
-				case Byte8:		listener=new Byte8Listener(); 		break;
-				case Float:		listener=new FloatListener();		break;	
-				case Double:	listener=new DoubleListener();		break;
-				case ByteArray:	listener=new ByteArrayListener();	break;	
-				case Ascii:		listener=new AsciiListener();		break;	
-				case Unicode:	listener=new UnicodeListener();		break;	
-				default: 		listener=null;
+				case Byte1:		listener=new Byte1Listener(process);		search=Byte.parseByte(text);	break;	
+				case Byte2:		listener=new Byte2Listener(process);		search=Short.parseShort(text);	break;	
+				case Byte4:		listener=new Byte4Listener(process);		search=Integer.parseInt(text);	break;	
+				case Byte8:		listener=new Byte8Listener(process);		search=Long.parseLong(text);	break;	
+				case Float:		listener=new FloatListener(process);		search=Float.parseFloat(text);	break;	
+				case Double:	listener=new DoubleListener(process);		search=Double.parseDouble(text);break;	
+				case ByteArray:	listener=new ByteArrayListener(process);	search=text;					break;	
+				case Ascii:		listener=new AsciiListener(process);		search=text;					break;	
+				case Unicode:	listener=new UnicodeListener(process);		search=text;					break;		
+				default: 		listener=null;								search=null;
 			}			
-			process.search(from, to, txtSearch.getText(), listener);
+			process.search(from, to, search, listener);
 			ResultList results=(ResultList)listener.getResults();
 			tblResults.setResults(results);
 		}catch(NumberFormatException e){
