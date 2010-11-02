@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import luz.winapi.api.exception.Kernel32Exception;
+import luz.winapi.constants.DwDesiredAccess;
+import luz.winapi.constants.DwFlags;
 import luz.winapi.jna.Kernel32;
 import luz.winapi.jna.Kernel32.ENUMRESNAMEPROC;
 import luz.winapi.jna.Kernel32.LPPROCESSENTRY32;
@@ -23,42 +25,6 @@ public class Kernel32Tools {
 		return INSTANCE;
 	}
 	
-	////////////////////////////////////////////////////////////////////////
-	public static final int PROCESS_TERMINATE					=0x00000001;
-	public static final int PROCESS_CREATE_THREAD				=0x00000002;
-	public static final int PROCESS_VM_OPERATION				=0x00000008;
-	public static final int PROCESS_VM_READ					=0x00000010;
-	public static final int PROCESS_VM_WRITE					=0x00000020;
-	public static final int PROCESS_DUP_HANDLE				=0x00000040;
-	public static final int PROCESS_CREATE_PROCESS			=0x00000080;
-	public static final int PROCESS_SET_QUOTA					=0x00000100;
-	public static final int PROCESS_SET_INFORMATION			=0x00000200;
-	public static final int PROCESS_QUERY_INFORMATION			=0x00000400;
-	public static final int PROCESS_SUSPEND_RESUME			=0x00000800;
-	public static final int PROCESS_QUERY_LIMITED_INFORMATION	=0x00001000;
-
-	public static final int DELETE							=0x00010000;
-	public static final int READ_CONTROL						=0x00020000;
-	public static final int WRITE_DAC							=0x00040000;
-	public static final int WRITE_OWNER						=0x00080000;
-	public static final int SYNCHRONIZE						=0x00100000;
-
-	public static final int PROCESS_ALL_ACCESS				=0x001F0FFF;
-	////////////////////////////////////////////////////////////////////////
-
-	public static final int TH32CS_SNAPHEAPLIST				=0x00000001;
-	public static final int TH32CS_SNAPPROCESS				=0x00000002;
-	public static final int TH32CS_SNAPTHREAD					=0x00000004;
-	public static final int TH32CS_SNAPMODULE					=0x00000008;	
-	public static final int TH32CS_SNAPALL					=0x0000000F;
-	
-	public static final int TH32CS_SNAPMODULE32				=0x00000010;
-	public static final int TH32CS_INHERIT					=0x80000000;
-	
-	////////////////////////////////////////////////////////////////////////
-	
-
-	
 	public int GetCurrentProcessId(){
 		return k32.GetCurrentProcessId();
 	}
@@ -72,8 +38,8 @@ public class Kernel32Tools {
 		return k32.GetLastError();
 	}
 	
-	public Pointer OpenProcess(int dwDesiredAccess, boolean bInheritHandle, int dwProcessId) throws Kernel32Exception{
-		Pointer process = k32.OpenProcess(dwDesiredAccess, false, dwProcessId);
+	public Pointer OpenProcess(DwDesiredAccess dwDesiredAccess, boolean bInheritHandle, int dwProcessId) throws Kernel32Exception{
+		Pointer process = k32.OpenProcess(dwDesiredAccess.getFlags(), false, dwProcessId);
     	if (process == null){
     		int err=k32.GetLastError();
             throw new Kernel32Exception("openProcess failed. Error: "+err);
@@ -81,20 +47,28 @@ public class Kernel32Tools {
         return process;
     }
 	
-	public void ReadProcessMemory(Pointer hProcess, Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Kernel32Exception{
-        boolean success = k32.ReadProcessMemory(hProcess, pointer, outputBuffer, nSize, outNumberOfBytesRead);
+	public void ReadProcessMemory(Pointer hProcess, Pointer pAddress, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Kernel32Exception{
+        boolean success = k32.ReadProcessMemory(hProcess, pAddress, outputBuffer, nSize, outNumberOfBytesRead);
     	if (!success){
     		int err=k32.GetLastError();
     		throw new Kernel32Exception("readProcessMemory failed. Error: "+err);
     	}
     }
 	
-	
+	public void WriteProcessMemory(Pointer hProcess, Pointer pAddress, Pointer inputBuffer, int nSize, IntByReference outNumberOfBytesWritten) throws Kernel32Exception{
+        boolean success = k32.WriteProcessMemory(hProcess, pAddress, inputBuffer, nSize, outNumberOfBytesWritten);
+    	if (!success){
+    		int err=k32.GetLastError();
+    		throw new Kernel32Exception("writeProcessMemory failed. Error: "+err);
+    	}
+    }
 	
 	public List<LPPROCESSENTRY32> getProcessList() throws Exception{
 		List<LPPROCESSENTRY32> list = new LinkedList<LPPROCESSENTRY32>();
 		
-        Pointer hProcessSnap = k32.CreateToolhelp32Snapshot(Kernel32Tools.TH32CS_SNAPPROCESS, 0);
+		DwFlags dwFlags=new DwFlags();
+		dwFlags.setTH32CS_SNAPPROCESS(true);
+        Pointer hProcessSnap = k32.CreateToolhelp32Snapshot(dwFlags.getFlags(), 0);
         
         LPPROCESSENTRY32 pe32 = new LPPROCESSENTRY32();
         boolean success = k32.Process32First(hProcessSnap, pe32);

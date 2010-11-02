@@ -5,7 +5,6 @@ import java.nio.charset.Charset;
 import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.datastructures.Datastructure;
 import luz.dsexplorer.datastructures.Result;
-import luz.dsexplorer.datastructures.ResultListImpl;
 import luz.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
@@ -20,22 +19,22 @@ public class UnicodeListener extends AbstractMemoryListener {
 	private int targetSize;
 	private String value;
 	
+	public UnicodeListener(Process process) {
+		super(process);
+	}
+	
 	@Override
-	public void init(Process process, String value) {
-		this.results= new ResultListImpl(process);
-		this.overlapping=value.length()*2;	//Assume utf16 = 2 bytes
-		this.targetSize=value.length()*2;
-		this.value=value.toLowerCase();		
+	public void init(Object value) {
+		this.value=((String)value).toLowerCase();	
+		this.overlapping=this.value.length()*2;	//Assume utf16 = 2 bytes
+		this.targetSize=this.value.length()*2;	
 	}
 	
 	@Override
 	public void mem(Memory outputBuffer, long address, long size) {
 		String current;
 		for (long pos = 0; pos < size-overlapping; pos=pos+1) {
-			current=outputBuffer.getString(pos, true).substring(0,this.targetSize/2);
-			System.out.println(current);
-			//current = new String(outputBuffer.getByteArray(pos, this.targetSize), utf16);
-			//if (current.equalsIgnoreCase(this.value)){
+			current=outputBuffer.getString(pos, true);
 			if(current.toLowerCase().startsWith(this.value)){
 				Datastructure ds = this.type.getInstance();
 				ds.setByteCount(this.targetSize);

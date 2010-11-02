@@ -2,6 +2,7 @@ package luz.dsexplorer.search;
 
 import luz.dsexplorer.datastructures.Result;
 import luz.dsexplorer.datastructures.ResultList;
+import luz.dsexplorer.datastructures.ResultListImpl;
 import luz.winapi.api.MemoryListener;
 import luz.winapi.api.Process;
 
@@ -12,6 +13,10 @@ public abstract class AbstractMemoryListener implements MemoryListener {
 	protected ResultList results;	
 	protected int overlapping;
 
+	public AbstractMemoryListener(Process process){
+		results=new ResultListImpl(process);
+	}
+	
 	public void add(Result result) {
 		results.add(result);
 	}
@@ -34,7 +39,7 @@ public abstract class AbstractMemoryListener implements MemoryListener {
 	}
 		
 	@Override
-	public abstract void init(Process process, String value);
+	public abstract void init(Object value);
 	
 	@Override
 	public abstract void mem(Memory outputBuffer, long address, long size);

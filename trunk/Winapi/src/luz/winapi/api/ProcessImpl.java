@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import luz.winapi.api.exception.Kernel32Exception;
+import luz.winapi.constants.DwDesiredAccess;
 import luz.winapi.constants.GAFlags;
 import luz.winapi.constants.ProcessInformationClass;
 import luz.winapi.jna.Kernel32.LPPROCESSENTRY32;
@@ -49,7 +50,9 @@ public class ProcessImpl implements Process {
 	public Pointer getHandle() throws Kernel32Exception{
 		if (handleCache!=null)
 			return handleCache;
-		handleCache = winAPI.OpenProcess(Kernel32Tools.PROCESS_ALL_ACCESS, false, this.pid);
+		DwDesiredAccess dwDesiredAccess=new DwDesiredAccess();
+		dwDesiredAccess.setPROCESS_ALL_ACCESS();
+		handleCache = winAPI.OpenProcess(dwDesiredAccess, false, this.pid);
 		return handleCache;
 	}
 	
@@ -226,16 +229,21 @@ public class ProcessImpl implements Process {
 		return winAPI.VirtualQueryEx(getHandle(), lpAddress);
 	}
 	
-	public void ReadProcessMemory(Pointer pointer, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Kernel32Exception{
-		winAPI.ReadProcessMemory(getHandle(), pointer, outputBuffer, nSize, outNumberOfBytesRead);
+	public void ReadProcessMemory(Pointer pAddress, Pointer outputBuffer, int nSize, IntByReference outNumberOfBytesRead) throws Kernel32Exception{
+		winAPI.ReadProcessMemory(getHandle(), pAddress, outputBuffer, nSize, outNumberOfBytesRead);
 	}
 	
-	public synchronized void search(long from, long to, final String value, MemoryListener listener) throws Kernel32Exception {
+	public void WriteProcessMemory(Pointer pAddress, Pointer inputBuffer, int nSize, IntByReference outNumberOfBytesWritten) throws Kernel32Exception{
+		winAPI.WriteProcessMemory(getHandle(), pAddress, inputBuffer, nSize, outNumberOfBytesWritten);
+	}
+	
+	
+	public synchronized void search(long from, long to, final Object value, MemoryListener listener) throws Kernel32Exception {
 		log.debug("search from "+Long.toHexString(from)+" to "+Long.toHexString(to)+" value "+value+" listener "+listener);
 		this.listener=listener;
 		long timer=System.currentTimeMillis();
 
-		this.listener.init(this, value);
+		this.listener.init(value);
 		search(from, to);
 		
 		log.debug("timer "+(System.currentTimeMillis()-timer));
@@ -273,8 +281,8 @@ public class ProcessImpl implements Process {
 					try{
 						ReadProcessMemory(Pointer.createConstant(regionPart), outputBuffer, readSize, null);
 						listener.mem(outputBuffer, regionPart, readSize);
-					}catch(Exception e){
-						log.warn(e.getMessage()+"\t"+Long.toHexString(regionPart)+"\t"+Integer.toHexString(info.Type));
+					}catch(Exception e){	//FIXME 
+						log.warn("Cannot search mem\t"+Long.toHexString(regionPart)+"\t"+Integer.toHexString(info.Type), e);
 					}
 				}
 			}

@@ -14,7 +14,7 @@ public interface MemoryListener {
 	 * @param overlapping
 	 */
 	
-	public void init(Process process, String value);
+	public void init(Object value);
 	public int getOverlapping();	
 	public void mem(Memory outputBuffer, long address, long size);
 	public Object getResults();

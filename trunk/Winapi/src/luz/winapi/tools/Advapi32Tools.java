@@ -1,5 +1,6 @@
 package luz.winapi.tools;
 
+import luz.winapi.constants.TokenFlags;
 import luz.winapi.jna.Advapi32;
 import luz.winapi.jna.Kernel32;
 import luz.winapi.jna.Advapi32.LUID;
@@ -29,29 +30,13 @@ public class Advapi32Tools {
 	public static final int SE_PRIVILEGE_ENABLED = 2;
 	
 	////////////////////////////////////////////////////////////////////////
-    public static final int TOKEN_ASSIGN_PRIMARY     = 0x00000001;
-    public static final int TOKEN_DUPLICATE          = 0x00000002;
-    public static final int TOKEN_IMPERSONATE        = 0x00000004;
-    public static final int TOKEN_QUERY              = 0x00000008;
-    public static final int TOKEN_QUERY_SOURCE       = 0x00000010;
-    public static final int TOKEN_ADJUST_PRIVILEGES  = 0x00000020;
-    public static final int TOKEN_ADJUST_GROUPS      = 0x00000040;
-    public static final int TOKEN_ADJUST_DEFAULT     = 0x00000080;
-    public static final int TOKEN_ADJUST_SESSIONID   = 0x00000100;
-    public static final int STANDARD_RIGHTS_READ     = 0x00020000;
-    public static final int STANDARD_RIGHTS_REQUIRED = 0x000F0000;    
-    public static final int TOKEN_READ = (STANDARD_RIGHTS_READ | TOKEN_QUERY);
-    public static final int TOKEN_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED | TOKEN_ASSIGN_PRIMARY |
-        TOKEN_DUPLICATE | TOKEN_IMPERSONATE | TOKEN_QUERY | TOKEN_QUERY_SOURCE |
-        TOKEN_ADJUST_PRIVILEGES | TOKEN_ADJUST_GROUPS | TOKEN_ADJUST_DEFAULT | TOKEN_ADJUST_SESSIONID);
-
-	////////////////////////////////////////////////////////////////////////
-	
-
 	
 	public void enableDebugPrivilege(Pointer hProcess) throws Exception{
         PointerByReference hToken = new PointerByReference();
-        boolean success = a32.OpenProcessToken(hProcess, TOKEN_QUERY|TOKEN_ADJUST_PRIVILEGES, hToken);
+        TokenFlags tokenFlags=new TokenFlags();
+        tokenFlags.setTOKEN_QUERY(true);
+        tokenFlags.setTOKEN_ADJUST_PRIVILEGES(true);
+        boolean success = a32.OpenProcessToken(hProcess, tokenFlags.getFlags(), hToken);
     	if (!success){
     		int err=Native.getLastError();
             throw new Exception("OpenProcessToken failed. Error: "+err);

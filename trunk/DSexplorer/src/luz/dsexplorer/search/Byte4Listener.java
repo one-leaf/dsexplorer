@@ -2,7 +2,6 @@ package luz.dsexplorer.search;
 
 import luz.dsexplorer.datastructures.DSType;
 import luz.dsexplorer.datastructures.Result;
-import luz.dsexplorer.datastructures.ResultListImpl;
 import luz.winapi.api.Process;
 
 import org.apache.commons.logging.Log;
@@ -16,10 +15,13 @@ public class Byte4Listener extends AbstractMemoryListener {
 	private DSType type=DSType.Byte4;
 	private int value;
 	
+	public Byte4Listener(Process process) {
+		super(process);
+	}
+	
 	@Override
-	public void init(Process process, String value) {
-		this.results= new ResultListImpl(process);
-		this.value=Integer.parseInt(value);
+	public void init(Object value) {
+		this.value=(Integer)value;
 	}
 	
 	@Override

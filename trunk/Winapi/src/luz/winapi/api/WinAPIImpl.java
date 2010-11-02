@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 import luz.winapi.api.exception.Kernel32Exception;
+import luz.winapi.constants.DwDesiredAccess;
 import luz.winapi.constants.GAFlags;
 import luz.winapi.constants.ProcessInformationClass;
 import luz.winapi.jna.Kernel32.LPPROCESSENTRY32;
@@ -63,7 +64,7 @@ public class WinAPIImpl implements WinAPI{
 		return plist;
 	}
 	
-	public Pointer OpenProcess(int dwDesiredAccess, boolean bInheritHandle, int dwProcessId) throws Kernel32Exception{
+	public Pointer OpenProcess(DwDesiredAccess dwDesiredAccess, boolean bInheritHandle, int dwProcessId) throws Kernel32Exception{
 		return k32.OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId);		
 	}
 	
@@ -75,7 +76,9 @@ public class WinAPIImpl implements WinAPI{
 		k32.ReadProcessMemory(hProcess, pointer, outputBuffer, nSize, outNumberOfBytesRead);
 	}
 	
-	
+	public void WriteProcessMemory(Pointer hProcess, Pointer pAddress, Pointer inputBuffer, int nSize, IntByReference outNumberOfBytesWritten) throws Kernel32Exception{
+	    k32.WriteProcessMemory(hProcess, pAddress, inputBuffer, nSize, outNumberOfBytesWritten);
+	}
 	
 	
 	public String GetModuleFileNameExA(Pointer hProcess,Pointer hModule){
