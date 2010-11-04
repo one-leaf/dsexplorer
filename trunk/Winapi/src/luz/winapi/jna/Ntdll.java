@@ -117,7 +117,7 @@ public interface Ntdll extends StdCallLibrary{
 				return null;
 			if (str==null)
 				str=new Memory(512);
-	        k32.ReadProcessMemory(process, pointer, str, (int)str.getSize(), null);
+	        k32.ReadProcessMemory(process, pointer, str, (int)str.size(), null);
 	        return str.getString(0, true);
 		}		
 		
